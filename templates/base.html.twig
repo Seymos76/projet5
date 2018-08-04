@@ -2,10 +2,16 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Nos Amis les Oiseaux{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        {{ flashMessage }}
+    {% endfor %}
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        {{ flashMessage }}
+    {% endfor %}
     <nav>
         <ul>
             <li><a href="{{ path('index') }}">Accueil</a></li>
