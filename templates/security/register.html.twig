@@ -1,9 +1,0 @@
-{% extends "base.html.twig" %}
-
-{% block body %}
-    <form action="{{ path('register') }}" method="post">
-        {{ form_errors(form) }}
-        {{ form_widget(form) }}
-        <button type="submit">Inscription</button>
-    </form>
-{% endblock %}

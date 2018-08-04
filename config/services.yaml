@@ -33,3 +33,10 @@ services:
     App\Services\FileUploader:
         arguments:
             $targetDirectory: '%avatar_directory%'
+
+    app.nao.mailer:
+        class: App\Services\Mailer
+        autowire: true
+        public: true
+        arguments:
+            - '@mailer'
