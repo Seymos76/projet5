@@ -7,3 +7,6 @@ security:
             security: false
         main:
             anonymous: ~
+            http_basic: ~
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
