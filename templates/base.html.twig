@@ -6,6 +6,14 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+    <nav>
+        <ul>
+            <li><a href="{{ path('index') }}">Accueil</a></li>
+            <li><a href="{{ path('repertoire') }}">Répertoire</a></li>
+            <li><a href="{{ path('statistics') }}">Quelques données</a></li>
+            <li><a href="{{ path('contact') }}">Contact</a></li>
+        </ul>
+    </nav>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>

@@ -9,7 +9,6 @@
 namespace App\Controller;
 
 
-use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +28,10 @@ class DefaultController extends Controller
         );
     }
 
+    /**
+     * @Route("/repertoire", name="repertoire")
+     * @return Response
+     */
     public function repertoire()
     {
         // récupérer espèces
@@ -40,6 +43,10 @@ class DefaultController extends Controller
         );
     }
 
+    /**
+     * @Route("/repertoire/bird", name="bird")
+     * @return Response
+     */
     public function bird()
     {
         // récupérer oiseau
@@ -49,6 +56,10 @@ class DefaultController extends Controller
         );
     }
 
+    /**
+     * @Route("/statistiques", name="statistics")
+     * @return Response
+     */
     public function statistics()
     {
         return $this->render(
@@ -56,6 +67,10 @@ class DefaultController extends Controller
         );
     }
 
+    /**
+     * @Route("/contact", name="contact")
+     * @return Response
+     */
     public function contact()
     {
         return $this->render(
