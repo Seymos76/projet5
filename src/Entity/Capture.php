@@ -85,6 +85,12 @@ class Capture
      */
     private $validated_by;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", orphanRemoval=true)
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $image;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -268,5 +274,15 @@ class Capture
         $this->validated_by = $validated_by;
 
         return $this;
+    }
+
+    public function setImage(Image $image = null)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
     }
 }
