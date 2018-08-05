@@ -34,6 +34,11 @@ services:
         arguments:
             $targetDirectory: '%avatar_directory%'
 
+    app.nao.user_manager:
+        class: App\Services\UserManager
+        autowire: true
+        public: true
+
     app.nao.mailer:
         class: App\Services\Mailer
         autowire: true
