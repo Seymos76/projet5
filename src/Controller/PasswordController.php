@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class PasswordController extends Controller
 {
@@ -26,9 +27,24 @@ class PasswordController extends Controller
         $lost_password_form->handleRequest($request);
         if ($lost_password_form->isSubmitted() && $lost_password_form->isValid()) {
             dump($lost_password_form->getData());
+            $em = $this->getDoctrine();
             // récupérer l'utilisateur correspondant
+            $user = $em->getRepository(User::class)->findOneBy(
+                array(
+                    'email' => $lost_password_form->getData()
+                )
+            );
+            // si !user -> rediriger vers register avec message erreur
+            if (!$user) {
+                $this->get('session')->getFlashBag()->add('error', "Vous n'êtes pas enregistré sur le site");
+                return $this->redirectToRoute('register');
+            }
             // si user -> send email with link+token
+            $user->setToken(md5(uniqid("token_", true)));
             // save token to user in database
+            $manager = $em->getManager();
+            $manager->persist($user);
+            $manager->flush();
             // redirect to confirmation page
             return $this->redirectToRoute('lost_password_email_sent');
         }
@@ -41,22 +57,46 @@ class PasswordController extends Controller
     }
 
     /**
-     * @Route("/password-reinitialisation", name="password_reinitialisation")
+     * @Route("/password-reinitialisation/{token}", name="password_reinitialisation")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
     public function reinitialisationPassword(Request $request, UserPasswordEncoderInterface $encoder)
     {
-        $form = $this->createForm(ReinitialisationPasswordType::class);
+        $token = $request->get('token');
+        $em = $this->getDoctrine();
+        $user = $em->getRepository(User::class)->findOneBy(
+            array(
+                'token' => $token
+            )
+        );
+        if (!$user) {
+            $this->get('session')->getFlashBag()->add('error', "Vous n'êtes pas autorisé à accéder à cette page !");
+            return $this->redirectToRoute('index');
+        }
+        $form = $this->createForm(ReinitialisationPasswordType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($form->getData()['new_password']);
-            // récupérer l'utilisateur courant
             // encoder le mot de passe
-            // mettre à jour la base de données
-            // réinitialiser le token de l'utilisateur
-            die;
+            if ($user instanceof UserInterface) {
+                $encoded = $encoder->encodePassword($user, $form->getData()->getPassword());
+                $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
+                    array(
+                        'token' => $token
+                    )
+                );
+                $user->setPassword($encoded);
+                $user->setToken(null);
+                $manager = $em->getManager();
+                $manager->persist($user);
+                $manager->flush();
+                $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a bien été mis à jour !");
+                return $this->redirectToRoute('login');
+            } else {
+                $this->get('session')->getFlashBag()->add('error', "Un problème est survenu durant la réinitialisation du mot de passe.");
+                return $this->redirectToRoute('lost_password');
+            }
         }
         return $this->render(
             'password/reinitialisation_password.html.twig',

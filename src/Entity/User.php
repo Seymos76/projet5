@@ -63,6 +63,11 @@ class User implements UserInterface, \Serializable
     private $token;
 
     /**
+     * @ORM\Column(name="activation_code", type="string", unique=true, nullable=true)
+     */
+    private $activation_code;
+
+    /**
      * @ORM\Column(name="account_type", type="string", nullable=true)
      */
     private $account_type;
@@ -72,8 +77,7 @@ class User implements UserInterface, \Serializable
         $this->active = false;
         $this->roles = array("ROLE_USER");
         $this->date_register = new \DateTime('now');
-        $this->token = md5(uniqid('token_', true));
-        // $this->salt = md5(uniqid('', true));
+        $this->activation_code = md5(uniqid('code_', false));
     }
 
     public function getUsername() :string
@@ -199,6 +203,16 @@ class User implements UserInterface, \Serializable
     public function setToken($token): void
     {
         $this->token = $token;
+    }
+
+    public function getActivationCode() :string
+    {
+        return $this->activation_code;
+    }
+
+    public function setActivationCode($activation_code) :void
+    {
+        $this->activation_code = $activation_code;
     }
 
     public function getAccountType()
