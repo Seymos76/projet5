@@ -1,0 +1,10 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Compte naturaliste</h1>
+
+    {{ dump(observations) }}
+    {{ dump(profil) }}
+
+    <a href="{{ path('naturalist_change_avatar') }}">Change avatar</a>
+{% endblock %}

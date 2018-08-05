@@ -14,19 +14,17 @@
     {% endfor %}
     <nav>
         <ul>
-            <li><a href="{{ path('index') }}">Accueil</a></li>
-            <li><a href="{{ path('repertoire') }}">Répertoire</a></li>
-            <li><a href="{{ path('statistics') }}">Quelques données</a></li>
-            <li><a href="{{ path('contact') }}">Contact</a></li>
+            {% include "menu/default.html.twig" %}
+            {% include "menu/observations.html.twig" %}
             {% if is_granted('ROLE_USER') %}
-                <li><a href="{{ path('logout') }}">Déconnexion</a></li>
-                <li><a href="{{ path('change_password') }}">Change password</a></li>
+                {% include "menu/pass.html.twig" %}
+                <li><a href="{{ path('naturalist_account') }}">Compte naturaliste</a></li>
                 <li><a href="{{ path('admin') }}">Administration</a></li>
+                <li><a href="{{ path('logout') }}">Déconnexion</a></li>
             {% else %}
                 <li><a href="{{ path('login') }}">Connexion</a></li>
                 <li><a href="{{ path('register') }}">Inscription</a></li>
             {% endif %}
-            <li><a href="{{ path('lost_password') }}">Mot de passe perdu</a></li>
         </ul>
     </nav>
         {% block body %}{% endblock %}
