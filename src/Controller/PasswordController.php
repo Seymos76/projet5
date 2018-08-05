@@ -86,25 +86,17 @@ class PasswordController extends Controller
         $form = $this->createForm(ChangePassword::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($form->getData());
             $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
                 array(
                     'email' => $this->getUser()->getEmail()
                 )
             );
-            dump($this->getUser());
-            dump($user);
-            $old_password = $encoder->encodePassword($this->getUser(), $form->getData()['old_password']);
-            dump($old_password);
-            if ($old_password === $this->getUser()->getPassword()) {
-                die('ok');
-            } else {
-                die('ko');
-            }
-            // crypter old_password et vérifier correspondance en base
-            // si ok, crypter new_password et mettre à jour en base
-            // sinon, message d'erreur
-            die;
+            $new_password = $encoder->encodePassword($this->getUser(), $form->getData()['new_password']);
+            $user->setPassword($new_password);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            return $this->redirectToRoute('admin');
         }
         return $this->render(
             'password/change_password.html.twig',
