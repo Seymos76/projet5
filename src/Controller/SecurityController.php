@@ -17,6 +17,7 @@ class SecurityController extends Controller
      */
     public function admin()
     {
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
         return $this->render(
             'security/admin.html.twig',
             array(
@@ -61,6 +62,9 @@ class SecurityController extends Controller
         $register_form->handleRequest($request);
         if ($register_form->isSubmitted() && $register_form->isValid()) {
             $user->setUsername($register_form->getData()->getEmail());
+            if ($register_form->getData()->getAccountType() === "naturalist") {
+                $user->addRole("ROLE_NATURALIST");
+            }
             $encoded = $encoder->encodePassword($user, $register_form->getData()->getPassword());
             $user->setPassword($encoded);
             $em = $this->getDoctrine()->getManager();
