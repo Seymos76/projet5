@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ChangePassword;
+use App\Form\ChangePasswordType;
 use App\Form\LostPasswordType;
 use App\Form\ReinitialisationPasswordType;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,11 +80,12 @@ class PasswordController extends Controller
     /**
      * @Route("/change-password", name="change_password")
      * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
     public function changePassword(Request $request, UserPasswordEncoderInterface $encoder)
     {
-        $form = $this->createForm(ChangePassword::class);
+        $form = $this->createForm(ChangePasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(

@@ -58,9 +58,14 @@ class User implements UserInterface, \Serializable
     private $date_register;
 
     /**
-     * @ORM\Column(name="token", type="string", unique=true)
+     * @ORM\Column(name="token", type="string", unique=true, nullable=true)
      */
     private $token;
+
+    /**
+     * @ORM\Column(name="account_type", type="string", nullable=true)
+     */
+    private $account_type;
 
     public function __construct()
     {
@@ -88,7 +93,7 @@ class User implements UserInterface, \Serializable
         return null;
     }
 
-    public function getPassword() :string
+    public function getPassword()
     {
         return $this->password;
     }
@@ -99,7 +104,7 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getEmail() :string
+    public function getEmail()
     {
         return $this->email;
     }
@@ -108,6 +113,16 @@ class User implements UserInterface, \Serializable
     {
         $this->email = $email;
         return $this;
+    }
+
+    public function getActive() :bool
+    {
+        return $this->active;
+    }
+
+    public function setActive($active) :void
+    {
+        $this->active = $active;
     }
 
     public function getRoles() :array
@@ -184,6 +199,16 @@ class User implements UserInterface, \Serializable
     public function setToken($token): void
     {
         $this->token = $token;
+    }
+
+    public function getAccountType()
+    {
+        return $this->account_type;
+    }
+
+    public function setAccountType($account_type) :void
+    {
+        $this->account_type = $account_type;
     }
 
     public function eraseCredentials()
