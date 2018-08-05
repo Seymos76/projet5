@@ -23,8 +23,9 @@ class NAOCaptureManager extends NAOManager
 		return $waintingForValidationCaptures;
 	}
 
-	public function validateCapture(Capture $capture)
+	public function validateCapture(Capture $capture, $naturalist)
 	{
 		$capture->setStatus('validated');
+		$capture->setValidatedBy($naturalist);
 	}
 }
