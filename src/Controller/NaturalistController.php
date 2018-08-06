@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Form\AvatarType;
+use App\Services\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,33 +59,17 @@ class NaturalistController extends Controller
     /**
      * @Route("/account/change-avatar", name="naturalist_change_avatar")
      * @param Request $request
+     * @param FileUploader $uploader
      * @return Response
      */
-    public function changeAvatar(Request $request)
+    public function changeAvatar(Request $request, FileUploader $uploader)
     {
         $user = $this->getUser();
         $avatar_form = $this->createForm(AvatarType::class);
         $avatar_form->handleRequest($request);
         if ($avatar_form->isSubmitted() && $avatar_form->isValid()) {
-            /** @var UploadedFile $file */
-            $file = $avatar_form->getData()['avatar'];
-            $extension = $file->getClientOriginalExtension();
-            $fileName = md5(uniqid()).'.'.$extension;
-            if ($user->getAvatar() !== null) {
-                $current_avatar = $this->getParameter('avatar_directory').'/'.$user->getAvatar();
-                unlink($current_avatar);
-                $user->setAvatar(null);
-            }
-            $file->move(
-                $this->getParameter('avatar_directory'),
-                $fileName
-            );
-            $user->setAvatar($fileName);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', "Votre avatar a été changé avec succès !");
-            return $this->redirectToRoute("naturalist_account");
+            dump($avatar_form->getData());
+            die;
         }
         return $this->render(
             'naturalist/change_avatar.html.twig',

@@ -6,6 +6,7 @@
 parameters:
     locale: 'fr'
     avatar_directory: '%kernel.project_dir%/public/uploads/avatar'
+    bird_directory: '%kernel.project_dir%/public/uploads/bird'
 
 services:
     # default configuration for services in *this* file
@@ -35,7 +36,8 @@ services:
         autowire: true
         public: true
         arguments:
-            - $targetDirectory: '%avatar_directory%'
+            - $avatarDirectory: '%avatar_directory%'
+            - $birdDirectory: '%bird_directory%'
 
     app.nao.user_manager:
         class: App\Services\UserManager

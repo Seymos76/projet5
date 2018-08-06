@@ -9,31 +9,9 @@
 namespace App\Services;
 
 
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader
 {
-    private $targetDirectory;
-
-    public function __construct($targetDirectory)
-    {
-        $this->targetDirectory = $targetDirectory;
-    }
-
-    public function upload(UploadedFile $file)
-    {
-        if (!$file) {
-            return false;
-        }
-        $fileName = md5(uniqid()).'.'.$file->guessExtension();
-
-        // moves the file to the directory where brochures are stored
-        $file->move($this->getTargetDirectory(), $fileName);
-        return $fileName;
-    }
-
-    public function getTargetDirectory()
-    {
-        return $this->targetDirectory;
-    }
 }
