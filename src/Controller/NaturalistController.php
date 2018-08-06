@@ -68,7 +68,10 @@ class NaturalistController extends Controller
         $avatar_form = $this->createForm(AvatarType::class);
         $avatar_form->handleRequest($request);
         if ($avatar_form->isSubmitted() && $avatar_form->isValid()) {
-            dump($avatar_form->getData());
+            dump($avatar_form->getData()['avatar']);
+            $file_name = $uploader->upload($avatar_form->getData()['avatar'], $this->getParameter('avatar_directory'));
+            $user->setAvatar($file_name);
+            dump($user);
             die;
         }
         return $this->render(
