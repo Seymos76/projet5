@@ -37,6 +37,12 @@ class Comment
      */
     private $published;
 
+    public function __construct()
+    {
+        $this->created_at = new \DateTime('now');
+        $this->published = true;
+    }
+
     public function getId()
     {
         return $this->id;
