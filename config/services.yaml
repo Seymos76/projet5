@@ -30,9 +30,12 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\Services\FileUploader:
+    app.nao.file_uploader:
+        class: App\Services\FileUploader
+        autowire: true
+        public: true
         arguments:
-            $targetDirectory: '%avatar_directory%'
+            - $targetDirectory: '%avatar_directory%'
 
     app.nao.user_manager:
         class: App\Services\UserManager

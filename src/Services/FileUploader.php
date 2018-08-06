@@ -20,12 +20,12 @@ class FileUploader
         $this->targetDirectory = $targetDirectory;
     }
 
-    public function upload(UploadedFile $file, string $username)
+    public function upload(UploadedFile $file)
     {
         if (!$file) {
             return false;
         }
-        $fileName = $username.'.'.$file->guessExtension();
+        $fileName = md5(uniqid()).'.'.$file->guessExtension();
 
         // moves the file to the directory where brochures are stored
         $file->move($this->getTargetDirectory(), $fileName);

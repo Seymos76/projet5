@@ -3,8 +3,30 @@
 {% block body %}
     <h1>Compte naturaliste</h1>
 
-    {{ dump(observations) }}
-    {{ dump(profil) }}
+    <table>
+        <thead>
+        <th>Observation</th>
+        <th>Date</th>
+        <th>Status</th>
+        </thead>
+        {% for observation in observations %}
+            <tr>
+                <td>{{ observation.name }}</td>
+                <td>{{ observation.date|date('d/m/Y') }}</td>
+                <td>{{ observation.status }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {% if app.user.avatar == null %}
+        <img src="{{ asset('default/avatar.svg') }}" alt="" height="150">
+    {% else %}
+        <img src="{{ asset('uploads/avatar/' ~ app.user.avatar ) }}" alt="" height="150">
+    {% endif %}
+    <h2>{{ profil.name }}</h2>
+    <p>
+        {{ profil.bio }}
+    </p>
 
     <a href="{{ path('naturalist_change_avatar') }}">Change avatar</a>
 {% endblock %}

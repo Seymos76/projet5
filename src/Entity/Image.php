@@ -17,34 +17,39 @@ class Image
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="path", type="string", length=255, nullable=true)
      */
     private $path;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="file_name", type="string", length=255)
+     */
+    private $file_name;
+
+    /**
+     * @ORM\Column(name="slug", type="string", length=255)
      */
     private $slug;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="extension", type="string", length=255)
      */
     private $extension;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="mime_type", type="string", length=255)
      */
     private $mime_type;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(name="size", type="float")
      */
-    private $weight;
+    private $size;
 
     public function getId()
     {
@@ -73,6 +78,16 @@ class Image
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getFileName() :string
+    {
+        return $this->file_name;
+    }
+
+    public function setFileName(string $file_name): self
+    {
+        $this->file_name = $file_name;
     }
 
     public function getSlug(): ?string
@@ -111,14 +126,14 @@ class Image
         return $this;
     }
 
-    public function getWeight(): ?float
+    public function getSize(): ?float
     {
-        return $this->weight;
+        return $this->size;
     }
 
-    public function setWeight(float $weight): self
+    public function setSize(float $size): self
     {
-        $this->weight = $weight;
+        $this->size = $size;
 
         return $this;
     }

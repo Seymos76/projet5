@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -71,6 +72,13 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="account_type", type="string", nullable=true)
      */
     private $account_type;
+
+    /**
+     * @ORM\Column(name="avatar", type="string", nullable=true)
+     * @Assert\NotBlank(message="Please, upload you avatar.")
+     * @Assert\File(mimeTypes={ "image/png", "image/jpeg", "image/jpg", "image/gif" })
+     */
+    private $avatar;
 
     public function __construct()
     {
@@ -238,6 +246,22 @@ class User implements UserInterface, \Serializable
     public function setAccountType($account_type) :void
     {
         $this->account_type = $account_type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param mixed $avatar
+     */
+    public function setAvatar($avatar): void
+    {
+        $this->avatar = $avatar;
     }
 
     public function eraseCredentials()
