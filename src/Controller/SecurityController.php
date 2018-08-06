@@ -13,20 +13,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends Controller
 {
     /**
-     * @Route("/admin", name="admin")
-     */
-    public function admin()
-    {
-        $this->denyAccessUnlessGranted("ROLE_ADMIN");
-        return $this->render(
-            'security/admin.html.twig',
-            array(
-                'user' => $this->getUser()
-            )
-        );
-    }
-
-    /**
      * @Route("/login", name="login")
      * @param AuthenticationUtils $authenticationUtils
      * @return \Symfony\Component\HttpFoundation\Response
