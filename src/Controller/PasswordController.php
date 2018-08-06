@@ -46,7 +46,7 @@ class PasswordController extends Controller
             $manager->persist($user);
             $manager->flush();
             // redirect to confirmation page
-            return $this->redirectToRoute('lost_password_email_sent');
+            return $this->redirectToRoute('password_reinitialisation', array('token' => $user->getToken()));
         }
         return $this->render(
             'password/lost_password.html.twig',
@@ -107,17 +107,6 @@ class PasswordController extends Controller
     }
 
     /**
-     * @Route("/lost-password-email-sent", name="lost_password_email_sent")
-     * @return Response
-     */
-    public function lostPasswordEmailSent()
-    {
-        return $this->render(
-            'password/lost_password_email_sent.html.twig'
-        );
-    }
-
-    /**
      * @Route("/change-password", name="change_password")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
@@ -138,7 +127,7 @@ class PasswordController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('naturalist_account');
         }
         return $this->render(
             'password/change_password.html.twig',
