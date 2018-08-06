@@ -15,11 +15,14 @@
     <nav>
         <ul>
             {% include "menu/default.html.twig" %}
-            {% include "menu/observations.html.twig" %}
             {% if is_granted('ROLE_USER') %}
                 {% include "menu/pass.html.twig" %}
-                <li><a href="{{ path('naturalist_account') }}">Compte naturaliste</a></li>
-                <li><a href="{{ path('admin') }}">Administration</a></li>
+                {% if is_granted('ROLE_NATURALIST') %}
+                    <li><a href="{{ path('naturalist_account') }}">Compte naturaliste</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('admin') }}">Administration</a></li>
+                    {% endif %}
+                {% endif %}
                 <li><a href="{{ path('logout') }}">Déconnexion</a></li>
             {% else %}
                 <li><a href="{{ path('login') }}">Connexion</a></li>
