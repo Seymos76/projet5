@@ -1,0 +1,17 @@
+{# templates/Capture/showCaptures.html.twig #}
+
+{% extends "layout.html.twig" %}
+
+{% block title %} Observations {% endblock %}
+{% block body %}
+	{% for capture in captures %}
+		<div>
+			<p>{{capture.image}}</p>
+			<p>{{capture.bird.vernacularname}}</p>
+			<p>{{ capture.address }}, {{ capture.zipcode }}, {{ capture.city }}</p>
+			<p>{{ capture.createdDate|date('d/m/Y') }}</p>
+		</div>
+	{% endfor %}
+{% endblock %}
+{% block javascripts %}{% endblock %}
+   
