@@ -11,14 +11,14 @@ class NAOCaptureManager extends NAOManager
 {
 	public function getPublishedCaptures()
 	{
-		$publishedCaptures = $this->em->getRepository('Capture')->getPublishedCaptures();
+		$publishedCaptures = $this->em->getRepository(Capture::class)->getPublishedCaptures();
 
         return $publishedCaptures;
 	}
 
 	public function getWaintingForValidationCaptures()
 	{
-		$waintingForValidationCaptures = $this->em->getRepository('Capture')->getByStatus('waiting for validation');
+		$waintingForValidationCaptures = $this->em->getRepository(Capture::class)->getByStatus('waiting for validation');
 
 		return $waintingForValidationCaptures;
 	}
@@ -27,5 +27,10 @@ class NAOCaptureManager extends NAOManager
 	{
 		$capture->setStatus('validated');
 		$capture->setValidatedBy($naturalist);
+	}
+
+	public function setWaitingStatus(Capture $capture)
+	{
+		$capture->setStatus('waiting for validation');
 	}
 }
