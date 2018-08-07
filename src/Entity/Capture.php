@@ -69,6 +69,12 @@ class Capture
     private $status;
 
     /**
+     * @ORM\Column(type="datetime")
+     * @Assert\DateTime()
+     */
+    private $created_date;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="capture")
      */
     private $comments;
@@ -104,6 +110,7 @@ class Capture
 
     public function __construct()
     {
+        $this->created_date = new \DateTime('now');
         $this->comments = new ArrayCollection();
     }
 
@@ -204,6 +211,18 @@ class Capture
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedDate(): ?\DateTimeInterface
+    {
+        return $this->created_date;
+    }
+
+    public function setCreatedDate(\DateTimeInterface $created_date): self
+    {
+        $this->created_at = $created_Date;
 
         return $this;
     }
