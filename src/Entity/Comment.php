@@ -30,16 +30,22 @@ class Comment
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private $created_date;
 
     /**
      * @ORM\Column(type="boolean")
      */
     private $published;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Capture")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $capture;
+
     public function __construct()
     {
-        $this->created_at = new \DateTime('now');
+        $this->created_date = new \DateTime('now');
         $this->published = true;
     }
 
@@ -72,14 +78,14 @@ class Comment
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedDate(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->created_date;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedDate(\DateTimeInterface $created_date): self
     {
-        $this->created_at = $created_at;
+        $this->created_at = $created_Date;
 
         return $this;
     }
@@ -92,6 +98,18 @@ class Comment
     public function setPublished(bool $published): self
     {
         $this->published = $published;
+
+        return $this;
+    }
+
+    public function getCapture(): ?Capture
+    {
+        return $this->capture;
+    }
+
+    public function setCapture(?Capture $capture): self
+    {
+        $this->capture = $capture;
 
         return $this;
     }
