@@ -28,10 +28,11 @@
     {% else %}
         <img src="{{ asset('uploads/avatar/' ~ app.user.avatar ) }}" alt="" height="150">
     {% endif %}
-    <h2>{{ profil.name }}</h2>
+    <h2>{{ app.user.firstname }}</h2>
     <p>
-        {{ profil.bio }}
+    {{ app.user.biography }}
     </p>
 
     <a href="{{ path('naturalist_change_avatar') }}">Change avatar</a>
+    <a href="{{ path('naturalist_change_biography') }}">Change biography</a>
 {% endblock %}

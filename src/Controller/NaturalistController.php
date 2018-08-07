@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Form\AvatarType;
+use App\Form\BiographyType;
 use App\Services\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -42,16 +43,11 @@ class NaturalistController extends Controller
                 'status' => "Publiée"
             )
         );
-        $profil = array(
-            'avatar' => "http://blogue-ton-ecole.ac-dijon.fr/wp-content/uploads/2016/07/Avatar_girl_face.png",
-            'name' => "Julie Borine",
-            'bio' => "Bonjour, je suis une passionnée d'oiseaux"
-        );
         return $this->render(
             'naturalist/account.html.twig',
             array(
                 'observations' => $observations,
-                'profil' => $profil
+                'user' => $this->getUser()
             )
         );
     }
@@ -75,6 +71,32 @@ class NaturalistController extends Controller
             'naturalist/change_avatar.html.twig',
             array(
                 'form' => $avatar_form->createView()
+            )
+        );
+    }
+
+    /**
+     * @Route("/account/change-biography", name="naturalist_change_biography")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function changeBiography(Request $request)
+    {
+        $user = $this->getUser();
+        $biographyType = $this->createForm(BiographyType::class);
+        $biographyType->handleRequest($request);
+        if ($biographyType->isSubmitted() && $biographyType->isValid()) {
+            $user->setBiography($biographyType->getData()['biography']);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('success', "Votre biographie a bien été mise à jour.");
+            return $this->redirectToRoute('naturalist_account');
+        }
+        return $this->render(
+            'naturalist/change_biography.html.twig',
+            array(
+                'form' => $biographyType->createView()
             )
         );
     }

@@ -79,6 +79,11 @@ class User implements UserInterface, \Serializable
      */
     private $avatar;
 
+    /**
+     * @ORM\Column(name="biography", type="text", nullable=true)
+     */
+    private $biography;
+
     public function __construct()
     {
         $this->active = false;
@@ -261,6 +266,20 @@ class User implements UserInterface, \Serializable
     public function setAvatar($avatar): void
     {
         $this->avatar = $avatar;
+    }/**
+ * @return mixed
+ */
+    public function getBiography()
+    {
+        return $this->biography;
+    }
+
+    /**
+     * @param mixed $biography
+     */
+    public function setBiography($biography): void
+    {
+        $this->biography = $biography;
     }
 
     public function eraseCredentials()
