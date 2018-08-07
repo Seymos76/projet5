@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CaptureRepository")
@@ -20,21 +21,25 @@ class Capture
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotNull()
      */
     private $content;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotNull()
      */
     private $latitude;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotNull()
      */
     private $longitude;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      */
     private $address;
 
@@ -45,16 +50,21 @@ class Capture
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      */
     private $zipcode;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Choice(
+     *     choices = { "draft", "published", "validated", "waiting for validation" }
+     * )
      */
     private $status;
 
@@ -88,6 +98,7 @@ class Capture
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Image", orphanRemoval=true)
      * @ORM\JoinColumn(nullable=true)
+     * @Assert\Image()
      */
     private $image;
 
