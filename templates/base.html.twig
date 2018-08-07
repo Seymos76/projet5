@@ -15,21 +15,28 @@
     <nav>
         <ul>
             {% include "menu/default.html.twig" %}
-            {% if is_granted('ROLE_USER') %}
-                {% include "menu/pass.html.twig" %}
-                {% if is_granted('ROLE_NATURALIST') %}
-                    <li><a href="{{ path('naturalist_account') }}">Compte naturaliste</a></li>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <li><a href="{{ path('admin') }}">Administration</a></li>
-                    {% endif %}
-                {% endif %}
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <li><a href="{{ path('change_password') }}">Change password</a></li>
+                <li><a href="{{ path('lost_password') }}">Mot de passe perdu</a></li>
                 <li><a href="{{ path('logout') }}">Déconnexion</a></li>
+                <li>IS_AUTHENTICATED_FULLY</li>
+            {% endif %}
+            {% if is_granted('ROLE_USER') and not is_granted('ROLE_NATURALIST') %}
+                <li><a href="{{ path('user_account') }}">Mon compte</a></li>
+            {% elseif is_granted('ROLE_NATURALIST') and not is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('naturalist_account') }}">Mon compte</a></li>
+            {% elseif is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('admin_account') }}">Mon compte</a></li>
+                <li><a href="{{ path('admin') }}">Administration</a></li>
             {% else %}
                 <li><a href="{{ path('login') }}">Connexion</a></li>
                 <li><a href="{{ path('register') }}">Inscription</a></li>
             {% endif %}
         </ul>
     </nav>
+    {% if is_granted('ROLE_USER') %}
+        {{ dump(app.user.roles) }}
+    {% endif %}
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
