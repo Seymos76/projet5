@@ -27,7 +27,8 @@ class CaptureController extends Controller
     {
         $capture = new Capture();
         
-        $roles = $this->getUser()->getRoles();
+        $user = $this->getUser();
+        $roles = $user->getRoles();
 
         if (in_array('particular', $roles))
         {
