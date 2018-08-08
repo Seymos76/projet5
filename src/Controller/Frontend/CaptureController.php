@@ -20,7 +20,7 @@ class CaptureController extends Controller
      * @Route("observation/{id}", requirements={"id" = "\d+"}, name="observation")
      * @return Response
      */
-    public function showCaptureAction($id)
+    public function showCaptureAction($id, Request $request, NAOManager $naoManager)
     {
         $em = $this->getDoctrine()->getManager();
         $capture = $em->getRepository(Capture::class)->findOneById($id);
@@ -29,6 +29,26 @@ class CaptureController extends Controller
 
         $comment = new Comment();
         $form = $this->get('form.factory')->create(CommentType::class, $comment);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+        {
+            $user = $this->getUser();
+            $comment->setAuthor($user);
+            $comment->setCapture($capture);
+
+            $validator = $this->get('validator');
+            $listErrors = $validator->validate($comment);
+            if(count($listErrors) > 0) 
+            {
+                return new Response((string) $listErrors);
+            } 
+            else 
+            {
+                $naoManager->addOrModifyEntity($comment);
+
+                return new Response('Le commentaire a été ajoutée');
+            }
+        }
 
         return $this->render('Capture\showCapture.html.twig', array('capture' => $capture, 'id' => $id, 'numberOfCaptureComments' => $numberOfCaptureComments, 'form' => $form->createView())); 
     }
