@@ -12,16 +12,21 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class AdminController
+ * @package App\Controller
+ * @Route("/administration")
+ */
 class AdminController extends Controller
 {
     /**
-     * @Route("/account/admin", name="admin_account")
+     * @Route("/", name="administration")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function account()
     {
         return $this->render(
-            'admin/account.html.twig'
+            'admin/admin.html.twig'
         );
     }
 }

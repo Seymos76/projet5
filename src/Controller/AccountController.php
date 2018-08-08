@@ -2,31 +2,67 @@
 /**
  * Created by PhpStorm.
  * User: seymos
- * Date: 05/08/18
- * Time: 17:01
+ * Date: 08/08/18
+ * Time: 16:36
  */
 
 namespace App\Controller;
 
-use App\Entity\Image;
+use App\Entity\User;
 use App\Form\AvatarType;
 use App\Form\BiographyType;
+use App\Form\ChangePasswordType;
 use App\Services\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-class NaturalistController extends Controller
+/**
+ * Class AccountController
+ * @package App\Controller
+ * @Route("/account")
+ */
+class AccountController extends Controller
 {
     /**
-     * @Route("/account/naturalist", name="naturalist_account")
+     * @Route("/", name="account")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
-    public function naturalistAccount()
+    public function account(Request $request, UserPasswordEncoderInterface $encoder)
     {
-        $this->denyAccessUnlessGranted('ROLE_NATURALIST');
+        $biographyType = $this->createForm(BiographyType::class);
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
+            array(
+                'email' => $this->getUser()->getEmail()
+            )
+        );
+        $biographyType->handleRequest($request);
+        if ($biographyType->isSubmitted() && $biographyType->isValid()) {
+            $new_biography = $biographyType->getData()['biography'];
+            $user->setBiography($new_biography);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('success', "Votre biographie a été changée avec succès !");
+            return $this->redirectToRoute('account');
+        }
+        $changePasswordType = $this->createForm(ChangePasswordType::class);
+        $changePasswordType->handleRequest($request);
+        if ($changePasswordType->isSubmitted() && $changePasswordType->isValid()) {
+            $encoded = $encoder->encodePassword($user, $changePasswordType->getData()['new_password']);
+            $user->setPassword($encoded);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
+            return $this->redirectToRoute('account');
+        }
         $observations = array(
             array(
                 'name' => "Observation 01",
@@ -45,16 +81,18 @@ class NaturalistController extends Controller
             )
         );
         return $this->render(
-            'naturalist/account.html.twig',
+            'account/account.html.twig',
             array(
+                'user' => $user,
                 'observations' => $observations,
-                'user' => $this->getUser()
+                'biography_form' => $biographyType->createView(),
+                'change_password_form' => $changePasswordType->createView()
             )
         );
     }
 
     /**
-     * @Route("/account/change-avatar", name="naturalist_change_avatar")
+     * @Route("/change-avatar", name="change_avatar")
      * @param Request $request
      * @param FileUploader $uploader
      * @return Response
@@ -83,35 +121,9 @@ class NaturalistController extends Controller
             return $this->redirectToRoute('naturalist_account');
         }
         return $this->render(
-            'naturalist/change_avatar.html.twig',
+            'account/change_avatar.html.twig',
             array(
                 'form' => $avatar_form->createView()
-            )
-        );
-    }
-
-    /**
-     * @Route("/account/change-biography", name="naturalist_change_biography")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     */
-    public function changeBiography(Request $request)
-    {
-        $user = $this->getUser();
-        $biographyType = $this->createForm(BiographyType::class);
-        $biographyType->handleRequest($request);
-        if ($biographyType->isSubmitted() && $biographyType->isValid()) {
-            $user->setBiography($biographyType->getData()['biography']);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', "Votre biographie a bien été mise à jour.");
-            return $this->redirectToRoute('naturalist_account');
-        }
-        return $this->render(
-            'naturalist/change_biography.html.twig',
-            array(
-                'form' => $biographyType->createView()
             )
         );
     }

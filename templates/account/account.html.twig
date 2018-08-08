@@ -1,13 +1,14 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <h1>Compte naturaliste</h1>
-
-    <nav>
-        <ul>
-            {% include "menu/observations.html.twig" %}
-        </ul>
-    </nav>
+    {% if is_granted('ROLE_ADMIN') %}
+        {% set account_type = "administrateur" %}
+    {% elseif is_granted('ROLE_NATURALIST') %}
+        {% set account_type = "naturaliste" %}
+    {% else %}
+        {% set account_type = "utilisateur" %}
+    {% endif %}
+    <h1>Mon compte {{ account_type }}</h1>
     <table>
         <thead>
         <th>Observation</th>
@@ -23,8 +24,6 @@
         {% endfor %}
     </table>
 
-    {{ dump(app.user.roles) }}
-
     {% if app.user.avatar == null %}
         <img src="{{ asset('default/avatar.svg') }}" alt="" height="150">
     {% else %}
@@ -32,9 +31,10 @@
     {% endif %}
     <h2>{{ app.user.firstname }}</h2>
     <p>
-    {{ app.user.biography }}
+        {{ app.user.biography }}
     </p>
 
-    <a href="{{ path('naturalist_change_avatar') }}">Change avatar</a>
-    <a href="{{ path('naturalist_change_biography') }}">Change biography</a>
+    <a href="{{ path('change_avatar') }}">Change avatar</a>
+    {% include "account/biography_form.html.twig" %}
+    {% include "account/change_password.html.twig" %}
 {% endblock %}
