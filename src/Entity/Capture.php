@@ -50,6 +50,11 @@ class Capture
 
     /**
      * @ORM\Column(type="string", length=255)
+     */
+    private $region;
+
+    /**
+     * @ORM\Column(type="string", length=255)
      * @Assert\NotNull()
      */
     private $zipcode;
@@ -175,6 +180,18 @@ class Capture
     public function setComplement(string $complement): self
     {
         $this->complement = $complement;
+
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(string $region): self
+    {
+        $this->region = $region;
 
         return $this;
     }
