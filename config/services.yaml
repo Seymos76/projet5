@@ -36,6 +36,11 @@ services:
         autowire: true
         public: true
 
+    app.nao_manager:
+        class: App\Services\NAOManager
+        autowire: true
+        public: true
+
     app.nao.mailer:
         class: App\Services\Mailer
         autowire: true
