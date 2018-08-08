@@ -27,17 +27,19 @@ class CaptureController extends Controller
     {
         $capture = new Capture();
         
-        $user = $this->getUser();
+        /*$user = $this->getUser();*/
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneById('3');
         $roles = $user->getRoles();
 
         if (in_array('particular', $roles))
         {
-            $userRole = 'particulier';
+            $userRole = 'Particulier';
             $form = $this->get('form.factory')->create(ParticularCaptureType::class, $capture);
         }
         elseif ((in_array('naturalist', $roles)) OR (in_array('administrator', $roles)))
         {
-            $userRole = 'naturaliste';
+            $userRole = 'Naturaliste';
             $form = $this->get('form.factory')->create(NaturalistCaptureType::class, $capture);
         }
         $form->add('Enregistrer',      SubmitType::class);
@@ -65,10 +67,9 @@ class CaptureController extends Controller
             }
         }
 
-        $account = 'Compte '. $userRole;
         $title = 'Ajouter une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'compte' => $account, 'titre' => $title)); 
+        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title)); 
     }
 
     /**
@@ -109,10 +110,10 @@ class CaptureController extends Controller
             }
         }
 
-        $account = 'Compte Naturaliste';
+        $userRole = 'Naturaliste';
         $title = 'Valider une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'compte' => $account, 'titre' => $title)); 
+        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title)); 
     }
 
     /**
@@ -142,9 +143,9 @@ class CaptureController extends Controller
             }
         }
 
-        $account = 'Compte Naturaliste';
+        $userRole = 'Naturaliste';
         $title = 'Modifier une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'compte' => $account, 'titre' => $title)); 
+        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title)); 
     }
 }
