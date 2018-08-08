@@ -26,6 +26,7 @@ class NaturalistController extends Controller
      */
     public function naturalistAccount()
     {
+        $this->denyAccessUnlessGranted('ROLE_NATURALIST');
         $observations = array(
             array(
                 'name' => "Observation 01",
