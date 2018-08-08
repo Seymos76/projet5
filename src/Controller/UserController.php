@@ -9,6 +9,9 @@
 namespace App\Controller;
 
 
+use App\Form\AvatarType;
+use App\Form\BiographyType;
+use App\Form\ChangePasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,10 +22,16 @@ class UserController extends Controller
      */
     public function account()
     {
+        $biographyType = $this->createForm(BiographyType::class);
+        $avatarType = $this->createForm(AvatarType::class);
+        $changePasswordType = $this->createForm(ChangePasswordType::class);
         return $this->render(
             'user/account.html.twig',
             array(
-                'user' => $this->getUser()
+                'user' => $this->getUser(),
+                'biography_form' => $biographyType->createView(),
+                'avatar_form' => $avatarType->createView(),
+                'change_password_form' => $changePasswordType->createView()
             )
         );
     }

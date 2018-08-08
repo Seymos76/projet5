@@ -21,10 +21,11 @@
                 <li><a href="{{ path('logout') }}">Déconnexion</a></li>
                 <li>IS_AUTHENTICATED_FULLY</li>
             {% endif %}
-            {% if is_granted('ROLE_USER') and not is_granted('ROLE_NATURALIST') %}
-                <li><a href="{{ path('user_account') }}">Mon compte</a></li>
-            {% elseif is_granted('ROLE_NATURALIST') and not is_granted('ROLE_ADMIN') %}
-                <li><a href="{{ path('naturalist_account') }}">Mon compte</a></li>
+            {# inverser les roles #}
+            {% if is_granted('ROLE_NATURALIST') %}
+                <li><a href="{{ path('naturalist_account') }}">Mon compte naturaliste</a></li>
+            {% elseif is_granted('ROLE_USER') %}
+                <li><a href="{{ path('user_account') }}">Mon compte utilisateur</a></li>
             {% elseif is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('admin_account') }}">Mon compte</a></li>
                 <li><a href="{{ path('admin') }}">Administration</a></li>

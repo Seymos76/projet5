@@ -2,4 +2,22 @@
 
 {% block body %}
     <h1>Compte utilisateur</h1>
+
+    {{ form_start(biography_form) }}
+    {{ form_errors(biography_form) }}
+    {{ form_widget(biography_form) }}
+    <button type="submit">Mettre à jour ma biographie</button>
+    {{ form_end(biography_form) }}
+
+    {{ form_start(avatar_form) }}
+    {{ form_errors(avatar_form) }}
+    {{ form_widget(avatar_form) }}
+    <button type="submit">Mettre à jour mon avatar</button>
+    {{ form_end(avatar_form) }}
+
+    {{ form_start(change_password_form) }}
+    {{ form_errors(change_password_form) }}
+    {{ form_widget(change_password_form) }}
+    <button type="submit">Mettre à jour mon avatar</button>
+    {{ form_end(change_password_form) }}
 {% endblock %}
