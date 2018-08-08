@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Frontend;
 
 use App\Entity\Capture;
 use App\Entity\User;
@@ -14,10 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-class ShowCaptureController extends Controller
+class CaptureController extends Controller
 {
     /**
-     * @Route("/observation/{id}", requirements={"id" = "\d+"}, name="observation")
+     * @Route("observation/{id}", requirements={"id" = "\d+"}, name="observation")
      * @return Response
      */
     public function showCaptureAction($id)
@@ -34,7 +34,7 @@ class ShowCaptureController extends Controller
     }
 
     /**
-     * @Route("/observations/", name="observation")
+     * @Route("/observations/", name="observations")
      * @return Response
      */
     public function showCapturesAction(NAOCaptureManager $nAOCaptureManager)
