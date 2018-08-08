@@ -27,9 +27,7 @@ class CaptureController extends Controller
     {
         $capture = new Capture();
         
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('3');
+        $user = $this->getUser();
         $roles = $user->getRoles();
 
         if (in_array('particular', $roles))
