@@ -29,8 +29,8 @@ security:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/account, roles: ROLE_USER }
         - { path: ^/naturalist, roles: ROLE_NATURALIST }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/administration, roles: ROLE_ADMIN }
 
     role_hierarchy:
         ROLE_NATURALIST: ROLE_USER
-        ROLE_ADMIN: [ROLE_NATURALIST, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN: ROLE_NATURALIST

@@ -6,6 +6,8 @@
     <nav>
         <ul>
             {% include "menu/observations.html.twig" %}
+            <a href="{{ path('admin') }}">Administration</a>
+            <a href="{{ path('upgrade') }}">Upgrade</a>
         </ul>
     </nav>
     <table>
@@ -22,6 +24,8 @@
             </tr>
         {% endfor %}
     </table>
+
+    {{ dump(app.user.roles) }}
 
     {% if app.user.avatar == null %}
         <img src="{{ asset('default/avatar.svg') }}" alt="" height="150">
