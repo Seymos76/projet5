@@ -68,6 +68,12 @@ class ParticularCaptureType extends AbstractType
           'placeholder' => 'Ville',
         )
       ))
+      ->add('region', TextType::class, array(
+        'label' => ' ',
+        'attr' => array(
+        'placeholder' => 'Région',
+        )
+      ))
     ;
   }
 
