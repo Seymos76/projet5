@@ -64,8 +64,22 @@ class NaturalistController extends Controller
         $avatar_form = $this->createForm(AvatarType::class);
         $avatar_form->handleRequest($request);
         if ($avatar_form->isSubmitted() && $avatar_form->isValid()) {
-            dump($avatar_form->getData());
-            die;
+            // check if image exists
+            if ($user->getAvatar() !== null) {
+                // get current from directory
+                $current_avatar = $this->getParameter('avatar_directory').'/'.$user->getAvatar();
+                // delete file
+                unlink($current_avatar);
+                // set to null
+                $user->setAvatar(null);
+            }
+            $file_name = $uploader->upload($avatar_form->getData()['avatar'], $this->getParameter('avatar_directory'));
+            $user->setAvatar($file_name);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");
+            return $this->redirectToRoute('naturalist_account');
         }
         return $this->render(
             'naturalist/change_avatar.html.twig',

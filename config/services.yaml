@@ -35,14 +35,6 @@ services:
         class: App\Services\FileUploader
         autowire: true
         public: true
-        arguments:
-            - $avatarDirectory: '%avatar_directory%'
-            - $birdDirectory: '%bird_directory%'
-
-    app.nao.user_manager:
-        class: App\Services\UserManager
-        autowire: true
-        public: true
 
     app.nao.mailer:
         class: App\Services\Mailer
