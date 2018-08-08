@@ -1,0 +1,14 @@
+{# templates/Capture/showCapture.html.twig #}
+
+{% extends "layout.html.twig" %}
+
+{% block title %} Répertoire {% endblock %}
+{% block body %}
+	<h1>Répertoire</h1>
+	{% for bird in birds %}
+		<p>{{ bird.image }}</p>
+		<p>{{ bird.vernacularname }}</p>
+	{% endfor %}
+{% endblock %}
+{% block javascripts %}{% endblock %}
+   
