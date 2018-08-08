@@ -9,10 +9,11 @@ $( function() {
    {
    		var roles = 'naturalist';
    }
-   	console.log('#' + roles +'_capture_latitude');
+
 	$('#'+ roles +'_capture_latitude').parent().before('<div><input id="geolocation" type="button" value="Me géolocaliser"></div>');
 	$('#'+ roles +'_capture_latitude').parent().hide();
 	$('#'+ roles +'_capture_longitude').parent().hide();
+
 
 	function myPosition(position) {
 		$('#'+ roles +'_capture_latitude').parent().show();
@@ -20,6 +21,7 @@ $( function() {
 		$('#'+ roles +'_capture_latitude').val(position.coords.latitude);
 		$('#'+ roles +'_capture_longitude').val(position.coords.longitude);
 
+		//Ajout de l'adresse à partir de la latitude et de la longitude
 		$.getJSON('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude + '', function( data ) {
 			var address = data.address.house_number + ' ' + data.address.road;
 			var zipcode = data.address.postcode;
@@ -64,4 +66,21 @@ $( function() {
 		document.getElementById("errorPosition").innerHTML = info;
 		$('#geolocation').hide();
 	}
+
+	// Ajout de la latitude et de la latitude à partir de l'adresse
+	$('#'+ roles +'_capture_Enregistrer').click(function()
+	{
+		if ($('#'+ roles +'_capture_latitude').val() == 0)
+		{
+			var address = $('#'+ roles +'_capture_address').val();
+			var complement = $('#'+ roles +'_capture_complement').val();
+			var city = $('#'+ roles +'_capture_city').val();
+			$.getJSON('https://nominatim.openstreetmap.org/search?q='+ address + ' ' + complement +  ' ' + city +'&format=json&polygon=1&addressdetails=1',  function( data ) {
+				var latitude = data[0].lat;
+				var longitude = data[0].lon;
+				$('#'+ roles +'_capture_latitude').val(latitude);
+				$('#'+ roles +'_capture_longitude').val(longitude);
+			})
+		}
+	})
 });
