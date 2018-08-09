@@ -41,6 +41,17 @@ services:
         autowire: true
         public: true
 
+    app.avatar_service:
+        class: App\Services\Avatar
+        autowire: true
+        public: true
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@session'
+            - '@security.user.provider.concrete.nao_app'
+            - '@app.nao_manager'
+            - '@service_container'
+
     app.nao.mailer:
         class: App\Services\Mailer
         autowire: true

@@ -100,10 +100,10 @@ class AccountController extends Controller
         $avatar_form = $this->createForm(AvatarType::class);
         $avatar_form->handleRequest($request);
         if ($avatar_form->isSubmitted() && $avatar_form->isValid()) {
-            dump($avatar_form->getData()['avatar']);
-            die;
             // check if image exists
             if ($user->getAvatar() !== null) {
+                $this->get('app.avatar_service')->removeCurrentAvatar($this->getUser()->getUsername());
+                /*
                 // get current avatar form database
                 $current_image = $this->getDoctrine()->getRepository(Image::class)->findOneBy(
                     array(
@@ -121,7 +121,7 @@ class AccountController extends Controller
                 // delete image from database
                 $em->remove($current_image);
                 // set to null
-                $user->setAvatar(null);
+                $user->setAvatar(null);*/
             }
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $avatar_form->getData()['avatar'];
@@ -133,7 +133,6 @@ class AccountController extends Controller
             // upload file to directory
             $file_name = $uploader->upload($uploadedFile, $this->getParameter('avatar_directory'));
             $image->setFileName($file_name);
-            $image->setFile($file_name);
             $user->setAvatar($image);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");

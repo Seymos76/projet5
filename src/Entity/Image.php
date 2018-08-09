@@ -10,9 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Image
 {
-    const AVATAR_DIRECTORY = '%kernel.project_dir%/public/uploads/avatar';
-    const BIRD_DIRECTORY = '%kernel.project_dir%/public/uploads/bird';
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -24,17 +21,6 @@ class Image
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
      */
     private $path;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
-     */
-    private $name;
-
-    /**
-     * @ORM\Column(name="file", type="string", length=255)
-     * @Assert\File(mimeTypes={ "image/png", "image/jpeg", "image/jpg", "image/gif" })
-     */
-    private $file;
 
     /**
      * @ORM\Column(name="file_name", type="string", length=255)
@@ -81,34 +67,6 @@ class Image
         $this->path = $path;
 
         return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param mixed $file
-     */
-    public function setFile($file): void
-    {
-        $this->file = $file;
     }
 
     public function getFileName() :string
