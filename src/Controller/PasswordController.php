@@ -41,10 +41,7 @@ class PasswordController extends Controller
             }
             // si user -> send email with link+token
             $user->setToken(md5(uniqid("token_", true)));
-            // save token to user in database
-            $manager = $em->getManager();
-            $manager->persist($user);
-            $manager->flush();
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
             // redirect to confirmation page
             return $this->redirectToRoute('password_reinitialisation', array('token' => $user->getToken()));
         }
@@ -88,9 +85,7 @@ class PasswordController extends Controller
                 );
                 $user->setPassword($encoded);
                 $user->setToken(null);
-                $manager = $em->getManager();
-                $manager->persist($user);
-                $manager->flush();
+                $this->get('app.nao_manager')->addOrModifyEntity($user);
                 $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a bien été mis à jour !");
                 return $this->redirectToRoute('login');
             } else {
@@ -124,9 +119,7 @@ class PasswordController extends Controller
             );
             $new_password = $encoder->encodePassword($this->getUser(), $form->getData()['new_password']);
             $user->setPassword($new_password);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
             return $this->redirectToRoute('naturalist_account');
         }
         return $this->render(

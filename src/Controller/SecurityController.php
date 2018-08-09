@@ -53,9 +53,7 @@ class SecurityController extends Controller
             }
             $encoded = $encoder->encodePassword($user, $register_form->getData()->getPassword());
             $user->setPassword($encoded);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre compte a été créé, veuillez confirmer votre adresse e-mail !");
             return $this->redirectToRoute('activation_code');
         }
@@ -87,9 +85,7 @@ class SecurityController extends Controller
             }
             $user->setActivationCode(null);
             $user->setActive(true);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre compte a bien été activé !");
             return $this->redirectToRoute('admin');
         }

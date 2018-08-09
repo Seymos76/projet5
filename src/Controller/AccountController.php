@@ -47,9 +47,7 @@ class AccountController extends Controller
         if ($biographyType->isSubmitted() && $biographyType->isValid()) {
             $new_biography = $biographyType->getData()['biography'];
             $user->setBiography($new_biography);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre biographie a été changée avec succès !");
             return $this->redirectToRoute('account');
         }
@@ -58,9 +56,7 @@ class AccountController extends Controller
         if ($changePasswordType->isSubmitted() && $changePasswordType->isValid()) {
             $encoded = $encoder->encodePassword($user, $changePasswordType->getData()['new_password']);
             $user->setPassword($encoded);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
             return $this->redirectToRoute('account');
         }
@@ -104,6 +100,8 @@ class AccountController extends Controller
         $avatar_form = $this->createForm(AvatarType::class);
         $avatar_form->handleRequest($request);
         if ($avatar_form->isSubmitted() && $avatar_form->isValid()) {
+            dump($avatar_form->getData()['avatar']);
+            die;
             // check if image exists
             if ($user->getAvatar() !== null) {
                 // get current avatar form database
@@ -115,29 +113,29 @@ class AccountController extends Controller
                 $current_image_filename = $current_image->getFilename();
                 // get current avatar from directory
                 $current_avatar = $this->getParameter('avatar_directory').'/'.$current_image_filename;
+                dump($current_avatar);
+                if (file_exists($current_avatar)) {
+                    unlink($current_avatar);
+                }
                 $em = $this->getDoctrine()->getManager();
                 // delete image from database
                 $em->remove($current_image);
-                // delete file from directory
-                unlink($current_avatar);
                 // set to null
                 $user->setAvatar(null);
             }
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $avatar_form->getData()['avatar'];
-            // upload file to directory
-            $file_name = $uploader->upload($uploadedFile, $this->getParameter('avatar_directory'));
             $image = new Image();
             $image->setPath($this->getParameter('avatar_directory'));
             $image->setMimeType($uploadedFile->getMimeType());
             $image->setExtension($uploadedFile->guessExtension());
             $image->setSize($uploadedFile->getSize());
+            // upload file to directory
+            $file_name = $uploader->upload($uploadedFile, $this->getParameter('avatar_directory'));
             $image->setFileName($file_name);
             $image->setFile($file_name);
             $user->setAvatar($image);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");
             return $this->redirectToRoute('account');
         }
