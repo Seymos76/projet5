@@ -10,6 +10,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Image
 {
+    const AVATAR_DIRECTORY = '%kernel.project_dir%/public/uploads/avatar';
+    const BIRD_DIRECTORY = '%kernel.project_dir%/public/uploads/bird';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -39,7 +42,7 @@ class Image
     private $file_name;
 
     /**
-     * @ORM\Column(name="slug", type="string", length=255)
+     * @ORM\Column(name="slug", type="string", length=255, nullable=true)
      */
     private $slug;
 
@@ -116,6 +119,7 @@ class Image
     public function setFileName(string $file_name): self
     {
         $this->file_name = $file_name;
+        return $this;
     }
 
     public function getSlug(): ?string

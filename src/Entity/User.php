@@ -74,7 +74,7 @@ class User implements UserInterface, \Serializable
 
     /**
      * One User has One avatar Image.
-     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\OneToOne(targetEntity="Image", cascade={"persist"}, orphanRemoval=true)
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)
      */
     private $avatar;

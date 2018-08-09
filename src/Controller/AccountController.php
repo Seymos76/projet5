@@ -8,6 +8,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Image;
 use App\Entity\User;
 use App\Form\AvatarType;
 use App\Form\BiographyType;
@@ -105,20 +106,40 @@ class AccountController extends Controller
         if ($avatar_form->isSubmitted() && $avatar_form->isValid()) {
             // check if image exists
             if ($user->getAvatar() !== null) {
-                // get current from directory
-                $current_avatar = $this->getParameter('avatar_directory').'/'.$user->getAvatar();
-                // delete file
+                // get current avatar form database
+                $current_image = $this->getDoctrine()->getRepository(Image::class)->findOneBy(
+                    array(
+                        'id' => $user->getAvatar()
+                    )
+                );
+                $current_image_filename = $current_image->getFilename();
+                // get current avatar from directory
+                $current_avatar = $this->getParameter('avatar_directory').'/'.$current_image_filename;
+                $em = $this->getDoctrine()->getManager();
+                // delete image from database
+                $em->remove($current_image);
+                // delete file from directory
                 unlink($current_avatar);
                 // set to null
                 $user->setAvatar(null);
             }
-            $file_name = $uploader->upload($avatar_form->getData()['avatar'], $this->getParameter('avatar_directory'));
-            $user->setAvatar($file_name);
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $avatar_form->getData()['avatar'];
+            // upload file to directory
+            $file_name = $uploader->upload($uploadedFile, $this->getParameter('avatar_directory'));
+            $image = new Image();
+            $image->setPath($this->getParameter('avatar_directory'));
+            $image->setMimeType($uploadedFile->getMimeType());
+            $image->setExtension($uploadedFile->guessExtension());
+            $image->setSize($uploadedFile->getSize());
+            $image->setFileName($file_name);
+            $image->setFile($file_name);
+            $user->setAvatar($image);
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
             $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");
-            return $this->redirectToRoute('naturalist_account');
+            return $this->redirectToRoute('account');
         }
         return $this->render(
             'account/change_avatar.html.twig',
