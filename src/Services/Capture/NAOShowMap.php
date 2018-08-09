@@ -4,23 +4,15 @@
 
 namespace App\Services\Capture;
 
-use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Entity\Capture;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class NAOShowMap extends NAOManager
+class NAOShowMap extends NAOCaptureManager
 {
-	private $naoCaptureManager;
-
-	public function __construct(NAOCaptureManager $naoCaptureManager)
-	{
-		$this->naoCaptureManager = $naoCaptureManager;
-	}
-
 	public function formatPublishedCaptures()
 	{
-		$publishedCaptures = $this->naoCaptureManager->getPublishedCaptures();
+		$publishedCaptures = $this->getPublishedCaptures();
 
         $formatted = [];
         foreach ($publishedCaptures as $publishedCapture) {
