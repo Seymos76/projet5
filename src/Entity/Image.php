@@ -51,6 +51,11 @@ class Image
      */
     private $size;
 
+    /**
+     * @ORM\Column(name="alt", type="string", nullable=true)
+     */
+    private $alt;
+
     public function getId()
     {
         return $this->id;
@@ -136,5 +141,21 @@ class Image
         $this->size = $size;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAlt()
+    {
+        return $this->alt;
+    }
+
+    /**
+     * @param mixed $alt
+     */
+    public function setAlt($alt): void
+    {
+        $this->alt = $alt;
     }
 }
