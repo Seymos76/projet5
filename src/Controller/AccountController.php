@@ -125,14 +125,15 @@ class AccountController extends Controller
             }
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $avatar_form->getData()['avatar'];
-            $image = new Image();
+            $image = $this->get('app.avatar_service')->buildAvatar($uploadedFile);
+            /*$image = new Image();
             $image->setPath($this->getParameter('avatar_directory'));
             $image->setMimeType($uploadedFile->getMimeType());
             $image->setExtension($uploadedFile->guessExtension());
             $image->setSize($uploadedFile->getSize());
             // upload file to directory
             $file_name = $uploader->upload($uploadedFile, $this->getParameter('avatar_directory'));
-            $image->setFileName($file_name);
+            $image->setFileName($file_name);*/
             $user->setAvatar($image);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");

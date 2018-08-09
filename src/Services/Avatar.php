@@ -13,6 +13,7 @@ use App\Entity\Image;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
@@ -54,9 +55,7 @@ class Avatar
             $current_image_filename = $current_image->getFilename();
             // get current avatar from directory
             $current_avatar = $this->getContainer()->getParameter('avatar_directory').'/'.$current_image_filename;
-            if (file_exists($current_avatar)) {
-                unlink($current_avatar);
-            }
+            self::deleteFile($current_avatar);
             // set user avatar to null
             $user->setAvatar(null);
             $this->getNAOManager()->removeEntity($current_image);
@@ -67,6 +66,27 @@ class Avatar
             return false;
         }
 
+    }
+
+    public function deleteFile($file)
+    {
+        if (file_exists($file)) {
+            unlink($file);
+        }
+    }
+
+    public function buildAvatar(UploadedFile $uploadedFile): Image
+    {
+        $image = new Image();
+        $image->setPath($this->getContainer()->getParameter('avatar_directory'));
+        $image->setMimeType($uploadedFile->getMimeType());
+        $image->setExtension($uploadedFile->guessExtension());
+        $image->setSize($uploadedFile->getSize());
+        // upload file to directory
+        $file_name = $this->getContainer()->get('app.nao.file_uploader')->upload($uploadedFile, $this->getContainer()->getParameter('avatar_directory'));
+        $image->setFileName($file_name);
+        $this->getNAOManager()->addOrModifyEntity($image);
+        return $image;
     }
 
     /**
