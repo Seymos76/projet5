@@ -10,6 +10,9 @@ use App\Services\Capture\NAOCaptureManager;
 use App\Services\Capture\NAOShowMap;
 use App\Form\CommentType;
 
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,7 +24,7 @@ class CaptureController extends Controller
      * @Route("observation/{id}", requirements={"id" = "\d+"}, name="observation")
      * @return Response
      */
-    public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOShowMap $naoShowMap)
+    public function showCaptureAction($id, Request $request, NAOManager $naoManager)
     {
         $em = $this->getDoctrine()->getManager();
         $capture = $em->getRepository(Capture::class)->findOneById($id);
@@ -51,9 +54,7 @@ class CaptureController extends Controller
             }
         }
 
-        $map = $naoShowMap->getMapLink($capture);
-
-        return $this->render('Capture\showCapture.html.twig', array('capture' => $capture, 'id' => $id, 'numberOfCaptureComments' => $numberOfCaptureComments, 'form' => $form->createView(), 'map' => $map,)); 
+        return $this->render('Capture\showCapture.html.twig', array('capture' => $capture, 'id' => $id, 'numberOfCaptureComments' => $numberOfCaptureComments, 'form' => $form->createView(),)); 
     }
 
     /**
@@ -65,5 +66,28 @@ class CaptureController extends Controller
         $captures = $nAOCaptureManager->getPublishedCaptures();
 
         return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures,));
+    }
+
+    /**
+     * @Rest\Get(
+     *     path = "/api/publishedcaptures",
+     *     name = "app_publishedcaptures_list"
+     * )
+     */
+    public function getPublishedCapturesData(NAOShowMap $naoShowMap)
+    {
+        return $publishedCaptures = $naoShowMap->formatPublishedCaptures();
+    }
+
+    /**
+     * @Rest\Get(
+     *     path = "/api/latloncapture/{id}",
+     *     name = "app_publishedcapture",
+     *     requirements={"id" = "\d+"}
+     * )
+     */
+    public function getLatitudeLongitudeCapture($id, NAOShowMap $naoShowMap)
+    {
+        return $capture = $naoShowMap->formatCapture($id);
     }
 }
