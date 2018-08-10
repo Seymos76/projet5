@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterType;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -73,12 +75,7 @@ class SecurityController extends Controller
     public function activationCode(Request $request)
     {
         if ($request->isMethod("POST")) {
-            $activation_code = $request->get('activation_code');
-            $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
-                array(
-                    'activation_code' => $activation_code
-                )
-            );
+            $user = $this->getDoctrine()->getRepository(User::class)->findByActivationCode($request->get('activation_code'));
             if (!$user) {
                 $this->get('session')->getFlashBag()->add('error', "Ce code n'est pas valide.");
                 return $this->redirectToRoute('login');
@@ -87,7 +84,7 @@ class SecurityController extends Controller
             $user->setActive(true);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre compte a bien été activé !");
-            return $this->redirectToRoute('account');
+            return $this->redirectToRoute('login');
         }
         return $this->render(
             'security/activation_code.html.twig'
