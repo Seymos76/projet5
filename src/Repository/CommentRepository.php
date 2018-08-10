@@ -50,9 +50,31 @@ class CommentRepository extends ServiceEntityRepository
 
     public function countPublishedOrReportedComments($status)
     {
-        $qb = $this->createQueryBuilder('t');
-        $qb->select('count(t.id)');
-        $qb->where('t.published = :published');
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->where('c.published = :published');
+        $qb->setParameter('published', $status);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countCaptureComments($capture)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->where('c.capture = :capture');
+        $qb->setParameter('capture', $capture);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countCaptureCommentsByStatus($capture, $status)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->where('c.capture = :capture');
+        $qb->setParameter('capture', $capture);
+        $qb->andWhere('c.published = :published');
         $qb->setParameter('published', $status);
 
         return $qb->getQuery()->getSingleScalarResult();
