@@ -5,8 +5,19 @@ $( function() {
 	var myMap = null;
 	var markerClusters; 
 
+	var page = map.dataset.page;
+	var id = map.dataset.identifiant;
+	if (page == 'oiseau')
+	{
+		var url = 'birdpublishedcaptures/'+id;
+	}
+	else if (page == 'observations')
+	{
+		var url = 'publishedcaptures';
+	}
+	
 	function initMap() {
-		$.getJSON('http://localhost:8000/api/publishedcaptures', function( data ) {
+		$.getJSON('http://localhost:8000/api/'+ url +'/', function( data ) {
 			var captures = data;
 			var markers = [];  
 	        myMap = L.map('map').setView([lat, lon], 11);

@@ -10,21 +10,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class NAOShowMap extends NAOCaptureManager
 {
-	public function formatPublishedCaptures()
+	public function formatPublishedCaptures($captures)
 	{
-		$publishedCaptures = $this->getPublishedCaptures();
-
         $formatted = [];
-        foreach ($publishedCaptures as $publishedCapture) {
+        foreach ($captures as $capture) {
             $formatted[] = [
-                'id' => $publishedCapture->getId(),
-                'bird' => $publishedCapture->getBird()->getVernacularname(),
-                'latitude' => $publishedCapture->getLatitude(),
-                'longitude' => $publishedCapture->getLongitude(),
-                'address' => $publishedCapture->getAddress(),
-                'complement' => $publishedCapture->getComplement(),
-                'zipcode' => $publishedCapture->getZipcode(),
-                'city' => $publishedCapture->getCity(),
+                'id' => $capture->getId(),
+                'bird' => $capture->getBird()->getVernacularname(),
+                'latitude' => $capture->getLatitude(),
+                'longitude' => $capture->getLongitude(),
+                'address' => $capture->getAddress(),
+                'complement' => $capture->getComplement(),
+                'zipcode' => $capture->getZipcode(),
+                'city' => $capture->getCity(),
             ];
         }
 

@@ -64,8 +64,9 @@ class CaptureController extends Controller
     public function showCapturesAction(NAOCaptureManager $nAOCaptureManager)
     {
         $captures = $nAOCaptureManager->getPublishedCaptures();
+        $page = 'observations';
 
-        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures,));
+        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'page' => $page,));
     }
 
     /**
@@ -74,9 +75,25 @@ class CaptureController extends Controller
      *     name = "app_publishedcaptures_list"
      * )
      */
-    public function getPublishedCapturesData(NAOShowMap $naoShowMap)
+    public function getPublishedCapturesData(NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
     {
-        return $publishedCaptures = $naoShowMap->formatPublishedCaptures();
+        $captures = $naoCaptureManager->getPublishedCaptures();
+
+        return $publishedCaptures = $naoShowMap->formatPublishedCaptures($captures);
+    }
+
+    /**
+     * @Rest\Get(
+     *     path = "/api/birdpublishedcaptures/{id}",
+     *     name = "app_birdpublishedcaptures_list",
+     *     requirements={"id" = "\d+"}
+     * )
+     */
+    public function getBirdPublishedCapturesData($id, NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
+    {
+        $captures = $naoCaptureManager->getBirdPublishedCaptures($id);
+
+        return $publishedCaptures = $naoShowMap->formatPublishedCaptures($captures);
     }
 
     /**
