@@ -40,7 +40,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
      * @param string $email
      * @return User Returns a User object
      */
-    public function getUserByEmail($email): ?User
+    public function findUserByEmail($email): ?User
     {
         return $this->createQueryBuilder('u')
             ->where('u.email = :email')
@@ -59,6 +59,21 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->where('u.active = 0')
             ->andWhere('u.activation_code = :activation_code')
             ->setParameter('activation_code', $activation_code)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    /**
+     * @param $token
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findUserByToken($token)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.token = :token')
+            ->setParameter('token',$token)
             ->getQuery()
             ->getSingleResult();
     }
