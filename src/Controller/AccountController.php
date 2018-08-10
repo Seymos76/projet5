@@ -103,37 +103,10 @@ class AccountController extends Controller
             // check if image exists
             if ($user->getAvatar() !== null) {
                 $this->get('app.avatar_service')->removeCurrentAvatar($this->getUser()->getUsername());
-                /*
-                // get current avatar form database
-                $current_image = $this->getDoctrine()->getRepository(Image::class)->findOneBy(
-                    array(
-                        'id' => $user->getAvatar()
-                    )
-                );
-                $current_image_filename = $current_image->getFilename();
-                // get current avatar from directory
-                $current_avatar = $this->getParameter('avatar_directory').'/'.$current_image_filename;
-                dump($current_avatar);
-                if (file_exists($current_avatar)) {
-                    unlink($current_avatar);
-                }
-                $em = $this->getDoctrine()->getManager();
-                // delete image from database
-                $em->remove($current_image);
-                // set to null
-                $user->setAvatar(null);*/
             }
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $avatar_form->getData()['avatar'];
             $image = $this->get('app.avatar_service')->buildAvatar($uploadedFile);
-            /*$image = new Image();
-            $image->setPath($this->getParameter('avatar_directory'));
-            $image->setMimeType($uploadedFile->getMimeType());
-            $image->setExtension($uploadedFile->guessExtension());
-            $image->setSize($uploadedFile->getSize());
-            // upload file to directory
-            $file_name = $uploader->upload($uploadedFile, $this->getParameter('avatar_directory'));
-            $image->setFileName($file_name);*/
             $user->setAvatar($image);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");
