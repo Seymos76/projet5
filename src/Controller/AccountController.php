@@ -38,11 +38,7 @@ class AccountController extends Controller
     public function account(Request $request, UserPasswordEncoderInterface $encoder)
     {
         $biographyType = $this->createForm(BiographyType::class);
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
-            array(
-                'email' => $this->getUser()->getEmail()
-            )
-        );
+        $user = $this->getDoctrine()->getRepository(User::class)->findUserByEmail($this->getUser()->getEmail());
         $biographyType->handleRequest($request);
         if ($biographyType->isSubmitted() && $biographyType->isValid()) {
             $new_biography = $biographyType->getData()['biography'];
