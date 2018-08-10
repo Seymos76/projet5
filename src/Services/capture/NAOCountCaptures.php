@@ -5,6 +5,7 @@
 namespace App\Services\Capture;
 
 use App\Services\NAOManager;
+use App\Entity\Capture;
 
 class NAOCountCaptures extends NAOManager
 {	
