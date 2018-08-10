@@ -10,43 +10,36 @@ class NAOCountCaptures extends NAOManager
 {	
 	public function countPublishedCaptures()
 	{
-		$numberOfPublishedCaptures = $this->em->getRepository('Capture')->countByStatus('published');
-		return $numberOfPublishedCaptures;
+		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatus('published');
 	}
 
 	public function countDraftsCaptures()
 	{
-		$numberOfPublishedCaptures = $this->em->getRepository('Capture')->countByStatus('draft');
-		return $numberOfPublishedCaptures;
+		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatus('draft');
 	} 
 
 	public function countWaitingForValidationCaptures()
 	{
-		$numberOfWaitingForValidationCaptures = $this->em->getRepository('Capture')->countByStatus('waiting for validation');
-		return $numberOfWaitingForValidationCaptures;
+		return $numberOfWaitingForValidationCaptures = $this->em->getRepository(Capture::class)->countByStatus('waiting for validation');
 	}
 
 	public function countAuthorPublishedCaptures($author)
 	{
-		$numberOfPublishedCaptures = $this->em->getRepository('Capture')->countByStatusAndAuthor('published', $author);
-		return $numberOfPublishedCaptures;
+		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatusAndAuthor('published', $author);
 	}
 
 	public function countAuthorDraftsCaptures($author)
 	{
-		$numberOfPublishedCaptures = $this->em->getRepository('Capture')->countByStatusAndAuthor('draft', $author);
-		return $numberOfPublishedCaptures;
+		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatusAndAuthor('draft', $author);
 	}
 
 	public function countAuthorWaintingForValidationCaptures($author)
 	{
-		$numberOfPublishedCaptures = $this->em->getRepository('Capture')->countByStatusAndAuthor('published', $author);
-		return $numberOfPublishedCaptures;
+		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatusAndAuthor('published', $author);
 	}
 
 	public function countAuthorValidatedCaptures($author)
 	{
-		$numberOfPublishedCaptures = $this->em->getRepository('Capture')->countByStatusAndAuthor('draft', $author);
-		return $numberOfPublishedCaptures;
+		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatusAndAuthor('draft', $author);
 	}
 }
