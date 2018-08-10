@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Comment;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
+use App\Services\Comment\NAOCountComments;
 use App\Form\CommentType;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -20,12 +21,11 @@ class CaptureController extends Controller
      * @Route("observation/{id}", requirements={"id" = "\d+"}, name="observation")
      * @return Response
      */
-    public function showCaptureAction($id, Request $request, NAOManager $naoManager)
+    public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments)
     {
-        $em = $this->getDoctrine()->getManager();
-        $capture = $em->getRepository(Capture::class)->findOneById($id);
-
-        $numberOfCaptureComments = $em->getRepository(Comment::class)->countCaptureComments($capture);
+        $capture = $naoCaptureManager->getPublishedCapture($id);
+        
+        $numberOfCaptureComments = $naoCountComments->countCapturePublishedComments($capture);
 
         $comment = new Comment();
         $form = $this->get('form.factory')->create(CommentType::class, $comment);
@@ -50,7 +50,7 @@ class CaptureController extends Controller
             }
         }
 
-        return $this->render('Capture\showCapture.html.twig', array('capture' => $capture, 'id' => $id, 'numberOfCaptureComments' => $numberOfCaptureComments, 'form' => $form->createView())); 
+        return $this->render('Capture\showCapture.html.twig', array('capture' => $capture, 'id' => $id, 'numberOfCaptureComments' => $numberOfCaptureComments, 'form' => $form->createView(),)); 
     }
 
     /**
