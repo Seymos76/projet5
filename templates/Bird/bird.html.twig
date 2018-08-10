@@ -1,0 +1,23 @@
+{# templates/Bird/bird.html.twig #}
+
+{% extends "layout.html.twig" %}
+
+{% block title %} {{ bird.vernacularname }} {% endblock %}
+{% block stylesheets %} 
+	{{ parent() }}
+	<style type="text/css">
+			#map{ /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
+				height:400px;
+			}
+		</style>
+{% endblock %}
+{% block body %}
+	<div id="map" data-identifiant={{ id }} data-page={{ page }}>
+	</div>
+	<h1>{{ bird.vernacularname }}</h1>
+	<p>{{ bird.image }}</p>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('javascript/showmap.js') }}"></script>
+{% endblock %}
