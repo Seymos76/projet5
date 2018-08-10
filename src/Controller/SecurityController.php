@@ -87,7 +87,7 @@ class SecurityController extends Controller
             $user->setActive(true);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre compte a bien été activé !");
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('account');
         }
         return $this->render(
             'security/activation_code.html.twig'
