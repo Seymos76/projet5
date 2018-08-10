@@ -94,6 +94,8 @@ class CaptureController extends Controller
             {
                 if ($form->get('validate')->isClicked())
                 {
+                    $naturalist = $this->getUser();
+
                     $naoCaptureManager->validateCapture($capture, $naturalist);
                     $naoManager->addOrModifyEntity($capture);
                 }
@@ -105,6 +107,8 @@ class CaptureController extends Controller
                 {
                     $naoManager->removeEntity($capture);
                 }
+
+                return $this->redirectToRoute('espaceAdministration');
             }
         }
 
