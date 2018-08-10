@@ -17,14 +17,14 @@ class NAOManager
 
 	public function addOrModifyEntity($entity)
 	{
- 		$this->getEm()->persist($entity);
-		$this->getEm()->flush();
+        $this->em->persist($entity);
+        $this->em->flush();
 	}
 
 	public function removeEntity($entity)
 	{
-		$this->getEm()->remove($entity);
-		$this->getEm()->flush();
+        $this->em->remove($entity);
+        $this->em->flush();
 	}
 
     /**
@@ -34,4 +34,6 @@ class NAOManager
     {
         return $this->em;
     }
+
+
 }

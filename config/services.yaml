@@ -46,10 +46,8 @@ services:
         autowire: true
         public: true
         arguments:
-            - '@doctrine.orm.default_entity_manager'
-            - '@session'
-            - '@security.user.provider.concrete.nao_app'
             - '@app.nao_manager'
+            - '@security.user.provider.concrete.nao_app'
             - '@service_container'
 
     app.nao.mailer:

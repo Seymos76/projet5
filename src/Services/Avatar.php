@@ -19,23 +19,16 @@ use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 class Avatar
 {
-
     private $manager;
-
-    private $session;
 
     private $user;
 
     private $container;
 
-    private $NAOManager;
-
-    public function __construct(EntityManagerInterface $manager, Session $session, EntityUserProvider $user, NAOManager $NAOManager, Container $container)
+    public function __construct(NAOManager $manager, EntityUserProvider $user, Container $container)
     {
         $this->manager = $manager;
-        $this->session = $session;
         $this->user = $user;
-        $this->NAOManager = $NAOManager;
         $this->container = $container;
     }
 
@@ -43,7 +36,7 @@ class Avatar
     {
         // get current avatar form database
         $user = $this->getUser()->loadUserByUsername($username);
-        $current_image = $this->getManager()->getRepository(Image::class)->findOneBy(
+        $current_image = $this->container->get('doctrine')->getRepository(Image::class)->findOneBy(
             array(
                 'id' => $user->getAvatar()
             )
@@ -58,9 +51,8 @@ class Avatar
             self::deleteFile($current_avatar);
             // set user avatar to null
             $user->setAvatar(null);
-            $this->getNAOManager()->removeEntity($current_image);
-            // flush
-            $this->getNAOManager()->addOrModifyEntity($this->getUser());
+            $this->getManager()->addOrModifyEntity($current_image);
+            $this->getManager()->addOrModifyEntity($user);
             return true;
         } else {
             return false;
@@ -85,8 +77,16 @@ class Avatar
         // upload file to directory
         $file_name = $this->getContainer()->get('app.nao.file_uploader')->upload($uploadedFile, $this->getContainer()->getParameter('avatar_directory'));
         $image->setFileName($file_name);
-        $this->getNAOManager()->addOrModifyEntity($image);
+        $this->getManager()->addOrModifyEntity($image);
         return $image;
+    }
+
+    /**
+     * @return NAOManager
+     */
+    public function getManager(): NAOManager
+    {
+        return $this->manager;
     }
 
     /**
@@ -95,30 +95,6 @@ class Avatar
     public function getUser(): EntityUserProvider
     {
         return $this->user;
-    }
-
-    /**
-     * @return Session
-     */
-    public function getSession(): Session
-    {
-        return $this->session;
-    }
-
-    /**
-     * @return EntityManagerInterface
-     */
-    public function getManager(): EntityManagerInterface
-    {
-        return $this->manager;
-    }
-
-    /**
-     * @return NAOManager
-     */
-    public function getNAOManager(): NAOManager
-    {
-        return $this->NAOManager;
     }
 
     /**
