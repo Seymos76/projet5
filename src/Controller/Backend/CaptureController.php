@@ -71,14 +71,14 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/valider-observation", name="validerObservation")
+     * @Route("/valider-observation/{id}", name="validerObservation", requirements={"id" = "\d+"})
      * @param Request $request
      * @return Response
      */
-    public function validateCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, $capture)
+    public function validateCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        $capture = $em->getRepository(Capture::class)->find($capture);
+        $capture = $em->getRepository(Capture::class)->findOneById($id);
 
         $form = $this->get('form.factory')->create(validateCaptureType::class, $capture);
 
