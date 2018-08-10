@@ -5,18 +5,22 @@
 namespace App\Services\Comment;
 
 use App\Services\NAOManager;
+use App\Entity\Comment;
 
 class NAOCountComments extends NAOManager
 {	
 	public function countPublishedComments()
 	{
-		$numberOfPublishedComments = $this->em->getRepository('Comment')->countPublishedOrReportedComments(true);
-		return $numberOfPublishedComments;
+		return $numberOfPublishedComments = $this->em->getRepository(Comment::class)->countPublishedOrReportedComments(true);
 	}
 
 	public function countReportedComments()
 	{
-		$numberOfReportedComments = $this->em->getRepository('Comment')->countPublishedOrReportedComments(false);
-		return $numberOfReportedComments;
+		return $numberOfReportedComments = $this->em->getRepository(Comment::class)->countPublishedOrReportedComments(false);
 	} 
+
+	public function countCapturePublishedComments($capture)
+	{
+		return $captureComments = $this->em->getRepository(Comment::class)->countCaptureCommentsByStatus($capture, true);
+	}
 }

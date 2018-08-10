@@ -11,16 +11,12 @@ class NAOCommentManager extends NAOManager
 {
 	public function getPublishedComments()
 	{
-		$publishedComments = $this->em->getRepository('Comment')->findByPublished(true);
-
-        return $publishedComments;
+		return $publishedComments = $this->em->getRepository(Comment::class)->findByPublished(true);
 	}
 
 	public function getReportedComments()
 	{
-		$reportedComments = $this->em->getRepository('Comment')->findByPublished(false);
-
-		return $reportedComments;
+		return $reportedComments = $this->em->getRepository(Comment::class)->findByPublished(false);
 	}
 
 	public function reportComment(Comment $comment)
