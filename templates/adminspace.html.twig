@@ -9,7 +9,7 @@
 	<p>Compte {{ userRole }}</p>
 
 	<section>
-		<h2>{{numberOfPublishedCaptures}} {% if numberOfPublishedCaptures == 1 %} observation publiée : {% elseif numberOfPublishedCaptures > 1 %} observations publiées : {% endif %}</h2>
+		<h2>{% if numberOfPublishedCaptures == 1 %}{{numberOfPublishedCaptures}} observation publiée : {% elseif numberOfPublishedCaptures > 1 %}{{numberOfPublishedCaptures}} observations publiées : {% endif %}</h2>
 		<div>
 			<ul>Observation
 				{% for publishedcapture in publishedcaptures %}
@@ -30,7 +30,7 @@
 	</section>
 
 	<section>
-		<h2> {{numberOfWaitingforvalidationCaptures}} {% if numberOfWaitingforvalidationCaptures == 1 %} observation en attente : {% elseif numberOfWaitingforvalidationCaptures > 1 %}observations en attentes {% endif %}</h2>
+		<h2>{% if numberOfWaitingforvalidationCaptures == 1 %}{{numberOfWaitingforvalidationCaptures}}  observation en attente : {% elseif numberOfWaitingforvalidationCaptures > 1 %}{{numberOfWaitingforvalidationCaptures}}  observations en attentes {% endif %}</h2>
 		<div>
 			<ul>Observation
 				{% for waitingforvalidationcapture in waitingforvalidationcaptures %}
@@ -52,22 +52,31 @@
 
 	{% if 'administrator' in user.roles %}
 		<section>
-			<h2> {{numberOfPublishedComments}} {% if numberOfPublishedComments == 1 %} commentaire publié : {% elseif numberOfPublishedComments > 1 %}commentaires publiés :{% endif %}</h2>
+			<h2>{% if numberOfPublishedComments == 1 %} {{numberOfPublishedComments}}  commentaire publié : {% elseif numberOfPublishedComments > 1 %} {{numberOfPublishedComments}}  commentaires publiés :{% endif %}</h2>
 			{% for publishedcomment in publishedcomments %}
 				<p>{{ publishedcomment.content }}</p>
 				<a href="{{ path('observation', {id: publishedcomment.capture.id}) }}"><p>Observation {{ publishedcomment.capture.id }}</p></a>
 				<p>{{ publishedcomment.createdDate|date('d/m/Y') }}</p>
 				<p>{{ publishedcomment.author.firstname }} {{ publishedcomment.author.lastname }}</p>
+				<form action="{{ path('supprimerCommentaire', {id:  publishedcomment.id}) }}" method="get">
+					<button type="submit">Supprimer</button>
+				</form>
 			{% endfor %}
 		</section>
 
 		<section>
-			<h2> {{numberOfReportedComments}} {% if numberOfReportedComments == 1 %} commentaire signalé : {% elseif numberOfReportedComments > 1 %}commentaires signalés :{% endif %}</h2>
+			<h2>{% if numberOfReportedComments == 1 %}{{numberOfReportedComments}}  commentaire signalé : {% elseif numberOfReportedComments > 1 %}{{numberOfReportedComments}} commentaires signalés :{% endif %}</h2>
 			{% for reportedcomment in reportedcomments %}
 				<p>{{ reportedcomment.content }}</p>
 				<a href='{{ path('observation', {id: reportedcomment.capture.id}) }}'><p>Observation {{ reportedcomment.capture.id }}</p></a>
 				<p>{{ reportedcomment.createdDate|date('d/m/Y') }}</p>
 				<p>{{ reportedcomment.author.firstname }} {{ reportedcomment.author.lastname }}</p>
+				<form action="{{ path('ignorerCommentaireSignale', {id:  reportedcomment.id}) }}" method="get">
+					<button type="submit">Ignorer</button>
+				</form>
+				<form action="{{ path('supprimerCommentaire', {id:  reportedcomment.id}) }}" method="get">
+					<button type="submit">Supprimer</button>
+				</form>
 			{% endfor %}
 		</section>
 	{% endif %}

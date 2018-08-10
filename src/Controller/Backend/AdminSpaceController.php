@@ -52,4 +52,35 @@ class AdminSpaceController extends Controller
 
         return $this->render('adminspace.html.twig', array('userRole' => $userRole, 'user' => $user, 'publishedcaptures' => $publishedCaptures, 'waitingforvalidationcaptures' => $waitingForValidationCaptures, 'publishedcomments' => $publishedComments, 'reportedcomments' => $reportedComments, 'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 'numberOfPublishedComments' => $numberOfPublishedComments, 'numberOfReportedComments' => $numberOfReportedComments, )); 
     }
+
+    /**
+     * @Route("/ignorer-commentaire-signale/{id}", name="ignorerCommentaireSignale", requirements={"id" = "\d+"})
+     * @param Request $request
+     * @return Response
+     */
+    public function ignoreReportedCommentAction($id, NAOCommentManager $naoCommentManager, NAOManager $naoManager)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $comment = $em->getRepository(Comment::class)->findOneById($id);
+
+        $naoCommentManager->ignoreReportedComment($comment);
+        $naoManager->addOrModifyEntity($comment);
+
+        return $this->redirectToRoute('espaceAdministration');
+    }
+
+    /**
+     * @Route("/supprimer-commentaire/{id}", name="supprimerCommentaire", requirements={"id" = "\d+"})
+     * @param Request $request
+     * @return Response
+     */
+    public function removeCommentAction($id, NAOManager $naoManager)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $comment = $em->getRepository(Comment::class)->findOneById($id);
+
+        $naoManager->removeEntity($comment);
+
+        return $this->redirectToRoute('espaceAdministration');
+    }
 }
