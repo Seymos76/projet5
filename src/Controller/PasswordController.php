@@ -29,11 +29,7 @@ class PasswordController extends Controller
             dump($lost_password_form->getData());
             $em = $this->getDoctrine();
             // récupérer l'utilisateur correspondant
-            $user = $em->getRepository(User::class)->findOneBy(
-                array(
-                    'email' => $lost_password_form->getData()
-                )
-            );
+            $user = $em->getRepository(User::class)->findUserByEmail($lost_password_form->getData());
             // si !user -> rediriger vers register avec message erreur
             if (!$user) {
                 $this->get('session')->getFlashBag()->add('error', "Vous n'êtes pas enregistré sur le site");
@@ -61,13 +57,9 @@ class PasswordController extends Controller
      */
     public function reinitialisationPassword(Request $request, UserPasswordEncoderInterface $encoder)
     {
-        $token = $request->get('token');
         $em = $this->getDoctrine();
-        $user = $em->getRepository(User::class)->findOneBy(
-            array(
-                'token' => $token
-            )
-        );
+        $token = $request->get('token');
+        $user = $em->getRepository(User::class)->findUserByToken($token);
         if (!$user) {
             $this->get('session')->getFlashBag()->add('error', "Vous n'êtes pas autorisé à accéder à cette page !");
             return $this->redirectToRoute('index');
@@ -78,11 +70,7 @@ class PasswordController extends Controller
             // encoder le mot de passe
             if ($user instanceof UserInterface) {
                 $encoded = $encoder->encodePassword($user, $form->getData()->getPassword());
-                $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
-                    array(
-                        'token' => $token
-                    )
-                );
+                $user = $this->getDoctrine()->getRepository(User::class)->findUserByToken($token);
                 $user->setPassword($encoded);
                 $user->setToken(null);
                 $this->get('app.nao_manager')->addOrModifyEntity($user);
@@ -112,11 +100,7 @@ class PasswordController extends Controller
         $form = $this->createForm(ChangePasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
-                array(
-                    'email' => $this->getUser()->getEmail()
-                )
-            );
+            $user = $this->getDoctrine()->getRepository(User::class)->findUserByEmail($this->getUser()->getEmail());
             $new_password = $encoder->encodePassword($this->getUser(), $form->getData()['new_password']);
             $user->setPassword($new_password);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
