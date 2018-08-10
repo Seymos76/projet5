@@ -3,9 +3,20 @@
 {% extends "layout.html.twig" %}
 
 {% block title %}Observation numéro {{ id }} {% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	<style type="text/css">
+			#map{ /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
+				height:400px;
+			}
+		</style>
+{% endblock %}
 {% block body %}
+	<div id="map" data-identifiant={{ id }}>
+	</div>
 	<h1>{{ capture.bird.vernacularname }}</h1>
 	<p>{{capture.image}}</p>
+	<p>{% if capture.status == 'validated' %}Validé {% endif %}</p>
 	<p>{{ capture.createdDate|date('d/m/Y') }}</p>
 	<p>{{ capture.address }}, {{ capture.zipcode }}, {{ capture.city }}</p>
 	<p>Informations :</p>
@@ -24,5 +35,8 @@
 
 	{{ form(form) }}
 {% endblock %}
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('javascript/showcapturemap.js') }}"></script>
+{% endblock %}
    
