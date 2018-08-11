@@ -138,8 +138,8 @@ class CaptureRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t');
         $qb->select('count(t.id)');
-        $qb->where('t.status = :status1');
-        $qb->setParameter('status1', 'published'); 
+        $qb->andWhere('t.status = :status1');
+        $qb->setParameter('status1', 'published');
         $qb->orWhere('t.status = :status2');
         $qb->setParameter('status2', 'validated');
 
@@ -156,5 +156,17 @@ class CaptureRepository extends ServiceEntityRepository
         $qb->setParameter('user', $author);
 
         return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function searchCaptureByBirdAndRegion($bird/*, $region*/)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.bird.vernacularname = :bird')
+            ->setParameter('bird', $bird)
+            /*->andWhere('c.region = :region')
+            ->setParameter('region', $region)*/
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }
