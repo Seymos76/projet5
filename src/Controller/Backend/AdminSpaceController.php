@@ -39,15 +39,9 @@ class AdminSpaceController extends Controller
             $userRole = 'Administrateur';
         }
 
-        $elementsPerPage = '1';
-        $nextPage = $naoPagination->getNextPage($page);
-        $previousPage = $naoPagination->getPreviousPage($page);
-
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
-
-        $nbPublishedCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures, $elementsPerPage);
-
-        $publishedCaptures = $naoCaptureManager->getPublishedCapturesPerPage($page, $numberOfPublishedCaptures, $elementsPerPage);
+        $nbPublishedCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures);
+        $publishedCaptures = $naoCaptureManager->getPublishedCapturesPerPage($page, $numberOfPublishedCaptures);
 
         $waitingForValidationCaptures = $naoCaptureManager->getWaintingForValidationCaptures();
         $numberOfWaitingForValidationCaptures = $naoCountCaptures->countWaitingForValidationCaptures();
@@ -57,6 +51,9 @@ class AdminSpaceController extends Controller
 
         $reportedComments = $naoCommentManager->getReportedComments();
         $numberOfReportedComments  = $naoCountComments->countReportedComments();
+
+        $nextPage = $naoPagination->getNextPage($page);
+        $previousPage = $naoPagination->getPreviousPage($page);
 
         return $this->render('adminspace.html.twig', array('userRole' => $userRole, 'user' => $user, 'publishedcaptures' => $publishedCaptures, 'waitingforvalidationcaptures' => $waitingForValidationCaptures, 'publishedcomments' => $publishedComments, 'reportedcomments' => $reportedComments, 'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 'numberOfPublishedComments' => $numberOfPublishedComments, 'numberOfReportedComments' => $numberOfReportedComments, 'page' => $page, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'nbPublishedCapturesPage' => $nbPublishedCapturesPages)); 
     }

@@ -24,11 +24,12 @@ class NAOCaptureManager
 		return $publishedCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->getPublishedCaptures();
 	}
 
-	public function getPublishedCapturesPerPage($page, $numberOfPublishedCaptures, $elementsPerPage)
+	public function getPublishedCapturesPerPage($page, $numberOfPublishedCaptures)
 	{
-		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedCaptures, $elementsPerPage);
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedCaptures);
+		$nbElementsPerPage = $this->naoPagination->getNbElementsPerPage();
 
-		return $publishedCapturesPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->getPublishedCapturesPerPage($elementsPerPage, $firstEntrance);
+		return $publishedCapturesPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->getPublishedCapturesPerPage($nbElementsPerPage, $firstEntrance);
 	}
 
 	public function getPublishedCapture($id)

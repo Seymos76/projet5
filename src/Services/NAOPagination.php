@@ -6,18 +6,33 @@ namespace App\Services;
 
 class NAOPagination
 {
-	public function CountNbPages($totalElements, $elementsPerPage)
+	private $nbElementsPerPage;
+
+	public function __construct()
 	{
-		return $nbPages = ceil($totalElements/$elementsPerPage);
+		$this->nbElementsPerPage = '2';
 	}
 
-	public function getCurrentPage($page, $totalElements, $elementsPerPage)
+	public function getNbElementsPerPage()
 	{
+		return $this->nbElementsPerPage;
+	}
+
+	public function CountNbPages($totalElements)
+	{
+		$nbElementsPerPage = $this->nbElementsPerPage;
+		return $nbPages = ceil($totalElements/$nbElementsPerPage);
+	}
+
+	public function getCurrentPage($page, $totalElements)
+	{
+		$nbElementsPerPage = $this->nbElementsPerPage;
+
 		if(isset($page)) 
 		{
     		$currentPage = intval($page);
  
-     		if(($currentPage * $elementsPerPage - $elementsPerPage) > $totalElements)
+     		if(($currentPage * $nbElementsPerPage - $nbElementsPerPage) > $totalElements)
      		{
 				$currentPage = 1;
      		}
@@ -30,11 +45,13 @@ class NAOPagination
 		return $currentPage;
 	}
 
-	public function getFirstEntrance($page, $totalElements, $elementsPerPage)
+	public function getFirstEntrance($page, $totalElements)
 	{
-		$currentPage = $this->getCurrentPage($page, $totalElements, $elementsPerPage);
+		$nbElementsPerPage = $this->nbElementsPerPage;
 
-		return $firstEntrance = ($currentPage - 1) * $elementsPerPage;
+		$currentPage = $this->getCurrentPage($page, $totalElements, $nbElementsPerPage);
+
+		return $firstEntrance = ($currentPage - 1) * $nbElementsPerPage;
 	}
 
 	public function getNextPage($page) 
