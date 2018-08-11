@@ -10,7 +10,7 @@ class NAOPagination
 
 	public function __construct()
 	{
-		$this->nbElementsPerPage = '2';
+		$this->nbElementsPerPage = '1';
 	}
 
 	public function getNbElementsPerPage()
