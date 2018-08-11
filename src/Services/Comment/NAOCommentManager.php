@@ -37,6 +37,14 @@ class NAOCommentManager extends NAOManager
 		return $reportedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished(false);
 	}
 
+	public function getReportedCommentsPerPage($page, $numberOfReportedComments)
+	{
+		$nbElementsPerPage = $this->naoPagination->getNbElementsPerPage();
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfReportedComments);
+
+		return $reportedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage(false, $nbElementsPerPage, $firstEntrance);
+	}
+
 	public function reportComment(Comment $comment)
 	{
 		$comment->setPublished(false);

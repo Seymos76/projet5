@@ -51,13 +51,14 @@ class AdminSpaceController extends Controller
         $nbPublishedCommentsPages = $naoPagination->CountNbPages($numberOfPublishedComments);
         $publishedComments = $naoCommentManager->getPublishedCommentsPerPage($page, $numberOfPublishedComments);
 
-        $reportedComments = $naoCommentManager->getReportedComments();
         $numberOfReportedComments  = $naoCountComments->countReportedComments();
+        $nbReportedCommentsPages = $naoPagination->CountNbPages($numberOfReportedComments);
+        $reportedComments = $naoCommentManager->getReportedCommentsPerPage($page, $numberOfReportedComments);
 
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
-        return $this->render('adminspace.html.twig', array('userRole' => $userRole, 'user' => $user, 'publishedcaptures' => $publishedCaptures, 'waitingforvalidationcaptures' => $waitingForValidationCaptures, 'publishedcomments' => $publishedComments, 'reportedcomments' => $reportedComments, 'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 'numberOfPublishedComments' => $numberOfPublishedComments, 'numberOfReportedComments' => $numberOfReportedComments, 'page' => $page, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'nbPublishedCapturesPage' => $nbPublishedCapturesPages, 'nbWaitingForValidationCapturesPages' => $nbWaitingForValidationCapturesPages, 'nbPublishedCommentsPages' => $nbPublishedCommentsPages)); 
+        return $this->render('adminspace.html.twig', array('userRole' => $userRole, 'user' => $user, 'publishedcaptures' => $publishedCaptures, 'waitingforvalidationcaptures' => $waitingForValidationCaptures, 'publishedcomments' => $publishedComments, 'reportedcomments' => $reportedComments, 'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 'numberOfPublishedComments' => $numberOfPublishedComments, 'numberOfReportedComments' => $numberOfReportedComments, 'page' => $page, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'nbPublishedCapturesPage' => $nbPublishedCapturesPages, 'nbWaitingForValidationCapturesPages' => $nbWaitingForValidationCapturesPages, 'nbPublishedCommentsPages' => $nbPublishedCommentsPages, 'nbReportedCommentsPages' => $nbReportedCommentsPages)); 
     }
 
     /**
