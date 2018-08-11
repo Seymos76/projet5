@@ -99,31 +99,4 @@ class PasswordController extends Controller
             )
         );
     }
-
-    /**
-     * @Route("/change-password", name="change_password")
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @return Response
-     */
-    public function changePassword(Request $request, UserPasswordEncoderInterface $encoder)
-    {
-        $form = $this->createForm(ChangePasswordType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getDoctrine()->getRepository(User::class)->findUserByEmail($this->getUser()->getEmail());
-            $new_password = $encoder->encodePassword($this->getUser(), $form->getData()['new_password']);
-            $user->setPassword($new_password);
-            $this->get('app.nao_manager')->addOrModifyEntity($user);
-            $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a bien été modifié !");
-            $this->get('app.nao.mailer')->sendConfirmationPasswordChanged($user);
-            return $this->redirectToRoute('naturalist_account');
-        }
-        return $this->render(
-            'password/change_password.html.twig',
-            array(
-                'form' => $form->createView()
-            )
-        );
-    }
 }

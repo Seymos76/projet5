@@ -15,9 +15,6 @@
     <nav>
         <ul>
             {% include "menu/default.html.twig" %}
-            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <li><a href="{{ path('change_password') }}">Change password</a></li>
-            {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('administration') }}">Administration</a></li>
                 <li><a href="{{ path('account') }}">Mon compte</a></li>
