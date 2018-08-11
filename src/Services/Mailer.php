@@ -24,13 +24,49 @@ class Mailer
         $this->container = $container;
     }
 
-    public function sendConfirmationEmail(User $user, string $token)
+    public function sendConfirmationEmail(User $user, string $code)
     {
-        $message = (new \Swift_Message("Register confirmation"))
+        $message = (new \Swift_Message("Activation de votre compte NAO"))
             ->setFrom("sent@nao.fr")
             ->setTo($user->getEmail())
             ->setBody(
-                $this->container->get('twig')->render('email/register_confirmation.html.twig', ['user' => $user, 'token' => $token])
+                $this->container->get('twig')->render('emails/account_activation.html.twig', ['user' => $user, 'code' => $code])
+            );
+        $this->mailer->send($message);
+        return true;
+    }
+
+    public function sendConfirmationPasswordChanged(User $user)
+    {
+        $message = (new \Swift_Message("Changement de votre mot de passe"))
+            ->setFrom("sent@nao.fr")
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->container->get('twig')->render('emails/password_changed.html.twig', ['user' => $user])
+            );
+        $this->mailer->send($message);
+        return true;
+    }
+
+    public function sendLostPasswordEmail(User $user)
+    {
+        $message = (new \Swift_Message("Réinitialisation de votre mot de passe"))
+            ->setFrom("sent@nao.fr")
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->container->get('twig')->render('emails/lost_password.html.twig', ['user' => $user])
+            );
+        $this->mailer->send($message);
+        return true;
+    }
+
+    public function sendPasswordReinitialisationSuccessEmail(User $user)
+    {
+        $message = (new \Swift_Message("Mot de passe réinitialisé avec succès !"))
+            ->setFrom("sent@nao.fr")
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->container->get('twig')->render('emails/password_reinitialisation_success.html.twig')
             );
         $this->mailer->send($message);
         return true;

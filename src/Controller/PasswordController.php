@@ -26,26 +26,36 @@ class PasswordController extends Controller
         $lost_password_form = $this->createForm(LostPasswordType::class);
         $lost_password_form->handleRequest($request);
         if ($lost_password_form->isSubmitted() && $lost_password_form->isValid()) {
-            dump($lost_password_form->getData());
             $em = $this->getDoctrine();
             // récupérer l'utilisateur correspondant
-            $user = $em->getRepository(User::class)->findUserByEmail($lost_password_form->getData());
+            $user = $em->getRepository(User::class)->findUserByEmail($lost_password_form->getData()['email']);
             // si !user -> rediriger vers register avec message erreur
             if (!$user) {
                 $this->get('session')->getFlashBag()->add('error', "Vous n'êtes pas enregistré sur le site");
                 return $this->redirectToRoute('register');
             }
-            // si user -> send email with link+token
             $user->setToken(md5(uniqid("token_", true)));
+            $this->get('app.nao.mailer')->sendLostPasswordEmail($user);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             // redirect to confirmation page
-            return $this->redirectToRoute('password_reinitialisation', array('token' => $user->getToken()));
+            return $this->redirectToRoute('password_reinitialisation_pending');
         }
         return $this->render(
             'password/lost_password.html.twig',
             array(
                 'form' => $lost_password_form->createView()
             )
+        );
+    }
+
+    /**
+     * @Route("/reinitialisation-en-attente", name="password_reinitialisation_pending")
+     * @return Response
+     */
+    public function passwordReinitialisationPending()
+    {
+        return $this->render(
+            'password/pending.html.twig'
         );
     }
 
@@ -74,6 +84,7 @@ class PasswordController extends Controller
                 $user->setPassword($encoded);
                 $user->setToken(null);
                 $this->get('app.nao_manager')->addOrModifyEntity($user);
+                $this->get('app.nao.mailer')->sendPasswordReinitialisationSuccessEmail($user);
                 $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a bien été mis à jour !");
                 return $this->redirectToRoute('login');
             } else {
@@ -104,6 +115,8 @@ class PasswordController extends Controller
             $new_password = $encoder->encodePassword($this->getUser(), $form->getData()['new_password']);
             $user->setPassword($new_password);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
+            $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a bien été modifié !");
+            $this->get('app.nao.mailer')->sendConfirmationPasswordChanged($user);
             return $this->redirectToRoute('naturalist_account');
         }
         return $this->render(

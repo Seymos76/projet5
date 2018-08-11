@@ -53,6 +53,7 @@ class AccountController extends Controller
             $encoded = $encoder->encodePassword($user, $changePasswordType->getData()['new_password']);
             $user->setPassword($encoded);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
+            $this->get('app.nao.mailer')->sendConfirmationPasswordChanged($user);
             $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
             return $this->redirectToRoute('account');
         }
