@@ -98,6 +98,18 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getCapturesByStatusPerPage($status, $elementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.status = :status')
+            ->setParameter('status', $status)
+            ->getQuery()
+            ->setMaxResults($elementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
     public function getBirdPublishedCaptures($bird)
     {
         return $this->createQueryBuilder('c')

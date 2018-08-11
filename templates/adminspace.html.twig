@@ -69,6 +69,27 @@
 				{% endfor %}
 			</ul>
 		</div>
+		<div>
+			<ul>
+				{% if nbWaitingForValidationCapturesPages > 1 %}
+					{% if previousPage > 0 %}
+					<p> 
+						<a href="{{ path('espaceAdministration', {page: previousPage}) }}"> << </a> 
+					</p>
+					{% endif %}
+					{% for i in 1..nbWaitingForValidationCapturesPages %}
+						<li {% if page == nbWaitingForValidationCapturesPages %} class="active" {% endif %}>
+   							<a href="{{ path('espaceAdministration', {page: i}) }}"> {{i}} </a>
+   						</li>
+   					{% endfor %}
+    				<p>
+    					{% if nextPage <= nbWaitingForValidationCapturesPages %}
+    						<a href="{{ path('espaceAdministration', {page: nextPage}) }}"> >> </a>
+    					{% endif %}
+    				</p> 
+    			{% endif %}
+			</ul>
+		</div>
 	</section>
 
 	{% if 'administrator' in user.roles %}

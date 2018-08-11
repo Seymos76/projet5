@@ -26,8 +26,8 @@ class NAOCaptureManager
 
 	public function getPublishedCapturesPerPage($page, $numberOfPublishedCaptures)
 	{
-		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedCaptures);
 		$nbElementsPerPage = $this->naoPagination->getNbElementsPerPage();
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedCaptures);
 
 		return $publishedCapturesPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->getPublishedCapturesPerPage($nbElementsPerPage, $firstEntrance);
 	}
@@ -40,6 +40,14 @@ class NAOCaptureManager
 	public function getWaintingForValidationCaptures()
 	{
 		return $waintingForValidationCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->getCaptureByStatus('waiting for validation');
+	}
+
+	public function getWaintingForValidationCapturesPerPage($page, $numberOfWaitingForValidationCaptures)
+	{
+		$nbElementsPerPage = $this->naoPagination->getNbElementsPerPage();
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfWaitingForValidationCaptures);
+
+		return $waintingForValidationCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->getCaptureByStatus('waiting for validation', $nbElementsPerPage, $firstEntrance);
 	}
 
 	public function validateCapture(Capture $capture, $naturalist)
