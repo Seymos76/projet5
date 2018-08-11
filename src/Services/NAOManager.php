@@ -15,6 +15,11 @@ class NAOManager
 	    $this->em = $em;
 	}
 
+	public function getEm()
+	{
+		return $this->em;
+	}
+
 	public function addOrModifyEntity($entity)
 	{
  		$this->em->persist($entity);
