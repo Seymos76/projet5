@@ -56,6 +56,7 @@ class SecurityController extends Controller
             $encoded = $encoder->encodePassword($user, $register_form->getData()->getPassword());
             $user->setPassword($encoded);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
+            $this->get('app.nao.mailer')->sendConfirmationEmail($user, $user->getActivationCode());
             $this->get('session')->getFlashBag()->add('success', "Votre compte a été créé, veuillez confirmer votre adresse e-mail !");
             return $this->redirectToRoute('activation_code');
         }
