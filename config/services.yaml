@@ -33,3 +33,8 @@ services:
     App\Services\FileUploader:
         arguments:
             $targetDirectory: '%avatar_directory%'
+
+    app.nao_pagination:
+        class: App\Services\NAOPagination
+        autowire: true
+        public: true
