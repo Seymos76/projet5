@@ -19,6 +19,19 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     /**
+     * @Route("/test", name="test")
+     * @return Response
+     */
+    public function test()
+    {
+        return $this->render(
+            'emails/test.html.twig',
+            array(
+                'code' => md5(uniqid())
+            )
+        );
+    }
+    /**
      * @Route("/", name="index")
      * @return Response
      */
