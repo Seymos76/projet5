@@ -1,0 +1,52 @@
+{# templates/Capture/showCapture.html.twig #}
+
+{% extends "layout.html.twig" %}
+
+{% block title %} Répertoire {% endblock %}
+{% block body %}
+	<h1>Répertoire</h1>
+	<section>
+		<p><a href="/repertoire/1">ALL</a> | <a href="/repertoire/a/1">A</a> | <a href="/repertoire/b/1">B</a> | <a href="/repertoire/c/1">C</a> | <a href="/repertoire/d/1">D</a> | <a href="/repertoire/e/1">E</a> | <a href="/repertoire/f/1">F</a> | <a href="/repertoire/g/1">G</a> | <a href="/repertoire/h/1">H</a> | <a href="/repertoire/i/1">I</a> | <a href="/repertoire/j/1">J</a> | <a href="/repertoire/k/1">K</a> | <a href="/repertoire/l/1">L</a> | <a href="/repertoire/m/1">M</a> | <a href="/repertoire/n/1">N</a> | <a href="/repertoire/o/1">O</a> | <a href="/repertoire/p/1">P</a> | <a href="/repertoire/q/1">Q</a> | <a href="/repertoire/r/1">R</a> | <a href="/repertoire/s/1">S</a> | <a href="/repertoire/t/1">T</a> | <a href="/repertoire/u/1">U</a> | <a href="/repertoire/v/1">V</a> | <a href="/repertoire/w/1">W</a> | <a href="/repertoire/x/1">X</a> | <a href="/repertoire/y/1">Y</a> | <a href="/repertoire/z/1">Z</a> | </p>
+	</section>
+	{% for bird in birds %}
+		<div>
+			<p>{{ bird.image }}</p>
+			<p>{{ bird.vernacularname }}</p>
+		</div>
+	{% endfor %}
+		<div>
+			<ul>
+				{% if nbRepertoryPages  > 1 %}
+					{% if previousPage > 0 %}
+					<p> 
+						{% if letter is defined %}
+							<a href="/repertoire/{{letter}}/{{previousPage}}"> << </a> 
+						{% else %}
+							<a href="/repertoire/{{previousPage}}"> << </a> 
+						{% endif %}
+					</p>
+				{% endif %}
+				{% for i in 1..nbRepertoryPages %}
+					<li {% if page == i %} class="active" {% endif %}>
+						{% if letter is defined %}
+   							<a href="/repertoire/{{letter}}/{{i}}"> {{i}} </a>
+   						{% else %}
+							<a href="/repertoire/{{i}}"> {{i}} </a> 
+						{% endif %}
+	   				</li>
+	   			{% endfor %}
+	    		<p>
+	    			{% if nextPage <= nbRepertoryPages %}
+	    				{% if letter is defined %}
+	    					<a href="/repertoire/{{letter}}/{{nextPage}}"> >> </a>
+    					{% else %}
+							<a href="/repertoire/{{nextPage}}"> >> </a> 
+						{% endif %}
+	   				{% endif %}
+	   			</p> 
+	   		{% endif %}
+		</ul>
+	</div>
+{% endblock %}
+{% block javascripts %}{% endblock %}
+   
