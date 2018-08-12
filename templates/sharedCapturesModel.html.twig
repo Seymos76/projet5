@@ -1,0 +1,25 @@
+<h2>Observations partagées</h2>
+<ul>
+	<p>Observation </p>
+	{% for capture in captures %}
+		{% if capture.status == 'published' or capture.status == 'validated' %}
+			<a href="{{ path('observation', {id: capture.id}) }}"><li>Observation {{ capture.id }}</li></a>
+		{% elseif capture.status == 'draft' %}
+			<a href="{{ path('ajouterObservation', {id: capture.id}) }}"><li>Observation {{ capture.id }}</li></a>
+		{% else %}
+			<li>Observation {{ capture.id }}</li>
+		{% endif %}
+	{% endfor %}
+</ul>
+<ul>
+	<p>Date</p>
+	{% for capture in captures %}
+		<li>{{ capture.createdDate|date('d/m/Y') }}</li>
+	{% endfor %}
+</ul>
+<ul>
+	<p>Statut</p>
+	{% for capture in captures %}
+		<li>{{ capture.status }}</li>
+	{% endfor %}
+</ul>
