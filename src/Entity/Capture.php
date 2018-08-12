@@ -239,7 +239,7 @@ class Capture
 
     public function setCreatedDate(\DateTimeInterface $created_date): self
     {
-        $this->created_at = $created_Date;
+        $this->created_date = $created_date;
 
         return $this;
     }
