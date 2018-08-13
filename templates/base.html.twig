@@ -2,10 +2,13 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Nos Amis les Oiseaux{% endblock %}</title>
+        <title>Nos Amis les Oiseaux - {% block title %}{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+    <ul>
+    </ul>
+
     {% for flashMessage in app.session.flashbag.get('error') %}
         {{ flashMessage }}
     {% endfor %}
@@ -14,7 +17,12 @@
     {% endfor %}
     <nav>
         <ul>
-            {% include "menu/default.html.twig" %}
+            <li><a href="{{ path('index') }}">Accueil</a></li>
+            <li><a href="{{ path('repertoire') }}">Répertoire</a></li>
+            <li><a href="#">Observations</a></li>
+            <li><a href="{{ path('statistics') }}">Quelques données</a></li>
+            <li><a href="{{ path('login') }}">Se connecter</a></li>
+            <li><a href="{{ path('contact') }}">Contact</a></li>
             {% if is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('administration') }}">Administration</a></li>
                 <li><a href="{{ path('account') }}">Mon compte</a></li>
@@ -29,9 +37,6 @@
             {% endif %}
         </ul>
     </nav>
-    {% if is_granted('ROLE_USER') %}
-        {{ dump(app.user.roles) }}
-    {% endif %}
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
