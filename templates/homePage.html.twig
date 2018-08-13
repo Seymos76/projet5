@@ -6,23 +6,26 @@
 {% block stylesheets %} 
 	{{ parent() }}
 	<style type="text/css">
-			#map{ /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
-				height:400px;
+			.map{ /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
+				height:200px;
+				width:200px;
 			}
 		</style>
 {% endblock %}
 {% block body %}
 	<h1>Nos amis les oiseaux</h1>
     <section>
-    	<h2 data-numbercaptures={{ numberCaptures }}>Les dernières observations</h2>
+    	<h2>Les dernières observations</h2>
+    	{% set i = 0 %}
 		{% for capture in captures %}
 			<div>
 				<p>{{capture.image}}</p>
 				<p>{{capture.bird.vernacularname}}</p>
 				<p>{{ capture.address }}, {{ capture.zipcode }}, {{ capture.city }}</p>
 				<p>{{ capture.createdDate|date('d/m/Y') }}</p>
-				<div id="map" data-identifiant={{ capture.id }}>
+				<div id="map{{i}}" class="map">
 				</div>
+				{% set i = i + 1 %}
 			</div>
 		{% endfor %}
 	</section>
