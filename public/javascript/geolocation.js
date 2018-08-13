@@ -1,19 +1,11 @@
 $( function() {
-   var role = document.querySelector('#userRole');
-   var roleValue = userRole.dataset.userrole;
-   if (roleValue == 'Particulier')
-   {
-	  var roles = 'particular';
-   }
-   else if (roleValue == 'Naturaliste')
-   {
-   		var roles = 'naturalist';
-   }
+
+   var roles = userRole.dataset.userrole;
+   console.log(roles);
 
 	$('#'+ roles +'_capture_latitude').parent().before('<div><input id="geolocation" type="button" value="Me géolocaliser"></div>');
 	$('#'+ roles +'_capture_latitude').parent().hide();
 	$('#'+ roles +'_capture_longitude').parent().hide();
-
 
 	function myPosition(position) {
 		$('#'+ roles +'_capture_latitude').parent().show();
