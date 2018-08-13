@@ -26,7 +26,9 @@ class AdminSpaceController extends Controller
      */
     public function showAdminSpaceAction(NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        $user = $this->getUser();
+        /*$user = $this->getUser();*/
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneById('4');
 
         $roles = $user->getRoles();
 
@@ -58,13 +60,15 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/observations-publiees/{page}", name="espaceAdminObservationsPubliees", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/observations-publiees/{page}", defaults={"page"=1}, name="espaceAdminObservationsPubliees", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextPublishedCapturesAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        $user = $this->getUser();
+        /*$user = $this->getUser();*/
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneById('4');
 
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
         $nbPublishedCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures);
@@ -77,13 +81,15 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/observations-en-attente/{page}", name="espaceAdminObservationsEnAttente", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/observations-en-attente/{page}", defaults={"page"=1}, name="espaceAdminObservationsEnAttente", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextWaitingCapturesAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /$user = $this->getUser();
+        /*$user = $this->getUser();*/
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneById('4');
 
         $numberOfWaitingForValidationCaptures = $naoCountCaptures->countWaitingForValidationCaptures();
         $nbWaitingForValidationCapturesPages = $naoPagination->CountNbPages($numberOfWaitingForValidationCaptures);
@@ -96,13 +102,15 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/commentaires-publies/{page}", name="espaceAdminCommentairesPublies", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/commentaires-publies/{page}", defaults={"page"=1}, name="espaceAdminCommentairesPublies", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextPublishedCommentsAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        $user = $this->getUser();
+        /*$user = $this->getUser();*/
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneById('4');
 
         $numberOfPublishedComments = $naoCountComments->countPublishedComments();
         $nbPublishedCommentsPages = $naoPagination->CountNbPages($numberOfPublishedComments);
@@ -115,13 +123,15 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/commentaires-signales/{page}", name="espaceAdminCommentairesSignales", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/commentaires-signales/{page}", defaults={"page"=1},  name="espaceAdminCommentairesSignales", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextReportedCommentsAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        $user = $this->getUser();
+        /*$user = $this->getUser();*/
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneById('4');
 
         $numberOfReportedComments  = $naoCountComments->countReportedComments();
         $nbReportedCommentsPages = $naoPagination->CountNbPages($numberOfReportedComments);

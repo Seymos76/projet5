@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 class BirdController extends Controller
 {
     /**
-     * @Route("repertoire/{letter}/{page}", requirements={"page" = "\d+"}, name="repertoireParLettre")
+     * @Route("repertoire/{letter}/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertoireParLettre")
      * @return Response
      */
     public function showRepertoryByLetterAction($letter, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)
@@ -33,7 +33,7 @@ class BirdController extends Controller
     }
 
     /**
-     * @Route("repertoire/{page}", requirements={"page" = "\d+"}, name="repertoire")
+     * @Route("repertoire/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertoire")
      * @return Response
      */
     public function showRepertoryAction(NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)

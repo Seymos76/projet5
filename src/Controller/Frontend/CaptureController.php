@@ -61,11 +61,13 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, name="observations")
+     * @Route("/observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="observations")
      * @return Response
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
     {
+        $capture = new Capture();
+        $form = $this->get('form.factory')->create(SearchCaptureType::class, $capture);
 
         $page = 'observations';
         
