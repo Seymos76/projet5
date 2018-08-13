@@ -14,7 +14,7 @@
 	{% for bird in birds %}
 		<div>
 			<p>{{ bird.image }}</p>
-			<p>{{ bird.vernacularname }}</p>
+			<p>{% if bird.vernacularname == false %}{{ bird.validname }} {% else %} {{ bird.vernacularname }} {% endif %}</p>
 		</div>
 	{% endfor %}
 		<div>
