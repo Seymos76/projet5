@@ -45,16 +45,16 @@ class AdminSpaceController extends Controller
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
-        $publishedCaptures = $naoCaptureManager->getPublishedCapturesPerPage($page, $numberOfPublishedCaptures);
+        $publishedCaptures = $naoCaptureManager->getPublishedCapturesPerPage($page, $numberOfPublishedCaptures, $numberOfElementsPerPage);
 
         $numberOfWaitingForValidationCaptures = $naoCountCaptures->countWaitingForValidationCaptures();
-        $waitingForValidationCaptures = $naoCaptureManager->getWaintingForValidationCapturesPerPage($page, $numberOfWaitingForValidationCaptures);
+        $waitingForValidationCaptures = $naoCaptureManager->getWaintingForValidationCapturesPerPage($page, $numberOfWaitingForValidationCaptures, $numberOfElementsPerPage);
 
         $numberOfPublishedComments = $naoCountComments->countPublishedComments();
-        $publishedComments = $naoCommentManager->getPublishedCommentsPerPage($page, $numberOfPublishedComments);
+        $publishedComments = $naoCommentManager->getPublishedCommentsPerPage($page, $numberOfPublishedComments, $numberOfElementsPerPage);
 
         $numberOfReportedComments  = $naoCountComments->countReportedComments();
-        $reportedComments = $naoCommentManager->getReportedCommentsPerPage($page, $numberOfReportedComments);
+        $reportedComments = $naoCommentManager->getReportedCommentsPerPage($page, $numberOfReportedComments, $numberOfElementsPerPage);
 
         return $this->render('AdminSpace\adminspace.html.twig', array('userRole' => $userRole, 'user' => $user, 'publishedcaptures' => $publishedCaptures, 'waitingforvalidationcaptures' => $waitingForValidationCaptures, 'publishedcomments' => $publishedComments, 'reportedcomments' => $reportedComments, 'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 'numberOfPublishedComments' => $numberOfPublishedComments, 'numberOfReportedComments' => $numberOfReportedComments, 'page' => $page, 'numberOfElementsPerPage' => $numberOfElementsPerPage)); 
     }
@@ -70,9 +70,11 @@ class AdminSpaceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)->findOneById('4');
 
+        $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
+
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
-        $nbPublishedCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures);
-        $publishedCaptures = $naoCaptureManager->getPublishedCapturesPerPage($page, $numberOfPublishedCaptures);
+        $nbPublishedCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures, $numberOfElementsPerPage);
+        $publishedCaptures = $naoCaptureManager->getPublishedCapturesPerPage($page, $numberOfPublishedCaptures, $numberOfElementsPerPage);
 
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
@@ -91,9 +93,11 @@ class AdminSpaceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)->findOneById('4');
 
+        $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
+
         $numberOfWaitingForValidationCaptures = $naoCountCaptures->countWaitingForValidationCaptures();
-        $nbWaitingForValidationCapturesPages = $naoPagination->CountNbPages($numberOfWaitingForValidationCaptures);
-        $waitingForValidationCaptures = $naoCaptureManager->getWaintingForValidationCapturesPerPage($page, $numberOfWaitingForValidationCaptures);
+        $nbWaitingForValidationCapturesPages = $naoPagination->CountNbPages($numberOfWaitingForValidationCaptures, $numberOfElementsPerPage);
+        $waitingForValidationCaptures = $naoCaptureManager->getWaintingForValidationCapturesPerPage($page, $numberOfWaitingForValidationCaptures, $numberOfElementsPerPage);
 
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
@@ -112,9 +116,11 @@ class AdminSpaceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)->findOneById('4');
 
+        $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
+
         $numberOfPublishedComments = $naoCountComments->countPublishedComments();
-        $nbPublishedCommentsPages = $naoPagination->CountNbPages($numberOfPublishedComments);
-        $publishedComments = $naoCommentManager->getPublishedCommentsPerPage($page, $numberOfPublishedComments);
+        $nbPublishedCommentsPages = $naoPagination->CountNbPages($numberOfPublishedComments, $numberOfElementsPerPage);
+        $publishedComments = $naoCommentManager->getPublishedCommentsPerPage($page, $numberOfPublishedComments, $numberOfElementsPerPage);
 
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
@@ -133,9 +139,12 @@ class AdminSpaceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)->findOneById('4');
 
+
+        $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
+
         $numberOfReportedComments  = $naoCountComments->countReportedComments();
-        $nbReportedCommentsPages = $naoPagination->CountNbPages($numberOfReportedComments);
-        $reportedComments = $naoCommentManager->getReportedCommentsPerPage($page, $numberOfReportedComments);
+        $nbReportedCommentsPages = $naoPagination->CountNbPages($numberOfReportedComments, $numberOfElementsPerPage);
+        $reportedComments = $naoCommentManager->getReportedCommentsPerPage($page, $numberOfReportedComments, $numberOfElementsPerPage);
 
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);

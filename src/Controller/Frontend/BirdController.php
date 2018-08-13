@@ -23,9 +23,11 @@ class BirdController extends Controller
     public function showRepertoryByLetterAction($letter, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)
     {
         $numberOfBirds = $naoCountBirds->countBirdsByLetter($letter);
-        $birds = $naoBirdManager->getBirdsByLetter($letter, $page, $numberOfBirds);
+        $numberOfBirdsPerPage = $naoPagination->getNbBirdsPerPage();
 
-        $nbRepertoryPages = $naoPagination->CountNbPages($numberOfBirds);
+        $birds = $naoBirdManager->getBirdsByLetter($letter, $page, $numberOfBirds, $numberOfBirdsPerPage);
+
+        $nbRepertoryPages = $naoPagination->CountNbPages($numberOfBirds, $numberOfBirdsPerPage);
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
@@ -39,9 +41,11 @@ class BirdController extends Controller
     public function showRepertoryAction(NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)
     {
         $numberOfBirds = $naoCountBirds->countBirds();
-        $birds = $naoBirdManager->getBirdsPerPage($page, $numberOfBirds);
+        $numberOfBirdsPerPage = $naoPagination->getNbBirdsPerPage();
 
-        $nbRepertoryPages = $naoPagination->CountNbPages($numberOfBirds);
+        $birds = $naoBirdManager->getBirdsPerPage($page, $numberOfBirds, $numberOfBirdsPerPage);
+
+        $nbRepertoryPages = $naoPagination->CountNbPages($numberOfBirds, $numberOfBirdsPerPage);
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 

@@ -66,15 +66,16 @@ class CaptureController extends Controller
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
     {
-        $capture = new Capture();
-        $form = $this->get('form.factory')->create(SearchCaptureType::class, $capture);
 
         $page = 'observations';
         
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
-        $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures);
 
-        $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures);
+        $numberOfPublishedCapturesPerPage = $naoPagination->getNbElementsPerPage();
+
+        $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
+
+        $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
         $nextPage = $naoPagination->getNextPage($pageNumber);
         $previousPage = $naoPagination->getPreviousPage($pageNumber);
 

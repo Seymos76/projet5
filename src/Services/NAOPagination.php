@@ -7,10 +7,14 @@ namespace App\Services;
 class NAOPagination
 {
 	private $nbElementsPerPage;
+	private $nbHomeCapturesPerPage;
+	private $nbBirdsPerPage;
 
 	public function __construct()
 	{
 		$this->nbElementsPerPage = '1';
+		$this->nbHomeCapturesPerPage = '4';
+		$this->nbBirdsPerPage = '15';
 	}
 
 	public function getNbElementsPerPage()
@@ -18,16 +22,23 @@ class NAOPagination
 		return $this->nbElementsPerPage;
 	}
 
-	public function CountNbPages($totalElements)
+	public function getNbHomeCapturesPerPage()
 	{
-		$nbElementsPerPage = $this->nbElementsPerPage;
+		return $this->nbHomeCapturesPerPage;
+	}
+
+	public function getNbBirdsPerPage()
+	{
+		return $this->nbBirdsPerPage;
+	}
+
+	public function CountNbPages($totalElements, $nbElementsPerPage)
+	{
 		return $nbPages = ceil($totalElements/$nbElementsPerPage);
 	}
 
-	public function getFirstEntrance($page, $totalElements)
+	public function getFirstEntrance($page, $totalElements, $nbElementsPerPage)
 	{
-		$nbElementsPerPage = $this->nbElementsPerPage;
-
 		return $firstEntrance = ($page - 1) * $nbElementsPerPage;
 	}
 

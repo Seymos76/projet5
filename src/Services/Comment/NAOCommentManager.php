@@ -24,10 +24,9 @@ class NAOCommentManager extends NAOManager
 		return $publishedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished(true);
 	}
 
-	public function getPublishedCommentsPerPage($page, $numberOfPublishedComments)
+	public function getPublishedCommentsPerPage($page, $numberOfPublishedComments, $nbElementsPerPage)
 	{
-		$nbElementsPerPage = $this->naoPagination->getNbElementsPerPage();
-		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedComments);
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedComments, $nbElementsPerPage);
 
 		return $publishedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage(true, $nbElementsPerPage, $firstEntrance);
 	}
@@ -37,10 +36,9 @@ class NAOCommentManager extends NAOManager
 		return $reportedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished(false);
 	}
 
-	public function getReportedCommentsPerPage($page, $numberOfReportedComments)
+	public function getReportedCommentsPerPage($page, $numberOfReportedComments, $nbElementsPerPage)
 	{
-		$nbElementsPerPage = $this->naoPagination->getNbElementsPerPage();
-		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfReportedComments);
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfReportedComments, $nbElementsPerPage);
 
 		return $reportedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage(false, $nbElementsPerPage, $firstEntrance);
 	}

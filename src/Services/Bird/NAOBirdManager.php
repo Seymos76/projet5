@@ -19,19 +19,17 @@ class NAOBirdManager
 		$this->naoManager = $naoManager;
 	}
 
-	public function getBirdsPerPage($page, $numberOfBirds)
+	public function getBirdsPerPage($page, $numberOfBirds, $numberOfBirdsPerPage)
 	{
-		$nbBirdsPerPage = $this->naoPagination->getNbElementsPerPage();
-		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfBirds);
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfBirds, $numberOfBirdsPerPage);
 
-		return $publishedCapturesPerPage = $this->naoManager->getEm()->getRepository(Bird::class)->getBirdsPerPage($nbBirdsPerPage, $firstEntrance);
+		return $publishedCapturesPerPage = $this->naoManager->getEm()->getRepository(Bird::class)->getBirdsPerPage($numberOfBirdsPerPage, $firstEntrance);
 	}
 
-	public function getBirdsByLetter($letter, $page, $numberOfBirds)
+	public function getBirdsByLetter($letter, $page, $numberOfBirds, $numberOfBirdsPerPage)
 	{
-		$nbBirdsPerPage = $this->naoPagination->getNbElementsPerPage();
-		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfBirds);
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfBirds, $numberOfBirdsPerPage);
 
-		return $birds = $this->naoManager->getEm()->getRepository(Bird::class)->getBirdsByFirstLetter($letter, $nbBirdsPerPage, $firstEntrance);
+		return $birds = $this->naoManager->getEm()->getRepository(Bird::class)->getBirdsByFirstLetter($letter, $numberOfBirdsPerPage, $firstEntrance);
 	}
 }
