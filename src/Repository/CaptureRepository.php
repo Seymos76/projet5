@@ -74,6 +74,20 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getLastPublishedCaptures($numberElements)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.status = :status1')
+            ->setParameter('status1', 'published')
+            ->orWhere('c.status = :status2')
+            ->setParameter('status2', 'validated')
+            ->orderBy('c.created_date', 'desc')
+            ->getQuery()
+            ->setMaxResults($numberElements)
+            ->getResult()
+        ;
+    }
+
     public function getPublishedCapture($id)
     {
         return $this->createQueryBuilder('c')
@@ -124,6 +138,18 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getUserCapturesPerPage($numberOfElementsPerPage, $firstEntrance, $id)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.user = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
     public function countByStatus($status)
     {
         $qb = $this->createQueryBuilder('t');
@@ -158,15 +184,13 @@ class CaptureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function searchCaptureByBirdAndRegion($bird/*, $region*/)
+    public function countAuthorCapture($id)
     {
-        return $this->createQueryBuilder('c')
-            ->where('c.bird.vernacularname = :bird')
-            ->setParameter('bird', $bird)
-            /*->andWhere('c.region = :region')
-            ->setParameter('region', $region)*/
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->where('c.user = :user');
+        $qb->setParameter('user', $id);
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

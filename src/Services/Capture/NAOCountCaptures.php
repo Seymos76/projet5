@@ -43,4 +43,9 @@ class NAOCountCaptures extends NAOManager
 	{
 		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatusAndAuthor('draft', $author);
 	}
+
+	public function countUserCaptures($id)
+	{
+		return $numberOfCaptures = $this->em->getRepository(Capture::class)->countAuthorCapture($id);
+	}
 }
