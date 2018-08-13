@@ -5,13 +5,12 @@ $( function() {
 	var myMap = null;
 	var markerClusters; 
 
-	var page = map.dataset.page;
 	var id = map.dataset.identifiant;
-	if (page == 'oiseau')
+	if (typeof(map.dataset.identifiant) !== 'undefined')
 	{
 		var url = 'birdpublishedcaptures/'+id;
 	}
-	else if (page == 'observations')
+	else 
 	{
 		var url = 'publishedcaptures';
 	}

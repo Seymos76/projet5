@@ -7,8 +7,12 @@ use App\Entity\User;
 use App\Entity\Comment;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
+use App\Services\Comment\NAOCountComments;
+use App\Services\Capture\NAOCountCaptures;
+use App\Services\NAOPagination;
 use App\Services\Capture\NAOShowMap;
 use App\Form\CommentType;
+use App\Form\Capture\SearchCaptureType;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,12 +28,11 @@ class CaptureController extends Controller
      * @Route("observation/{id}", requirements={"id" = "\d+"}, name="observation")
      * @return Response
      */
-    public function showCaptureAction($id, Request $request, NAOManager $naoManager)
+    public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments)
     {
-        $em = $this->getDoctrine()->getManager();
-        $capture = $em->getRepository(Capture::class)->findOneById($id);
-
-        $numberOfCaptureComments = $em->getRepository(Comment::class)->countCaptureComments($capture);
+        $capture = $naoCaptureManager->getPublishedCapture($id);
+        
+        $numberOfCaptureComments = $naoCountComments->countCapturePublishedComments($capture);
 
         $comment = new Comment();
         $form = $this->get('form.factory')->create(CommentType::class, $comment);
@@ -58,15 +61,35 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/observations/", name="observations")
+     * @Route("/observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="observations")
      * @return Response
      */
-    public function showCapturesAction(NAOCaptureManager $nAOCaptureManager)
+    public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
     {
-        $captures = $nAOCaptureManager->getPublishedCaptures();
-        $page = 'observations';
+        $capture = new Capture();
+        $form = $this->get('form.factory')->create(SearchCaptureType::class, $capture);
 
-        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'page' => $page,));
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+        {
+            $bird = $form->get('bird')->getData();
+            $region = $form->get('region')->getData();
+            $em->getDoctrine()->getManager();
+            $capturesSearch = $em->getRepository(Capture::class)->searchCaptureByBirdAndRegion($bird, $region);
+
+            return $this->render('Capture\showCaptures.html.twig', array('captures' => $capturesSearch, 'form' => $form->createView(),));
+        }
+        
+        $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
+
+        $numberOfPublishedCapturesPerPage = $naoPagination->getNbElementsPerPage();
+
+        $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
+
+        $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
+        $nextPage = $naoPagination->getNextPage($pageNumber);
+        $previousPage = $naoPagination->getPreviousPage($pageNumber);
+
+        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'form' => $form->createView(), 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage));
     }
 
     /**
