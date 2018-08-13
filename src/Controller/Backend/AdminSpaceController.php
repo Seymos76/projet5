@@ -26,9 +26,7 @@ class AdminSpaceController extends Controller
      */
     public function showAdminSpaceAction(NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
 
         $roles = $user->getRoles();
 
@@ -66,9 +64,7 @@ class AdminSpaceController extends Controller
      */
     public function showNextPublishedCapturesAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
@@ -89,9 +85,7 @@ class AdminSpaceController extends Controller
      */
     public function showNextWaitingCapturesAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
@@ -112,9 +106,7 @@ class AdminSpaceController extends Controller
      */
     public function showNextPublishedCommentsAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
@@ -135,10 +127,7 @@ class AdminSpaceController extends Controller
      */
     public function showNextReportedCommentsAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
-
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
