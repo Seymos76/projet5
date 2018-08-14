@@ -69,7 +69,7 @@ class CaptureController extends Controller
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
     {
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
-        $birds = $this->getDoctrine()->getRepository(Bird::class)->findAll();
+        $birds = $this->getDoctrine()->getRepository(Bird::class)->getBirdsByOrderAsc();
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
         $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures);
         $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures);
