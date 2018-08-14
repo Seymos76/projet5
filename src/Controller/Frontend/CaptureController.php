@@ -68,32 +68,36 @@ class CaptureController extends Controller
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
     {
+        /**
+         * Find a way for this feature
+         */
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
         $birds = $this->getDoctrine()->getRepository(Bird::class)->getBirdsByOrderAsc();
+
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
         $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures);
         $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures);
         $nextPage = $naoPagination->getNextPage($pageNumber);
         $previousPage = $naoPagination->getPreviousPage($pageNumber);
-
         if ($request->isMethod('POST'))
         {
-            $vernacularname = $request->get('bird');
+            $vernacularname = ucfirst($request->get('bird'));
             $region = $request->get('region');
             $em = $this->getDoctrine()->getManager();
-            $capturesSearch = $em->getRepository(Capture::class)->searchCaptureByBirdAndRegion($vernacularname, $region);
-            return $this->render('Capture\showCaptures.html.twig', array('captures' => $capturesSearch));
+            $capturesFound = $em->getRepository(Capture::class)->searchCaptureByBirdAndRegion($vernacularname, $region);
+            return $this->redirectToRoute('observations', array('captures_found' => $capturesFound));
         }
         return $this->render(
             'Capture\showCaptures.html.twig',
             array(
+                'birds' => $birds,
+                'regions' => $regions,
                 'captures' => $captures,
                 'pageNumber' => $pageNumber,
                 'nbCapturesPages' => $nbCapturesPages,
                 'nextPage' => $nextPage,
                 'previousPage' => $previousPage,
-                'birds' => $birds,
-                'regions' => $regions
+                'captures_found' => $capturesFound ?? ''
             )
         );
     }

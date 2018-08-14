@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -84,12 +85,19 @@ class User implements UserInterface, \Serializable
      */
     private $biography;
 
+    /**
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="Capture", mappedBy="user")
+     */
+    private $captures;
+
     public function __construct()
     {
         $this->active = false;
         $this->roles = array("ROLE_USER");
         $this->date_register = new \DateTime('now');
         $this->activation_code = md5(uniqid('code_', false));
+        $this->captures = new ArrayCollection();
     }
 
     public function getUsername() :string
@@ -160,11 +168,10 @@ class User implements UserInterface, \Serializable
         }
     }
 
-    public function removeRole($role) :array
+    public function removeRole($role): void
     {
         if (in_array($role, $this->roles)) {
             unset($role);
-            return $this->roles;
         }
     }
 
@@ -280,6 +287,36 @@ class User implements UserInterface, \Serializable
     public function setBiography($biography): void
     {
         $this->biography = $biography;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCaptures()
+    {
+        return $this->captures;
+    }
+
+    /**
+     * @param mixed $captures
+     */
+    public function setCaptures($captures): void
+    {
+        $this->captures = $captures;
+    }
+
+    public function addCapture(Capture $capture): void
+    {
+        if (!in_array($capture, $this->captures[])) {
+            $this->captures[] = $capture;
+        }
+    }
+
+    public function removeCapture(Capture $capture): void
+    {
+        if (in_array($capture, $this->captures[])) {
+            unset($capture);
+        }
     }
 
     public function eraseCredentials()

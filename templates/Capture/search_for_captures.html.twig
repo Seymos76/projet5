@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <form action="{{ path('observations') }}" method="post">
+        <select name="bird" id="">
+            {% for bird in birds %}
+                <option value="{{ bird.vernacularname|lower }}">{{ bird.vernacularname }}</option>
+            {% endfor %}
+        </select>
+        <select name="region" id="region">
+            {% for region in regions %}
+                <option value="{{ region.nom|lower }}">{{ region.nom }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Rechercher</button>
+    </form>
+{% endblock %}

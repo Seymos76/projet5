@@ -97,7 +97,7 @@ class Capture
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="captures")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     private $user;
 
@@ -108,7 +108,7 @@ class Capture
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Image", orphanRemoval=true)
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)
      * @Assert\Image()
      */
     private $image;
