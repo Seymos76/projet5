@@ -47,4 +47,23 @@ class BirdRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getBirdsByFirstLetter($letter)
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.vernacularname LIKE \''.$letter.'%\'')
+            ->orderBy('b.vernacularname', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getBirdsByOrderAsc()
+    {
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.vernacularname', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
