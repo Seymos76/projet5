@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -68,11 +69,17 @@ class User
      */
     private $avatar;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="user", orphanRemoval=true)
+     */
+    private $captures;
+
     public function __construct()
     {
         $this->active = false;
         $this->roles = ["ROLE_USER"];
         $this->date_register = new \DateTime('now');
+        $this->captures = new ArrayCollection();
     }
 
     public function getId()
@@ -202,5 +209,38 @@ class User
     public function setAvatar($avatar): void
     {
         $this->avatar = $avatar;
+    }
+
+    public function getSalt()
+    {
+        // you *may* need a real salt depending on your encoder
+        // see section on salt below
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    /**
+     * @return Collection|Capture[]
+     */
+    public function getCaptures()
+    {
+        return $this->captures;
+    }
+
+    public function addCapture(Capture $capture): self
+    {
+        $this->captures[] = $capture;
+        
+        $capture->setUser($this);
+
+        return $this;
+    }
+
+    public function removeCapture(Capture $capture): self
+    {
+        $this->captures->removeElement($capture);
     }
 }

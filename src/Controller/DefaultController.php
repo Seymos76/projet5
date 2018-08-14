@@ -1,17 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: seymos
- * Date: 02/08/18
- * Time: 17:04
- */
 
 namespace App\Controller;
 
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
 {
@@ -21,12 +14,30 @@ class DefaultController extends Controller
      */
     public function index()
     {
-        return new Response("index page");
+        return new Response("Page d'accueil");
     }
 
-    public function repertoire() {}
+    /**
+     * @Route("/repertoire", name="directory")
+     */
+    public function directory()
+    {
+        return new Response("Répertoire");
+    }
 
-    public function statistics() {}
+    /**
+     * @Route("/observations", name="observations")
+     */
+    public function observation()
+    {
+        return new Response("Observations");
+    }
 
-    public function contact() {}
+    /**
+     * @Route("/some-data", name="some_data")
+     */
+    public function someData()
+    {
+        return new Response("Some Data");
+    }
 }

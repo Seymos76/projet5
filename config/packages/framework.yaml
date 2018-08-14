@@ -1,5 +1,8 @@
 framework:
     secret: '%env(APP_SECRET)%'
+    serializer:
+        enabled: true
+    translator: ~
     #default_locale: en
     #csrf_protection: true
     #http_method_override: true
@@ -15,6 +18,10 @@ framework:
         log: true
 
     cache:
+
+
+sensio_framework_extra:
+    view: { annotations: false }
         # Put the unique name of your app here: the prefix seed
         # is used to compute stable namespaces for cache keys.
         #prefix_seed: your_vendor_name/app_name

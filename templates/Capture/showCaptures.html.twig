@@ -1,0 +1,54 @@
+{# templates/Capture/showCaptures.html.twig #}
+
+{% extends "layout.html.twig" %}
+
+{% block title %} Observations {% endblock %}
+{% block stylesheets %} 
+	{{ parent() }}
+	<style type="text/css">
+			#map{ /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
+				height:400px;
+			}
+		</style>
+{% endblock %}
+{% block body %}
+	<div id="map">
+	</div>
+    {{ form(form) }}
+    <section>
+		{% for capture in captures %}
+			<div>
+				<p>{{capture.image}}</p>
+				<p>{{capture.bird.vernacularname}}</p>
+				<p>{{ capture.address }}, {{ capture.zipcode }}, {{ capture.city }}</p>
+				<p>{{ capture.createdDate|date('d/m/Y') }}</p>
+			</div>
+		{% endfor %}
+		<div>
+			<ul>
+				{% if nbCapturesPages > 1 %}
+					{% if previousPage > 0 %}
+					<p> 
+						<a href="{{ path('observations', {pageNumber: previousPage}) }}"> << </a> 
+					</p>
+					{% endif %}
+					{% for i in 1..nbCapturesPages %}
+						<li {% if pageNumber == i %} class="active" {% endif %}>
+   							<a href="{{ path('observations', {pageNumber: i}) }}"> {{i}} </a>
+   						</li>
+   					{% endfor %}
+    				<p>
+    					{% if nextPage <= nbCapturesPages %}
+    						<a href="{{ path('observations', {pageNumber: nextPage}) }}"> >> </a>
+    					{% endif %}
+    				</p> 
+    			{% endif %}
+			</ul>
+		</div>
+	</section>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('javascript/showmap.js') }}"></script>
+{% endblock %}
+   
