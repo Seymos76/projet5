@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CaptureRepository")
@@ -20,21 +21,25 @@ class Capture
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotNull()
      */
     private $content;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotNull()
      */
     private $latitude;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotNull()
      */
     private $longitude;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      */
     private $address;
 
@@ -46,17 +51,33 @@ class Capture
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $region;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
+     */
     private $zipcode;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Choice(
+     *     choices = { "draft", "published", "validated", "waiting for validation" }
+     * )
      */
     private $status;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Assert\DateTime()
+     */
+    private $created_date;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="capture")
@@ -85,8 +106,16 @@ class Capture
      */
     private $validated_by;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", orphanRemoval=true)
+     * @ORM\JoinColumn(nullable=true)
+     * @Assert\Image()
+     */
+    private $image;
+
     public function __construct()
     {
+        $this->created_date = new \DateTime('now');
         $this->comments = new ArrayCollection();
     }
 
@@ -155,6 +184,18 @@ class Capture
         return $this;
     }
 
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(string $region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
     public function getZipcode(): ?string
     {
         return $this->zipcode;
@@ -187,6 +228,18 @@ class Capture
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedDate(): ?\DateTimeInterface
+    {
+        return $this->created_date;
+    }
+
+    public function setCreatedDate(\DateTimeInterface $created_date): self
+    {
+        $this->created_date = $created_date;
 
         return $this;
     }
@@ -268,5 +321,15 @@ class Capture
         $this->validated_by = $validated_by;
 
         return $this;
+    }
+
+    public function setImage(Image $image = null)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
     }
 }
