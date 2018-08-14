@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
 
-        $user1 = new user();
+        /*$user1 = new user();
         $user1->setUsername('username1');
         $password1 = $this->encoder->encodePassword($user1, 'pass_1234');
         $user1->setPassword($password1);
@@ -147,6 +147,6 @@ class AppFixtures extends Fixture
         $manager->persist($comment2);
         $manager->persist($comment3);
 
-        $manager->flush();
+        $manager->flush();*/
     }
 }

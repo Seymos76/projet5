@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Frontend;
+namespace App\Controller\FrontendController;
 
 use App\Entity\Bird;
 use App\Services\NAOManager;

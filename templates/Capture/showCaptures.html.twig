@@ -1,6 +1,6 @@
 {# templates/Capture/showCaptures.html.twig #}
 
-{% extends "layout.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %} Observations {% endblock %}
 {% block stylesheets %} 
@@ -12,9 +12,21 @@
 		</style>
 {% endblock %}
 {% block body %}
-	<div id="map" data-page={{ page }}>
+	<div id="map">
 	</div>
-    {{ form(form) }}
+	<form action="{{ path('observations') }}" method="post">
+		<select name="bird" id="">
+            {% for bird in birds %}
+				<option value="{{ bird.vernacularname|lower }}">{{ bird.vernacularname }}</option>
+            {% endfor %}
+		</select>
+		<select name="region" id="region">
+            {% for region in regions %}
+				<option value="{{ region.nom|lower }}">{{ region.nom }}</option>
+            {% endfor %}
+		</select>
+		<button type="submit">Rechercher</button>
+	</form>
     <section>
 		{% for capture in captures %}
 			<div>

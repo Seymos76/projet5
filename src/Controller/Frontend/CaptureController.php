@@ -2,6 +2,7 @@
 
 namespace App\Controller\Frontend;
 
+use App\Entity\Bird;
 use App\Entity\Capture;
 use App\Entity\User;
 use App\Entity\Comment;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 class CaptureController extends Controller
 {
@@ -66,29 +68,34 @@ class CaptureController extends Controller
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
     {
-        /*$capture = new Capture();
-        $form = $this->get('form.factory')->create(SearchCaptureType::class, $capture);
-
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
-        {
-            $bird = $form->get('bird')->getData();
-            $region = $form->get('region')->getData();
-            $em->getDoctrine()->getManager();
-            $capturesSearch = $em->getRepository(Capture::class)->searchCaptureByBirdAndRegion($bird, $region);
-
-            return $this->render('Capture\showCaptures.html.twig', array('captures' => $capturesSearch, 'form' => $form->createView(),));
-        }*/
-
-        $page = 'observations';
-        
+        $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
+        $birds = $this->getDoctrine()->getRepository(Bird::class)->findAll();
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
         $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures);
-
         $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures);
         $nextPage = $naoPagination->getNextPage($pageNumber);
         $previousPage = $naoPagination->getPreviousPage($pageNumber);
 
-        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'form' => $form->createView(),'page' => $page, 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage));
+        if ($request->isMethod('POST'))
+        {
+            $vernacularname = $request->get('bird');
+            $region = $request->get('region');
+            $em = $this->getDoctrine()->getManager();
+            $capturesSearch = $em->getRepository(Capture::class)->searchCaptureByBirdAndRegion($vernacularname, $region);
+            return $this->render('Capture\showCaptures.html.twig', array('captures' => $capturesSearch));
+        }
+        return $this->render(
+            'Capture\showCaptures.html.twig',
+            array(
+                'captures' => $captures,
+                'pageNumber' => $pageNumber,
+                'nbCapturesPages' => $nbCapturesPages,
+                'nextPage' => $nextPage,
+                'previousPage' => $previousPage,
+                'birds' => $birds,
+                'regions' => $regions
+            )
+        );
     }
 
     /**

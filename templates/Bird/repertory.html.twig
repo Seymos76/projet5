@@ -1,6 +1,6 @@
 {# templates/Capture/showCapture.html.twig #}
 
-{% extends "layout.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %} Répertoire {% endblock %}
 {% block body %}
@@ -19,6 +19,7 @@
 	{% endfor %}
 		<div>
 			<ul>
+				{% set nbRepertoryPages = 1 %}
 				{% if nbRepertoryPages  > 1 %}
 					{% if previousPage > 0 %}
 					<p> 

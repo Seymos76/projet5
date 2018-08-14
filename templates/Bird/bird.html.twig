@@ -1,6 +1,6 @@
 {# templates/Bird/bird.html.twig #}
 
-{% extends "layout.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %}{% if bird.vernacularname == false %}{{ bird.validname }} {% else %} {{ bird.vernacularname }} {% endif %}{% endblock %}
 {% block stylesheets %} 
