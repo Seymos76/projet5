@@ -193,4 +193,45 @@ class CaptureRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getSingleScalarResult();
     }
+
+    public function countSearchCapturesByBirdAndRegion($bird, $region)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->join('c.bird', 'b');
+        $qb->where('b.vernacularname = :vernacularname');
+        $qb->setParameter('vernacularname', $bird);
+        $qb->andWhere('c.region = :region');
+        $qb->setParameter('region', $region);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function searchCaptureByBirdAndRegion($bird, $region)
+    {
+        return $this->createQueryBuilder('c')
+        	->join('c.bird', 'b')
+            ->where('b.vernacularname = :vernacularname')
+            ->setParameter('vernacularname', $bird)
+            ->andWhere('c.region = :region')
+            ->setParameter('region', $region)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfElementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('c')
+        	->join('c.bird', 'b')
+            ->where('b.vernacularname = :vernacularname')
+            ->setParameter('vernacularname', $bird)
+            ->andWhere('c.region = :region')
+            ->setParameter('region', $region)
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
 }

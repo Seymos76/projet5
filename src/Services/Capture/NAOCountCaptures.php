@@ -48,4 +48,9 @@ class NAOCountCaptures extends NAOManager
 	{
 		return $numberOfCaptures = $this->em->getRepository(Capture::class)->countAuthorCapture($id);
 	}
+
+	public function countSearchCapturesByBirdAndRegion($bird, $region)
+	{
+		return $numberSearchCapturesByBirdAndRegion = $this->em->getRepository(Capture::class)->countSearchCapturesByBirdAndRegion($bird, $region);
+	}
 }

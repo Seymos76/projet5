@@ -5,6 +5,7 @@ namespace App\Controller\Frontend;
 use App\Entity\Capture;
 use App\Entity\User;
 use App\Entity\Comment;
+use App\Entity\Bird;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\Comment\NAOCountComments;
@@ -65,18 +66,60 @@ class CaptureController extends Controller
      * @return Response
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
-    {   
-        $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
+    {
+        $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
+        $birds = $this->getDoctrine()->getRepository(Bird::class)->getBirdsByOrderAsc();
 
+        $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
         $numberOfPublishedCapturesPerPage = $naoPagination->getNbElementsPerPage();
 
         $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
 
         $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
+
         $nextPage = $naoPagination->getNextPage($pageNumber);
         $previousPage = $naoPagination->getPreviousPage($pageNumber);
 
-        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'form' => $form->createView(), 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage));
+        if ($request->isMethod('POST'))
+        {
+            $vernacularname = $request->get('bird');
+            $region = $request->get('region');
+            $session = $request->getSession();
+            $session->set('bird', $vernacularname);
+            $session->set('region', $region);
+
+            return $this->redirectToRoute('resultatRechercheObservations');
+        }
+
+        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'birds' => $birds, 'regions' => $regions));
+    }
+
+    /**
+     * @Route("/resultat-recherche-observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="resultatRechercheObservations")
+     * @return Response
+     */
+    public function showCapturesSearchAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
+    {
+        $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
+        $birds = $this->getDoctrine()->getRepository(Bird::class)->getBirdsByOrderAsc();
+        $resultats = 'résultats';
+
+        $session = $request->getSession();
+        $vernacularname = $session->get('bird');
+        $region = $session->get('region');
+
+        $numberOfPublishedCapturesPerPage = $naoPagination->getNbElementsPerPage();
+
+        $numberOfSearchCaptures = $naoCountCaptures->countSearchCapturesByBirdAndRegion($vernacularname, $region);
+
+        $capturesSearch =  $nAOCaptureManager->searchCapturesByBirdAndRegionPerPage($vernacularname, $region, $pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
+
+        $nbCapturesPages = $naoPagination->CountNbPages($numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
+
+        $nextPage = $naoPagination->getNextPage($pageNumber);
+        $previousPage = $naoPagination->getPreviousPage($pageNumber);
+
+        return $this->render('Capture\showCaptures.html.twig', array('captures' => $capturesSearch, 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'birds' => $birds, 'regions' => $regions, 'resultats' => $resultats));
     }
 
     /**

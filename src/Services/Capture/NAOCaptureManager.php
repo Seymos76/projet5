@@ -71,4 +71,11 @@ class NAOCaptureManager
 
 		return $UserCapturesPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->getUserCapturesPerPage($numberOfElementsPerPage, $firstEntrance, $id);
 	}
+
+	public function searchCapturesByBirdAndRegionPerPage($vernacularname, $region, $pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage)
+	{
+		$firstEntrance = $this->naoPagination->getFirstEntrance($pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
+
+		return $searchCaptureByBirdAndRegionPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($vernacularname, $region, $numberOfPublishedCapturesPerPage, $firstEntrance);
+	}
 }
