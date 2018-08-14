@@ -56,3 +56,13 @@ services:
         public: true
         arguments:
             - '@mailer'
+
+    app.nao_comment_manager:
+        class: App\Services\Comment\NAOCommentManager
+        autowire: true
+        public: true
+
+    app.nao_count_comments:
+        class: App\Services\Comment\NAOCountComments
+        autowire: true
+        public: true
