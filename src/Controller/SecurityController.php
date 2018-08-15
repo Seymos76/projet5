@@ -3,11 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\User;
+<<<<<<< HEAD
 use App\Form\RegisterType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+=======
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends Controller
@@ -28,11 +36,19 @@ class SecurityController extends Controller
 
     /**
      * @Route("/login", name="login")
+<<<<<<< HEAD
      * @param AuthenticationUtils $authenticationUtils
      * @return \Symfony\Component\HttpFoundation\Response
+=======
+     * @Method("POST")
+     * @param Request $request
+     * @param AuthenticationUtils $authenticationUtils
+     * @return JsonResponse
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
      */
-    public function login(AuthenticationUtils $authenticationUtils)
+    public function login(Request $request, AuthenticationUtils $authenticationUtils)
     {
+<<<<<<< HEAD
         $error = $authenticationUtils->getLastAuthenticationError();
         $last_username = $authenticationUtils->getLastUsername();
         return $this->render(
@@ -111,4 +127,15 @@ class SecurityController extends Controller
             'security/activation_code.html.twig'
         );
     }
+=======
+        $last_username = $authenticationUtils->getLastUsername();
+        $errors = $authenticationUtils->getLastAuthenticationError();
+        return new JsonResponse();
+    }
+
+    public function register()
+    {
+        $user = new User();
+    }
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
 }

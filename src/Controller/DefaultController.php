@@ -1,20 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: seymos
- * Date: 02/08/18
- * Time: 17:04
- */
 
 namespace App\Controller;
 
+<<<<<<< HEAD
 
 use App\Entity\Message;
 use App\Form\MessageType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+=======
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
 {
@@ -24,6 +23,7 @@ class DefaultController extends Controller
      */
     public function index()
     {
+<<<<<<< HEAD
         // récupérer derniers enregistrements Capture
         // renvoyer enregistrements
         return $this->render(
@@ -93,5 +93,32 @@ class DefaultController extends Controller
                 'form' => $message_form->createView()
             )
         );
+=======
+        return new Response("Page d'accueil");
+    }
+
+    /**
+     * @Route("/repertoire", name="directory")
+     */
+    public function directory()
+    {
+        return new Response("Répertoire");
+    }
+
+    /**
+     * @Route("/observations", name="observations")
+     */
+    public function observation()
+    {
+        return new Response("Observations");
+    }
+
+    /**
+     * @Route("/some-data", name="some_data")
+     */
+    public function someData()
+    {
+        return new Response("Some Data");
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
     }
 }

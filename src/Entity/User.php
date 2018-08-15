@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -9,7 +10,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
+<<<<<<< HEAD
 class User implements UserInterface, \Serializable
+=======
+class User implements UserInterface
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
 {
     /**
      * @ORM\Column(type="integer")
@@ -79,12 +84,21 @@ class User implements UserInterface, \Serializable
      */
     private $avatar;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="user", orphanRemoval=true)
+     */
+    private $captures;
+
     public function __construct()
     {
         $this->active = false;
         $this->roles = array("ROLE_USER");
         $this->date_register = new \DateTime('now');
+<<<<<<< HEAD
         $this->activation_code = md5(uniqid('code_', false));
+=======
+        $this->captures = new ArrayCollection();
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
     }
 
     public function getUsername() :string
@@ -263,10 +277,21 @@ class User implements UserInterface, \Serializable
         $this->avatar = $avatar;
     }
 
+<<<<<<< HEAD
+=======
+    public function getSalt()
+    {
+        // you *may* need a real salt depending on your encoder
+        // see section on salt below
+        return null;
+    }
+
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
     public function eraseCredentials()
     {
     }
 
+<<<<<<< HEAD
     /** @see \Serializable::serialize() */
     public function serialize()
     {
@@ -289,5 +314,27 @@ class User implements UserInterface, \Serializable
             // see section on salt below
             // $this->salt
             ) = unserialize($serialized, array('allowed_classes' => false));
+=======
+    /**
+     * @return Collection|Capture[]
+     */
+    public function getCaptures()
+    {
+        return $this->captures;
+    }
+
+    public function addCapture(Capture $capture): self
+    {
+        $this->captures[] = $capture;
+        
+        $capture->setUser($this);
+
+        return $this;
+    }
+
+    public function removeCapture(Capture $capture): self
+    {
+        $this->captures->removeElement($capture);
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
     }
 }

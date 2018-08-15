@@ -1,7 +1,15 @@
 framework:
     secret: '%env(APP_SECRET)%'
+<<<<<<< HEAD
     #default_locale: fr
     csrf_protection: ~
+=======
+    serializer:
+        enabled: true
+    translator: ~
+    #default_locale: en
+    #csrf_protection: true
+>>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
     #http_method_override: true
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
@@ -15,6 +23,10 @@ framework:
         log: true
 
     cache:
+
+
+sensio_framework_extra:
+    view: { annotations: false }
         # Put the unique name of your app here: the prefix seed
         # is used to compute stable namespaces for cache keys.
         #prefix_seed: your_vendor_name/app_name
