@@ -203,6 +203,39 @@ class CaptureRepository extends ServiceEntityRepository
         $qb->setParameter('vernacularname', $bird);
         $qb->andWhere('c.region = :region');
         $qb->setParameter('region', $region);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', 'draft');
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', 'waiting for validation');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countSearchCapturesByBird($bird)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->join('c.bird', 'b');
+        $qb->where('b.vernacularname = :vernacularname');
+        $qb->setParameter('vernacularname', $bird);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', 'draft');
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', 'waiting for validation');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countSearchCapturesByRegion($region)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->andWhere('c.region = :region');
+        $qb->setParameter('region', $region);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', 'draft');
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', 'waiting for validation');
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -215,6 +248,10 @@ class CaptureRepository extends ServiceEntityRepository
             ->setParameter('vernacularname', $bird)
             ->andWhere('c.region = :region')
             ->setParameter('region', $region)
+            ->andWhere('c.status != :status1')
+        	->setParameter('status1', 'draft')
+        	->andWhere('c.status != :status2')
+        	->setParameter('status2', 'waiting for validation')
             ->getQuery()
             ->getResult()
         ;
@@ -223,11 +260,48 @@ class CaptureRepository extends ServiceEntityRepository
     public function searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfElementsPerPage, $firstEntrance)
     {
         return $this->createQueryBuilder('c')
-        	->join('c.bird', 'b')
+       		->join('c.bird', 'b')
             ->where('b.vernacularname = :vernacularname')
             ->setParameter('vernacularname', $bird)
             ->andWhere('c.region = :region')
             ->setParameter('region', $region)
+            ->andWhere('c.status != :status1')
+        	->setParameter('status1', 'draft')
+        	->andWhere('c.status != :status2')
+        	->setParameter('status2', 'waiting for validation')
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
+    public function searchCapturesByBirdPerPage($vernacularname, $numberOfElementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('c')
+       		->join('c.bird', 'b')
+            ->where('b.vernacularname = :vernacularname')
+            ->setParameter('vernacularname', $vernacularname)
+            ->andWhere('c.status != :status1')
+        	->setParameter('status1', 'draft')
+        	->andWhere('c.status != :status2')
+        	->setParameter('status2', 'waiting for validation')
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
+    public function searchCapturesByRegionPerPage($region, $numberOfElementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('c')
+            ->Where('c.region = :region')
+            ->setParameter('region', $region)
+            ->andWhere('c.status != :status1')
+        	->setParameter('status1', 'draft')
+        	->andWhere('c.status != :status2')
+        	->setParameter('status2', 'waiting for validation')
             ->getQuery()
             ->setMaxResults($numberOfElementsPerPage)
             ->setFirstResult($firstEntrance)

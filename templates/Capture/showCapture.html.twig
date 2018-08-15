@@ -14,7 +14,7 @@
 {% block body %}
 	<div id="map0" class="capturemap" data-identifiant={{ id }}>
 	</div>
-	<h1>{{ capture.bird.vernacularname }}</h1>
+	<h1>{% if capture.bird.vernacularname == false %}{{ capture.bird.validname }} {% else %} {{ capture.bird.vernacularname }}{% endif %}</h1>
 	<p>{{capture.image}}</p>
 	<p>{% if capture.status == 'validated' %}Validé {% endif %}</p>
 	<p>{{ capture.createdDate|date('d/m/Y') }}</p>
