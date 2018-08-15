@@ -27,7 +27,7 @@ class ParticularCaptureType extends AbstractType
             ->orderBy('u.vernacularname', 'ASC')
             ->addOrderBy('u.validname', 'ASC');
         },
-        'choice_label' => function (Bird $bird) {if (!empty($bird->getVernacularname())) { return $bird->getVernacularname();} else {return $bird->getValidname();}},
+        'choice_label' => function (Bird $bird) {if (!empty($bird->getVernacularname())) { return $bird->getVernacularname() . ' - ' . $bird->getValidname();} else {return $bird->getValidname();}},
         'label' => ' ',
         'placeholder' => 'Sélectionner un oiseau',
       ))

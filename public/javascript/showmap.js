@@ -32,6 +32,10 @@ $( function() {
 	        	{
 	        		bird = captures[i].birdValidName;
 	        	}
+	        	else 
+	        	{
+	        		bird = captures[i].bird + ' - ' + captures[i].birdValidName;
+	        	}
 				var marker = L.marker([captures[i].latitude, captures[i].longitude]);
 				marker.bindPopup('<a href="http://localhost:8000/observation/' + captures[i].id + '">' + bird + '</a>' + '<br/> ' + captures[i].address + ' ' + captures[i].zipcode + ' ' + captures[i].city);
 				markerClusters.addLayer(marker); 
