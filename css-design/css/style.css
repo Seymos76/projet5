@@ -12,6 +12,11 @@
 /* == _reset.scss 				 */
 /* ----------------------------- */
 /* switching box model for all elements */
+
+@font-face{
+  font-family: 'Roboto';
+  src: local('css-design/fonts');
+}
 html {
   box-sizing: border-box; }
 
