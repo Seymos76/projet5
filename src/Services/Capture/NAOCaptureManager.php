@@ -76,6 +76,18 @@ class NAOCaptureManager
 	{
 		$firstEntrance = $this->naoPagination->getFirstEntrance($pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
 
-		return $searchCaptureByBirdAndRegionPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($vernacularname, $region, $numberOfPublishedCapturesPerPage, $firstEntrance);
+		if (empty($vernacularname))
+		{
+			return $numberSearchCapturesByBirdAndRegion = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByRegionPerPage($region, $numberOfPublishedCapturesPerPage, $firstEntrance);
+		}
+
+		if (empty($region))
+		{
+			return $numberSearchCapturesByBirdAndRegion = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdPerPage($vernacularname, $numberOfPublishedCapturesPerPage, $firstEntrance);
+		}
+		else
+		{
+			return $searchCaptureByBirdAndRegionPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($vernacularname, $region, $numberOfPublishedCapturesPerPage, $firstEntrance);
+		}
 	}
 }
