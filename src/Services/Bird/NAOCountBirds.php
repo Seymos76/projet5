@@ -19,4 +19,9 @@ class NAOCountBirds extends NAOManager
 	{
 		return $numberBirdsLetter = $this->em->getRepository(Bird::class)->countBirdsByLetter($letter);
 	}
+
+	public function countSearchBirdsByRegion($region)
+	{
+		return $numberSearchBirdsByRegion = $this->em->getRepository(Bird::class)->countSearchBirdsByRegion($region);
+	}
 }
