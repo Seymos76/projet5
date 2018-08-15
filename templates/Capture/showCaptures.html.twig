@@ -18,7 +18,7 @@
 		<select name="bird" id="">
 			<option disabled selected value="">Oiseau</option>
             {% for bird in birds %}
-				<option value="{{ bird.vernacularname|lower }}">{{ bird.vernacularname }}</option>
+				<option value="{% if bird.vernacularname == false %}{{ bird.validname|lower  }} {% else %} {{ bird.vernacularname|lower }}{% endif %}">{% if bird.vernacularname == false %}{{ bird.validname }} {% else %} {{ bird.vernacularname }}{% endif %}</option>
             {% endfor %}
 		</select>
 		<select name="region" id="region">

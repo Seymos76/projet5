@@ -17,6 +17,7 @@ class NAOShowMap extends NAOManager
             $formatted[] = [
                 'id' => $capture->getId(),
                 'bird' => $capture->getBird()->getVernacularname(),
+                'birdValidName' => $capture->getBird()->getValidname(),
                 'latitude' => $capture->getLatitude(),
                 'longitude' => $capture->getLongitude(),
                 'address' => $capture->getAddress(),
