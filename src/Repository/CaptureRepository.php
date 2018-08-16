@@ -198,9 +198,8 @@ class CaptureRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
-        $qb->join('c.bird', 'b');
-        $qb->where('b.vernacularname = :vernacularname');
-        $qb->setParameter('vernacularname', $bird);
+        $qb->where('c.bird = :bird');
+        $qb->setParameter('bird', $bird);
         $qb->andWhere('c.region = :region');
         $qb->setParameter('region', $region);
         $qb->andWhere('c.status != :status1');
@@ -215,9 +214,8 @@ class CaptureRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
-        $qb->join('c.bird', 'b');
-        $qb->where('b.vernacularname = :vernacularname');
-        $qb->setParameter('vernacularname', $bird);
+        $qb->where('c.bird = :bird');
+        $qb->setParameter('bird', $bird);
         $qb->andWhere('c.status != :status1');
         $qb->setParameter('status1', 'draft');
         $qb->andWhere('c.status != :status2');
@@ -240,29 +238,11 @@ class CaptureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function searchCaptureByBirdAndRegion($bird, $region)
-    {
-        return $this->createQueryBuilder('c')
-        	->join('c.bird', 'b')
-            ->where('b.vernacularname = :vernacularname')
-            ->setParameter('vernacularname', $bird)
-            ->andWhere('c.region = :region')
-            ->setParameter('region', $region)
-            ->andWhere('c.status != :status1')
-        	->setParameter('status1', 'draft')
-        	->andWhere('c.status != :status2')
-        	->setParameter('status2', 'waiting for validation')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
     public function searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfElementsPerPage, $firstEntrance)
     {
         return $this->createQueryBuilder('c')
-       		->join('c.bird', 'b')
-            ->where('b.vernacularname = :vernacularname')
-            ->setParameter('vernacularname', $bird)
+            ->where('c.bird = :bird')
+            ->setParameter('bird', $bird)
             ->andWhere('c.region = :region')
             ->setParameter('region', $region)
             ->andWhere('c.status != :status1')
@@ -276,12 +256,11 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function searchCapturesByBirdPerPage($vernacularname, $numberOfElementsPerPage, $firstEntrance)
+    public function searchCapturesByBirdPerPage($bird, $numberOfElementsPerPage, $firstEntrance)
     {
         return $this->createQueryBuilder('c')
-       		->join('c.bird', 'b')
-            ->where('b.vernacularname = :vernacularname')
-            ->setParameter('vernacularname', $vernacularname)
+            ->where('c.bird = :bird')
+            ->setParameter('bird', $bird)
             ->andWhere('c.status != :status1')
         	->setParameter('status1', 'draft')
         	->andWhere('c.status != :status2')

@@ -24,13 +24,11 @@ class CaptureController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function addCaptureAction(Request $request, NAOManager $naoManager, NAOUserManager $naoUserManager)
+    public function addCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager)
     {
         $capture = new Capture();
         
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
         
         $userRole = $naoUserManager->getRoleFR($user);
         $role = $naoUserManager->getNaturalistOrParicularRole($user);
@@ -49,7 +47,7 @@ class CaptureController extends Controller
         {
             $capture->setUser($user);
 
-            if ($userRole = 'Particulier')
+            if ($userRole == 'Particulier')
             {
                 $naoCaptureManager->setWaitingStatus($capture);
             }

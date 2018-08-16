@@ -72,22 +72,22 @@ class NAOCaptureManager
 		return $UserCapturesPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->getUserCapturesPerPage($numberOfElementsPerPage, $firstEntrance, $id);
 	}
 
-	public function searchCapturesByBirdAndRegionPerPage($vernacularname, $region, $pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage)
+	public function searchCapturesByBirdAndRegionPerPage($bird, $region, $pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage)
 	{
 		$firstEntrance = $this->naoPagination->getFirstEntrance($pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
 
-		if (empty($vernacularname))
+		if (empty($bird))
 		{
 			return $numberSearchCapturesByBirdAndRegion = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByRegionPerPage($region, $numberOfPublishedCapturesPerPage, $firstEntrance);
 		}
 
 		if (empty($region))
 		{
-			return $numberSearchCapturesByBirdAndRegion = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdPerPage($vernacularname, $numberOfPublishedCapturesPerPage, $firstEntrance);
+			return $numberSearchCapturesByBirdAndRegion = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdPerPage($bird, $numberOfPublishedCapturesPerPage, $firstEntrance);
 		}
 		else
 		{
-			return $searchCaptureByBirdAndRegionPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($vernacularname, $region, $numberOfPublishedCapturesPerPage, $firstEntrance);
+			return $searchCaptureByBirdAndRegionPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfPublishedCapturesPerPage, $firstEntrance);
 		}
 	}
 }

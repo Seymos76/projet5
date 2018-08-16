@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 class HomeController extends Controller
 {
 	/**
-     * @Route("/test", name="accueil")
+     * @Route("/", name="accueil")
      * @return Response
      */
 	public function showHomeAction(NAOPagination $naoPagination)

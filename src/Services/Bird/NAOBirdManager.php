@@ -39,4 +39,16 @@ class NAOBirdManager
 
 		return $searchBirdsByRegionPerPage = $this->naoManager->getEm()->getRepository(Bird::class)->searchBirdsByRegionPerPage($region, $numberOfBirdsPerPage, $firstEntrance);
 	}
+
+	public function getBirdByVernacularOrValidName($birdName)
+	{
+		$bird = $this->naoManager->getEm()->getRepository(Bird::class)->findOneByVernacularname($birdName);
+
+		if (empty($bird))
+		{
+			return $bird = $this->naoManager->getEm()->getRepository(Bird::class)->findOneByValidname($birdName);
+		}
+
+		return $birdVernacularName = $bird->getVernacularname();
+	}
 }

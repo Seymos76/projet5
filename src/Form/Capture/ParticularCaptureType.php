@@ -24,9 +24,10 @@ class ParticularCaptureType extends AbstractType
         'class' => Bird::class,
         'query_builder' => function (BirdRepository $er) {
           return $er->createQueryBuilder('u')
-            ->orderBy('u.vernacularname', 'ASC');
+            ->orderBy('u.vernacularname', 'ASC')
+            ->addOrderBy('u.validname', 'ASC');
         },
-        'choice_label' => 'vernacularname',
+        'choice_label' => function (Bird $bird) {if (!empty($bird->getVernacularname())) { return $bird->getVernacularname() . ' - ' . $bird->getValidname();} else {return $bird->getValidname();}},
         'label' => ' ',
         'placeholder' => 'Sélectionner un oiseau',
       ))

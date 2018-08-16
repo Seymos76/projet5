@@ -64,6 +64,7 @@ class BirdRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('b')
             ->orderBy('b.vernacularname', 'ASC')
+            ->addOrderBy('b.validname', 'ASC')
             ->getQuery()
             ->setMaxResults($elementsPerPage)
             ->setFirstResult($firstEntrance)
@@ -75,6 +76,7 @@ class BirdRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('b')
             ->orderBy('b.vernacularname', 'ASC')
+            ->addOrderBy('b.validname', 'ASC')
             ->getQuery()
             ->getResult()
         ;
