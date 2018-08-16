@@ -102,7 +102,7 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getCaptureByStatus($status)
+    public function getCapturesByStatus($status)
     {
         return $this->createQueryBuilder('c')
             ->where('c.status = :status')
@@ -184,7 +184,7 @@ class CaptureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function countAuthorCapture($id)
+    public function countAuthorCaptures($id)
     {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
