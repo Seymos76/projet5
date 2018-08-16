@@ -88,3 +88,33 @@ services:
         autowire: true
         public: true
 >>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
+    
+    app.nao_frontend_bird_controller:
+        class: App\Controller\Frontend\BirdController
+        autowire: true
+        public: true
+
+    app.nao_frontend_capture_controller:
+        class: App\Controller\Frontend\CaptureController
+        autowire: true
+        public: true
+
+    app.nao_frontend_home_controller:
+        class: App\Controller\Frontend\HomeController
+        autowire: true
+        public: true
+
+    app.nao_backend_capture_controller:
+        class: App\Controller\Backend\CaptureController
+        autowire: true
+        public: true
+
+    app.nao_backend_adminspace_controller:
+        class: App\Controller\Backend\AdminSpaceController
+        autowire: true
+        public: true
+
+    app.nao_backend_useraccount_controller:
+        class: App\Controller\Backend\UserAccountController
+        autowire: true
+        public: true

@@ -7,6 +7,13 @@
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
             <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
             <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+
+             <!--Import materialize.scss-->
+            <link  rel="stylesheet" type="text/scss" href="{{ asset('css-design/materialize-src/sass/materialize.scss') }}" />
+
+            <!-- personnalisations -->
+            <link rel="stylesheet" href="{{ asset('css-design/css/style.css') }}" />
+
         {% endblock %}
         {% block jquery %}  
         	<script type="text/javascript" src="{{ asset('javascript/jquery.js') }}"></script>

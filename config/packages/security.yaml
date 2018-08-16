@@ -1,6 +1,5 @@
 security:
     encoders:
-<<<<<<< HEAD
         App\Entity\User:
             algorithm: bcrypt
     providers:
@@ -35,39 +34,3 @@ security:
     role_hierarchy:
         ROLE_NATURALIST: ROLE_USER
         ROLE_ADMIN: [ROLE_NATURALIST, ROLE_ALLOWED_TO_SWITCH]
-=======
-        Symfony\Component\Security\Core\User\User:
-            algorithm: bcrypt
-            cost: 12
-        App\Entity\User: sha512
-
-    role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
-
-    providers:
-        main:
-            entity:
-                class: App\Entity\User
-                property: username
-
-
-
-    firewalls:
-        main:
-            http_basic: ~
-            pattern: ^/
-            form_login:
-                provider: main
-                csrf_token_generator: security.csrf.token_manager
-
-            logout:       true
-            anonymous:    true
-
-    access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: ROLE_ADMIN }
-
->>>>>>> 8f51665e4a72d4a1361dc55d5a0c736f5236a534
