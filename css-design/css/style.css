@@ -13,10 +13,14 @@
 /* ----------------------------- */
 /* switching box model for all elements */
 
-@font-face{
+@font-face {
   font-family: 'Roboto';
   src: local('css-design/fonts');
 }
+h1 {
+  color: blue;
+}
+
 html {
   box-sizing: border-box; }
 

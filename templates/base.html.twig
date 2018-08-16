@@ -2,15 +2,17 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Nos Amis les Oiseaux{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
 
         <!--Import materialize.scss-->
         <link type="text/scss" rel="stylesheet" href="{{ asset('css-design/materialize-src/sass/materialize.scss') }}" />
 
         <!-- personnalisations -->
-        <link rel="stylesheet" href="{{ asset('css-design/css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css-design/css/style.css') }}" />
 
+        <title>{% block title %}Nos Amis les Oiseaux{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+
+        
     </head>
     <body>
     {% for flashMessage in app.session.flashbag.get('error') %}
