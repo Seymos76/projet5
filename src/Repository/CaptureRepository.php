@@ -102,7 +102,7 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getCaptureByStatus($status)
+    public function getCapturesByStatus($status)
     {
         return $this->createQueryBuilder('c')
             ->where('c.status = :status')
@@ -138,6 +138,18 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getUserCapturesPerPage($numberOfElementsPerPage, $firstEntrance, $id)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.user = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
     public function countByStatus($status)
     {
         $qb = $this->createQueryBuilder('t');
@@ -152,7 +164,7 @@ class CaptureRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t');
         $qb->select('count(t.id)');
-        $qb->where('t.status = :status1');
+        $qb->andWhere('t.status = :status1');
         $qb->setParameter('status1', 'published');
         $qb->orWhere('t.status = :status2');
         $qb->setParameter('status2', 'validated');
@@ -172,15 +184,106 @@ class CaptureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function searchCaptureByBirdAndRegion($vernacularname, $region)
+    public function countAuthorCaptures($id)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->where('c.user = :user');
+        $qb->setParameter('user', $id);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countSearchCapturesByBirdAndRegion($bird, $region)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->where('c.bird = :bird');
+        $qb->setParameter('bird', $bird);
+        $qb->andWhere('c.region = :region');
+        $qb->setParameter('region', $region);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', 'draft');
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', 'waiting for validation');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countSearchCapturesByBird($bird)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->where('c.bird = :bird');
+        $qb->setParameter('bird', $bird);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', 'draft');
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', 'waiting for validation');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countSearchCapturesByRegion($region)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->andWhere('c.region = :region');
+        $qb->setParameter('region', $region);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', 'draft');
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', 'waiting for validation');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfElementsPerPage, $firstEntrance)
     {
         return $this->createQueryBuilder('c')
-            ->join('c.bird', 'b')
-            ->where('b.vernacularname = :vernacularname')
-            ->setParameter('vernacularname', $vernacularname)
+            ->where('c.bird = :bird')
+            ->setParameter('bird', $bird)
             ->andWhere('c.region = :region')
             ->setParameter('region', $region)
+            ->andWhere('c.status != :status1')
+        	->setParameter('status1', 'draft')
+        	->andWhere('c.status != :status2')
+        	->setParameter('status2', 'waiting for validation')
             ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
+    public function searchCapturesByBirdPerPage($bird, $numberOfElementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.bird = :bird')
+            ->setParameter('bird', $bird)
+            ->andWhere('c.status != :status1')
+        	->setParameter('status1', 'draft')
+        	->andWhere('c.status != :status2')
+        	->setParameter('status2', 'waiting for validation')
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
+    public function searchCapturesByRegionPerPage($region, $numberOfElementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('c')
+            ->Where('c.region = :region')
+            ->setParameter('region', $region)
+            ->andWhere('c.status != :status1')
+        	->setParameter('status1', 'draft')
+        	->andWhere('c.status != :status2')
+        	->setParameter('status2', 'waiting for validation')
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
             ->getResult()
         ;
     }

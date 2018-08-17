@@ -40,6 +40,7 @@ class AccountController extends Controller
         $biographyType = $this->createForm(BiographyType::class);
         $user = $this->getDoctrine()->getRepository(User::class)->findUserByEmail($this->getUser()->getEmail());
         $biographyType->handleRequest($request);
+        $account_type = $this->get('app.nao_user_manager')->getRoleFR($user);
         if ($biographyType->isSubmitted() && $biographyType->isValid()) {
             $new_biography = $biographyType->getData()['biography'];
             $user->setBiography($new_biography);
@@ -57,28 +58,12 @@ class AccountController extends Controller
             $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
             return $this->redirectToRoute('account');
         }
-        $observations = array(
-            array(
-                'name' => "Observation 01",
-                'date' => "02/08/2018",
-                'status' => "Brouillon"
-            ),
-            array(
-                'name' => "Observation 02",
-                'date' => "02/08/2018",
-                'status' => "Publiée"
-            ),
-            array(
-                'name' => "Observation 03",
-                'date' => "02/08/2018",
-                'status' => "Publiée"
-            )
-        );
         return $this->render(
             'account/account.html.twig',
             array(
                 'user' => $user,
-                'observations' => $observations,
+                'account_type' => $account_type,
+                'observations' => $observations ?? null,
                 'biography_form' => $biographyType->createView(),
                 'change_password_form' => $changePasswordType->createView()
             )
@@ -88,10 +73,9 @@ class AccountController extends Controller
     /**
      * @Route("/change-avatar", name="change_avatar")
      * @param Request $request
-     * @param FileUploader $uploader
      * @return Response
      */
-    public function changeAvatar(Request $request, FileUploader $uploader)
+    public function changeAvatar(Request $request)
     {
         $user = $this->getUser();
         $avatar_form = $this->createForm(AvatarType::class);
@@ -103,7 +87,7 @@ class AccountController extends Controller
             }
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $avatar_form->getData()['avatar'];
-            $image = $this->get('app.avatar_service')->buildAvatar($uploadedFile);
+            $image = $this->get('app.avatar_service')->buildImage($uploadedFile, $this->getParameter('avatar_directory'));
             $user->setAvatar($image);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");

@@ -83,9 +83,9 @@ class Comment
         return $this->created_date;
     }
 
-    public function setCreatedDate(\DateTimeInterface $created_date): self
+    public function setCreatedDate(\DateTimeInterface $created_at): self
     {
-        $this->created_at = $created_Date;
+        $this->created_at = $created_at;
 
         return $this;
     }

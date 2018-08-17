@@ -32,6 +32,11 @@ class Avatar
         $this->container = $container;
     }
 
+    /**
+     * @param string $username
+     * @return bool
+     * @throws \Exception
+     */
     public function removeCurrentAvatar(string $username): bool
     {
         // get current avatar form database
@@ -60,6 +65,9 @@ class Avatar
 
     }
 
+    /**
+     * @param $file
+     */
     public function deleteFile($file)
     {
         if (file_exists($file)) {
@@ -67,15 +75,21 @@ class Avatar
         }
     }
 
-    public function buildAvatar(UploadedFile $uploadedFile): Image
+    /**
+     * @param UploadedFile $uploadedFile
+     * @param string $directory
+     * @return Image
+     * @throws \Exception
+     */
+    public function buildImage(UploadedFile $uploadedFile, string $directory): Image
     {
         $image = new Image();
-        $image->setPath($this->getContainer()->getParameter('avatar_directory'));
+        $image->setPath($directory);
         $image->setMimeType($uploadedFile->getMimeType());
         $image->setExtension($uploadedFile->guessExtension());
         $image->setSize($uploadedFile->getSize());
         // upload file to directory
-        $file_name = $this->getContainer()->get('app.nao.file_uploader')->upload($uploadedFile, $this->getContainer()->getParameter('avatar_directory'));
+        $file_name = $this->getContainer()->get('app.nao.file_uploader')->upload($uploadedFile, $directory);
         $image->setFileName($file_name);
         $this->getManager()->addOrModifyEntity($image);
         return $image;

@@ -1,28 +1,25 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    {% if is_granted('ROLE_ADMIN') %}
-        {% set account_type = "administrateur" %}
-    {% elseif is_granted('ROLE_NATURALIST') %}
-        {% set account_type = "naturaliste" %}
-    {% else %}
-        {% set account_type = "utilisateur" %}
-    {% endif %}
     <h1>Mon compte {{ account_type }}</h1>
-    <table>
-        <thead>
-        <th>Observation</th>
-        <th>Date</th>
-        <th>Status</th>
-        </thead>
-        {% for observation in observations %}
+    {% if observations != null %}
+        <table>
+            <thead>
             <tr>
-                <td>{{ observation.name }}</td>
-                <td>{{ observation.date|date('d/m/Y') }}</td>
-                <td>{{ observation.status }}</td>
+                <th>Observation</th>
+                <th>Date</th>
+                <th>Status</th>
             </tr>
-        {% endfor %}
-    </table>
+            </thead>
+            {% for observation in observations %}
+                <tr>
+                    <td>{{ observation.name }}</td>
+                    <td>{{ observation.date|date('d/m/Y') }}</td>
+                    <td>{{ observation.status }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 
     {% if app.user.avatar == null %}
         <img src="{{ asset('default/avatar.svg') }}" alt="" height="150">

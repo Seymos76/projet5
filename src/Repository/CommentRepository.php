@@ -48,6 +48,18 @@ class CommentRepository extends ServiceEntityRepository
     }
     */
 
+    public function getCommentsByStatusPerPage($status, $elementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.published = :published')
+            ->setParameter('published', $status)
+            ->getQuery()
+            ->setMaxResults($elementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
     public function countPublishedOrReportedComments($status)
     {
         $qb = $this->createQueryBuilder('c');

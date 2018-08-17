@@ -5,18 +5,42 @@
 namespace App\Services\Comment;
 
 use App\Services\NAOManager;
+use App\Services\NAOPagination;
 use App\Entity\Comment;
 
 class NAOCommentManager extends NAOManager
 {
+	private $naoPagination;
+	private $naoManager;
+
+	public function __construct(NAOPagination $naoPagination, NAOManager $naoManager)
+	{
+		$this->naoManager = $naoManager;
+		$this->naoPagination = $naoPagination;
+	}
+
 	public function getPublishedComments()
 	{
-		return $publishedComments = $this->em->getRepository(Comment::class)->findByPublished(true);
+		return $publishedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished(true);
+	}
+
+	public function getPublishedCommentsPerPage($page, $numberOfPublishedComments, $nbElementsPerPage)
+	{
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedComments, $nbElementsPerPage);
+
+		return $publishedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage(true, $nbElementsPerPage, $firstEntrance);
 	}
 
 	public function getReportedComments()
 	{
-		return $reportedComments = $this->em->getRepository(Comment::class)->findByPublished(false);
+		return $reportedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished(false);
+	}
+
+	public function getReportedCommentsPerPage($page, $numberOfReportedComments, $nbElementsPerPage)
+	{
+		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfReportedComments, $nbElementsPerPage);
+
+		return $reportedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage(false, $nbElementsPerPage, $firstEntrance);
 	}
 
 	public function reportComment(Comment $comment)

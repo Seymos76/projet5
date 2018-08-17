@@ -48,12 +48,26 @@ class BirdRepository extends ServiceEntityRepository
     }
     */
 
-    public function getBirdsByFirstLetter($letter)
+    public function getBirdsByFirstLetter($letter, $elementsPerPage, $firstEntrance)
     {
         return $this->createQueryBuilder('b')
             ->where('b.vernacularname LIKE \''.$letter.'%\'')
             ->orderBy('b.vernacularname', 'ASC')
             ->getQuery()
+            ->setMaxResults($elementsPerPage)
+            ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
+    public function getBirdsPerPage($elementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.vernacularname', 'ASC')
+            ->addOrderBy('b.validname', 'ASC')
+            ->getQuery()
+            ->setMaxResults($elementsPerPage)
+            ->setFirstResult($firstEntrance)
             ->getResult()
         ;
     }
@@ -62,7 +76,57 @@ class BirdRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('b')
             ->orderBy('b.vernacularname', 'ASC')
+            ->addOrderBy('b.validname', 'ASC')
             ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function countBirds()
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('count(b.id)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countBirdsByLetter($letter)
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('count(b.id)');
+        $qb->where('b.vernacularname LIKE \''.$letter.'%\'');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countSearchBirdsByRegion($region)
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('count(b.id)');
+        $qb->join('b.captures', 'c');
+        $qb->andWhere('c.region = :region');
+        $qb->setParameter('region', $region);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', 'draft');
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', 'waiting for validation');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function searchBirdsByRegionPerPage($region, $numberOfElementsPerPage, $firstEntrance)
+    {
+        return $this->createQueryBuilder('b')
+            ->join('b.captures', 'c')
+            ->where('c.region = :region')
+            ->setParameter('region', $region)
+            ->andWhere('c.status != :status1')
+            ->setParameter('status1', 'draft')
+            ->andWhere('c.status != :status2')
+            ->setParameter('status2', 'waiting for validation')
+            ->getQuery()
+            ->setMaxResults($numberOfElementsPerPage)
+            ->setFirstResult($firstEntrance)
             ->getResult()
         ;
     }
