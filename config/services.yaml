@@ -1,7 +1,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
+    locale: 'fr'
+    avatar_directory: '%kernel.project_dir%/public/uploads/avatar'
+    bird_directory: '%kernel.project_dir%/public/uploads/bird'
 
 services:
     # default configuration for services in *this* file
@@ -51,6 +53,16 @@ services:
         autowire: true
         public: true
 
+    app.nao_bird_manager:
+        class: App\Services\Bird\NAOBirdManager
+        autowire: true
+        public: true
+
+    app.nao_count_birds:
+        class: App\Services\Comment\NAOCountBirds
+        autowire: true
+        public: true
+
     app.nao_show_map:
         class: App\Services\Capture\NAOShowMap
         autowire: true
@@ -58,5 +70,45 @@ services:
 
     app.nao_pagination:
         class: App\Services\NAOPagination
+        autowire: true
+        public: true
+
+    app.nao.file_uploader:
+        class: App\Services\FileUploader
+        autowire: true
+        public: true
+
+    app.nao_image:
+        class: App\Services\NAOImage
+        autowire: true
+        public: true
+
+    app.nao_frontend_bird_controller:
+        class: App\Controller\Frontend\BirdController
+        autowire: true
+        public: true
+
+    app.nao_frontend_capture_controller:
+        class: App\Controller\Frontend\CaptureController
+        autowire: true
+        public: true
+
+    app.nao_frontend_home_controller:
+        class: App\Controller\Frontend\HomeController
+        autowire: true
+        public: true
+
+    app.nao_backend_capture_controller:
+        class: App\Controller\Backend\CaptureController
+        autowire: true
+        public: true
+
+    app.nao_backend_adminspace_controller:
+        class: App\Controller\Backend\AdminSpaceController
+        autowire: true
+        public: true
+
+    app.nao_backend_useraccount_controller:
+        class: App\Controller\Backend\UserAccountController
         autowire: true
         public: true

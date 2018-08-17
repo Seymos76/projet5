@@ -49,6 +49,6 @@ class NAOBirdManager
 			return $bird = $this->naoManager->getEm()->getRepository(Bird::class)->findOneByValidname($birdName);
 		}
 
-		return $birdVernacularName = $bird->getVernacularname();
+		return $bird;
 	}
 }
