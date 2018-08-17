@@ -73,16 +73,6 @@ services:
         autowire: true
         public: true
 
-    app.nao.file_uploader:
-        class: App\Services\FileUploader
-        autowire: true
-        public: true
-
-    app.nao_image:
-        class: App\Services\NAOImage
-        autowire: true
-        public: true
-
     app.nao_frontend_bird_controller:
         class: App\Controller\Frontend\BirdController
         autowire: true
