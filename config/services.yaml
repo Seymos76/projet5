@@ -73,6 +73,11 @@ services:
         autowire: true
         public: true
 
+    app.nao_user_manager:
+        class: App\Services\User\NAOUserManager
+        autowire: true
+        public: true
+
     app.nao_frontend_bird_controller:
         class: App\Controller\Frontend\BirdController
         autowire: true
