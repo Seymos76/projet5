@@ -31,9 +31,11 @@ class HomeControllerTest extends WebTestCase
 
     public function testShowHomePage()
     {
-        $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/');
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue($crawler->filter('h1:contains("Nos amis les oiseaux")')->count() > 0);
+        $this->assertTrue($crawler->filter('h2:contains("Les dernières observations")')->count() > 0);
     }
 
     public function testGetFormatedLastCpatures()

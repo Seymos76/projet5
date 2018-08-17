@@ -12,9 +12,10 @@ class BirdControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/repertoire');
+        $crawler = $client->request('GET', '/repertoire');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertTrue($crawler->filter('h1:contains("Répertoire")')->count() > 0);
     }
 
     public function testShowRepertoryPageTwo()
@@ -48,8 +49,9 @@ class BirdControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/oiseau/1/');
+        $crawler = $client->request('GET', '/oiseau/1/');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertTrue($crawler->filter('h1:contains(\'"Epervier bicolore "\')')->count() > 0);
     }
 }

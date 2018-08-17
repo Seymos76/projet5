@@ -12,9 +12,10 @@ class CaptureControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/observation/1');
+        $crawler = $client->request('GET', '/observation/1');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertTrue($crawler->filter('h1:contains(\'"Epervier bicolore "\')')->count() > 0);
     }
 
     public function testShowCaptures()
