@@ -21,7 +21,7 @@ class UserAccountController extends Controller
      * @Route("/mon-compte/{page}", defaults={"page" = 1}, name="compteUtilisateur")
      * @return Response
      */
-    public function showNaturalistAccountAction($page, NAOPagination $naoPagination, NAOCaptureManager $naoCaptureManager, NAOCountCaptures $naoCountCaptures)
+    public function showUserAccountAction($page, NAOPagination $naoPagination, NAOCaptureManager $naoCaptureManager, NAOCountCaptures $naoCountCaptures)
     {
     	$user = $this->getUser();
 
