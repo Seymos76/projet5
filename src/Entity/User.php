@@ -80,6 +80,12 @@ class User implements UserInterface, \Serializable
     private $avatar;
 
     /**
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="App\Entity\Capture", mappedBy="user")
+     */
+    private $captures;
+
+    /**
      * @ORM\Column(name="biography", type="text", nullable=true)
      */
     private $biography;
