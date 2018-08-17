@@ -6,9 +6,19 @@ namespace App\Services\User;
 
 use App\Services\NAOManager;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class NAOUserManager extends NAOManager
 {
+    private $container;
+
+    public function __construct(EntityManagerInterface $em, ContainerInterface $container)
+    {
+        parent::__construct($em);
+        $this->container = $container;
+    }
+
     /**
      * @param User $user
      * @return null|string
@@ -41,6 +51,17 @@ class NAOUserManager extends NAOManager
 
     /**
      * @param User $user
+     * @param $biography
+     */
+	public function changeBiography(User $user, $biography)
+    {
+        $user->setBiography($biography);
+        $this->getContainer()->get('app.nao_manager')->addOrModifyEntity($user);
+        $this->getContainer()->get('session')->getFlashBag()->add('success', "Votre biographie a été changée avec succès !");
+    }
+
+    /**
+     * @param User $user
      * @return null|string
      */
 	public function getNaturalistOrParticularRole(User $user): ?string
@@ -56,4 +77,12 @@ class NAOUserManager extends NAOManager
            return 'particular';
         }
 	}
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
+    }
 }

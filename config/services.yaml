@@ -57,6 +57,14 @@ services:
         arguments:
             - '@mailer'
 
+    app.nao_password_manager:
+        class: App\Services\User\PasswordManager
+        autowire: true
+        public: true
+        arguments:
+            - '@security.user_password_encoder.generic'
+            - '@service_container'
+
     app.nao_comment_manager:
         class: App\Services\Comment\NAOCommentManager
         autowire: true

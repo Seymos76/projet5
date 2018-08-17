@@ -34,19 +34,6 @@ class HomeController extends Controller
         return $this->render('default/index.html.twig', array('captures' => $captures,));
 	}
 
-	/**
-     * @Route(path="/api/lastcaptures", name="app_lastcaptures_list")
-     * @Method("GET")
-     */
-	public function showLastCpaturesAction(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
-	{
-		$numberCaptures = $naoPagination->getNbHomeCapturesPerPage();
-		$em = $this->getDoctrine()->getManager();
-		$lastCaptures = $em->getRepository(Capture::class)->getLastPublishedCaptures($numberCaptures);
-
-		return $naoShowMap->formatPublishedCaptures($lastCaptures);
-	}
-
     /**
      * @Route("/statistiques", name="statistics")
      * @return Response
