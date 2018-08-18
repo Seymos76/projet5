@@ -54,8 +54,6 @@ class CaptureController extends Controller
             else 
             {
                 $naoManager->addOrModifyEntity($comment);
-
-                return new Response('Le commentaire a été ajoutée');
             }
         }
 
