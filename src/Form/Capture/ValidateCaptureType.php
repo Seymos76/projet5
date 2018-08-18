@@ -11,30 +11,30 @@ use App\Form\Capture\ParticularCaptureType;
 
 class ValidateCaptureType extends AbstractType
 {
-  public function buildForm(FormBuilderInterface $builder, array $options)
-  {
-    $builder 
-      ->add('naturalist_comment',            TextareaType::class, array(
-        'label' => 'Partie Naturaliste',
-        'required'   => false,
-        'attr' => array(
-          'placeholder' => 'Ecrire un commentaire ...',
-        )
-      ))
-      ->add('validate', SubmitType::class, array(
-        'label' => 'Valider'
-      ))
-      ->add('waitingForValidation', SubmitType::class, array(
-        'label' => 'En attente'
-      ))
-      ->add('remove', SubmitType::class, array(
-        'label' => 'Supprimer'
-      ))
-    ;
-  }
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('naturalist_comment',            TextareaType::class, array(
+                'label' => 'Partie Naturaliste',
+                'required'   => false,
+                'attr' => array(
+                    'placeholder' => 'Ecrire un commentaire ...',
+                )
+            ))
+            ->add('validate', SubmitType::class, array(
+                'label' => 'Valider'
+            ))
+            ->add('waitingForValidation', SubmitType::class, array(
+                'label' => 'En attente'
+            ))
+            ->add('remove', SubmitType::class, array(
+                'label' => 'Supprimer'
+            ))
+        ;
+    }
 
-  public function getParent()
-  {
-    return ParticularCaptureType::class;
-  }
+    public function getParent()
+    {
+        return ParticularCaptureType::class;
+    }
 }

@@ -31,7 +31,7 @@ class HomeController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$captures = $em->getRepository(Capture::class)->getLastPublishedCaptures($numberCaptures);
 
-        return $this->render('default/index.html.twig', array('captures' => $captures,));
+        return $this->render('home/index.html.twig', array('captures' => $captures,));
 	}
 
     /**
@@ -41,7 +41,7 @@ class HomeController extends Controller
 	public function statistics()
     {
         return $this->render(
-            'default/statistics.html.twig'
+            'home/statistics.html.twig'
         );
     }
 
@@ -64,7 +64,7 @@ class HomeController extends Controller
             return $this->redirectToRoute('contact');
         }
         return $this->render(
-            'default/contact.html.twig',
+            'home/contact.html.twig',
             array(
                 'form' => $message_form->createView()
             )

@@ -29,8 +29,14 @@ class CaptureController extends Controller
      */
     public function addCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager)
     {
+        $this->denyAccessUnlessGranted("ROLE_USER");
         $capture = new Capture();
-        $user = $this->getUser();
+        $current_user = $this->getUser();
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
+            array(
+                'email' => $current_user->getEmail()
+            )
+        );
         
         $userRole = $naoUserManager->getRoleFR($user);
         $role = $naoUserManager->getNaturalistOrParticularRole($user);
@@ -50,7 +56,7 @@ class CaptureController extends Controller
         {
             dump($form->getData());
             /** @var Capture $capture */
-            $capture = $this->get('app.nao_capture_manager')->buildCapture($form->getData(), $this->getParameter('bird_directory'));
+            $capture = $this->get('app.nao_capture_manager')->buildCapture($form->getData(), $this->getParameter('bird_directory'), $userRole);
             $capture->setUser($this->getUser());
 
             if ($userRole == 'Particulier')

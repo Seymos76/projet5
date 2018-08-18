@@ -27,12 +27,26 @@ class UserFixtures extends Fixture
     {
         for ($i = 1; $i <= 5; $i++) {
             $user = new User();
-            $user->setUsername("username$i");
-            $user->setAccountType("particular");
-            $user->setActive(true);
-            $password = $this->encoder->encodePassword($user, "username$i");
-            $user->setPassword($password);
+            $user->setUsername("user$i");
+            $user->setAccountType('particular');
+            $user->setActive(0);
+            $user->setBiography("Ma biographie");
+            $user->setPassword($this->encoder->encodePassword($user, "user$i"));
             $user->setEmail("user$i@nao.fr");
+            $user->setLastname("lastname$i");
+            $user->setFirstname("firstname$i");
+            $manager->persist($user);
+            $this->addReference("user".$i, $user);
+        }
+        for ($i = 6; $i <= 10; $i++) {
+            $user = new User();
+            $user->setUsername("nat$i");
+            $user->setAccountType('naturalist');
+            $user->setActive(0);
+            $user->setBiography("Ma biographie");
+            if ($i%2 === 0) $user->setRoles(["ROLE_NATURALIST", "ROLE_ADMIN"]); else $user->setRoles(["ROLE_NATURALIST"]);
+            $user->setPassword($this->encoder->encodePassword($user, "nat$i"));
+            $user->setEmail("nat$i@nao.fr");
             $user->setLastname("lastname$i");
             $user->setFirstname("firstname$i");
             $manager->persist($user);

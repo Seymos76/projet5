@@ -152,11 +152,9 @@ class User implements UserInterface, \Serializable
         return $this->roles;
     }
 
-    public function setRole($role) :void
+    public function setRoles($roles) :void
     {
-        if (!in_array($this->roles, $role)) {
-            $this->roles[] = $role;
-        }
+        $this->roles[] = $roles;
     }
 
     public function addRole($role) :void

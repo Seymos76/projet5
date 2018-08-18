@@ -28,12 +28,13 @@ class NAOCaptureManager
      * @param string $directory
      * @return Capture
      */
-	public function buildCapture(array $data, string $directory): Capture
+	public function buildCapture(array $data, string $directory, string $role): Capture
     {
         $bird_image = $this->container->get('app.avatar_service')->buildImage($data['image'], $directory);
         $capture = new Capture();
         $capture->setBird($data['bird']);
         $capture->setImage($bird_image);
+        if ($role === 'particulier') $capture->setStatus('waiting_for_validation'); else $capture->setStatus($data['status']);
         $capture->setContent($data['content']);
         $capture->setLatitude($data['latitude']);
         $capture->setLongitude($data['longitude']);
