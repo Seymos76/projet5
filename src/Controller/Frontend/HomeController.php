@@ -32,6 +32,17 @@ class HomeController extends Controller
         return $this->render('default/index.html.twig', array('captures' => $captures,));
 	}
 
+    /**
+     * @Route(path="/statistiques", name="statistics")
+     * @return Response
+     */
+	public function statistics()
+    {
+        return $this->render(
+            'default/statistics.html.twig'
+        );
+    }
+
 	/**
      * @Route(path="/api/lastcaptures", name="app_lastcaptures_list")
      * @Method("GET")

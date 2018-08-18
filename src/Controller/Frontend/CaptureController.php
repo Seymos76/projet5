@@ -125,35 +125,4 @@ class CaptureController extends Controller
 
         return $this->render('Capture\showCaptures.html.twig', array('captures' => $capturesSearch, 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'birds' => $birds, 'regions' => $regions, 'resultats' => $resultats));
     }
-
-    /**
-     * @Route("/api/publishedcaptures", name="app_publishedcaptures_list")
-     * @Method("GET")
-     */
-    public function getPublishedCapturesData(NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
-    {
-        $captures = $naoCaptureManager->getPublishedCaptures();
-
-        return $publishedCaptures = $naoShowMap->formatPublishedCaptures($captures);
-    }
-
-    /**
-     * @Route(path="/api/birdpublishedcaptures/{id}", name="app_birdpublishedcaptures_list", requirements={"id" = "\d+"})
-     * @Method("GET")
-     */
-    public function getBirdPublishedCapturesData($id, NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
-    {
-        $captures = $naoCaptureManager->getBirdPublishedCaptures($id);
-
-        return $publishedCaptures = $naoShowMap->formatPublishedCaptures($captures);
-    }
-
-    /**
-     * @Route(path="/api/latloncapture/{id}", name="app_publishedcapture", requirements={"id" = "\d+"})
-     * @Method("GET")
-     */
-    public function getLatitudeLongitudeCapture($id, NAOShowMap $naoShowMap)
-    {
-        return $capture = $naoShowMap->formatCapture($id);
-    }
 }

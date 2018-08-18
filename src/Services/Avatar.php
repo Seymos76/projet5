@@ -12,7 +12,7 @@ namespace App\Services;
 use App\Entity\Image;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
@@ -25,7 +25,7 @@ class Avatar
 
     private $container;
 
-    public function __construct(NAOManager $manager, EntityUserProvider $user, Container $container)
+    public function __construct(NAOManager $manager, EntityUserProvider $user, ContainerInterface $container)
     {
         $this->manager = $manager;
         $this->user = $user;
@@ -112,9 +112,9 @@ class Avatar
     }
 
     /**
-     * @return Container
+     * @return ContainerInterface
      */
-    public function getContainer(): Container
+    public function getContainer(): ContainerInterface
     {
         return $this->container;
     }
