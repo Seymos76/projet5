@@ -19,6 +19,7 @@ class NAOShowMapTest extends WebTestCase
     private $naoCaptureManager;
     private $bird;
     private $birdCaptures;
+    private $lastCaptures;
     private $client;
 
     /**
@@ -36,6 +37,7 @@ class NAOShowMapTest extends WebTestCase
         $this->capture = $this->entityManager->getRepository(Capture::class)->findOneById('1');
         $this->bird = $this->entityManager->getRepository(Bird::class)->findOneById('1');
         $this->birdCaptures = $this->naoCaptureManager->getBirdPublishedCaptures($this->bird);
+        $this->lastCaptures = $this->entityManager->getRepository(Capture::class)->getLastPublishedCaptures('4');
 
         $this->client = static::createClient();
     }
@@ -72,6 +74,17 @@ class NAOShowMapTest extends WebTestCase
 		$this->assertSame(200, $this->client->getResponse()->getStatusCode());
 		$this->assertSame('application/json', $response->headers->get('Content-Type'));
 		$this->assertNotEmpty($this->client->getResponse()->getContent());
+    }
+
+    public function testGetFormatedLastCpatures()
+    {
+        $jsonLastPublishedCapture = $this->naoShowMap->formatPublishedCaptures($this->lastCaptures);
+
+        $this->client->request('GET', '/api/lastcaptures', array('content' => $jsonLastPublishedCapture));
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSame('application/json', $response->headers->get('Content-Type'));
+        $this->assertNotEmpty($this->client->getResponse()->getContent());
     }
 
 	/**
