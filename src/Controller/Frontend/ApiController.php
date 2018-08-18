@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Fontend;
+namespace App\Controller\Frontend;
 
 use App\Entity\Capture;
 use App\Services\Capture\NAOCaptureManager;
