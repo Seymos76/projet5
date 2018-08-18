@@ -36,7 +36,7 @@ class HomeController extends Controller
      * @Route(path="/api/lastcaptures", name="app_lastcaptures_list")
      * @Method("GET")
      */
-	public function showLastCpaturesAction(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
+	public function showLastCapturesAction(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
 	{
 		$numberCaptures = $naoPagination->getNbHomeCapturesPerPage();
 		$em = $this->getDoctrine()->getManager();
