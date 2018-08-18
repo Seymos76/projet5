@@ -13,6 +13,7 @@ use App\Services\Capture\NAOCaptureManager;
 use App\Services\Capture\NAOCountCaptures;
 use App\Services\NAOPagination;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -103,5 +104,18 @@ class UserAccountController extends Controller
                 'form' => $avatar_form->createView()
             )
         );
+    }
+
+    /**
+     * @Route(path="/upgrade/{username}", name="upgrade_to_naturalist")
+     * @ParamConverter("user", class="App\Entity\User")
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function upgradeToNaturalist(User $user)
+    {
+        $user->addRole(array("ROLE_NATURALIST"));
+        $this->get('app.nao_manager')->addOrModifyEntity($user);
+        return $this->redirectToRoute('compteUtilisateur');
     }
 }

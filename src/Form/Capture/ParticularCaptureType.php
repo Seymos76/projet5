@@ -61,7 +61,7 @@ class ParticularCaptureType extends AbstractType
                     'placeholder' => 'Complément d\'adresse',
                 )
             ))
-            ->add('zipcode', NumberType::class, array(
+            ->add('zipcode', TextType::class, array(
                 'label' => ' ',
                 'required' => false,
                 'attr' => array(

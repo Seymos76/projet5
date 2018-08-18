@@ -1,6 +1,26 @@
 <section>
 	<div>
 		<h2>Observations partagées</h2>
+		<table>
+			<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Status</th>
+				<th>Date</th>
+				<th>Accéder</th>
+			</tr>
+			</thead>
+			<tbody>
+            {% for capture in captures %}
+				<tr>
+					<td>Capture {{ capture.id }}</td>
+					<td>{{ capture.status }}</td>
+					<td>{{ capture.createdDate|date('d/m/Y') }}</td>
+					<td><a href="{{ path('validerObservation', {'id': capture.id}) }}">Accéder</a></td>
+				</tr>
+            {% endfor %}
+			</tbody>
+		</table>
 		<ul>
 			<p>Observation </p>
 			{% for capture in captures %}

@@ -3,18 +3,22 @@
 
 namespace App\Form\Capture;
 
+use App\Entity\Capture;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Form\Capture\ParticularCaptureType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ValidateCaptureType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('naturalist_comment',            TextareaType::class, array(
+            ->add(
+                'naturalist_comment',
+                TextareaType::class, array(
                 'label' => 'Partie Naturaliste',
                 'required'   => false,
                 'attr' => array(
@@ -31,6 +35,13 @@ class ValidateCaptureType extends AbstractType
                 'label' => 'Supprimer'
             ))
         ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => Capture::class
+        ));
     }
 
     public function getParent()

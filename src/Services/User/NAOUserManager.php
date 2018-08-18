@@ -33,20 +33,6 @@ class NAOUserManager extends NAOManager
         } else {
 		    return "particulier";
         }
-        /*if (in_array('naturalist', $roles))
-        {
-            $userRole = 'Naturaliste';
-        }
-        elseif (in_array('administrator', $roles))
-        {
-            $userRole = 'Administrateur';
-        }
-        elseif (in_array('particular', $roles))
-        {
-           $userRole = 'Particulier';
-        }*/
-
-        //return $userRole;
 	}
 
     /**
@@ -67,7 +53,6 @@ class NAOUserManager extends NAOManager
 	public function getNaturalistOrParticularRole(User $user): ?string
 	{
 		$roles = $user->getRoles();
-
         if ((in_array('ROLE_ADMIN', $roles)) or (in_array('ROLE_NATURALIST', $roles)))
         {
             return 'naturalist';

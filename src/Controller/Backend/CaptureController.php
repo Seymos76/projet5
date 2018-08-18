@@ -37,15 +37,13 @@ class CaptureController extends Controller
                 'email' => $current_user->getEmail()
             )
         );
-        
         $userRole = $naoUserManager->getRoleFR($user);
-        $role = $naoUserManager->getNaturalistOrParticularRole($user);
 
-        if ($role == 'particular')
+        if ($userRole === 'particulier')
         {
             $form = $this->createForm(ParticularCaptureType::class);
         }
-        elseif ($role == 'naturalist')
+        elseif ($userRole === 'naturaliste' || $userRole === 'administrateur')
         {
             $form = $this->createForm(NaturalistCaptureType::class);
         }
@@ -77,10 +75,16 @@ class CaptureController extends Controller
                 return new Response('L\'observation a été ajoutée');
             }
         }
-
         $title = 'Ajouter une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'role' => $role, 'titre' => $title)); 
+        return $this->render(
+            'Capture\addModifyOrValidateCapture.html.twig',
+            array(
+                'form' => $form->createView(),
+                'userRole' => $userRole,
+                'titre' => $title
+            )
+        );
     }
 
     /**
@@ -93,9 +97,28 @@ class CaptureController extends Controller
         $em = $this->getDoctrine()->getManager();
         $capture = $em->getRepository(Capture::class)->findOneById($id);
 
-        $form = $this->get('form.factory')->create(validateCaptureType::class, $capture);
-
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+        $form = $this->createForm(ValidateCaptureType::class, $capture);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $validator = $this->get('validator');
+            $list_errors = $validator->validate($capture);
+            if (count($list_errors) > 0) {
+                return $this->redirectToRoute('validerObservation', array('list_errors' => $list_errors));
+            }
+            if ($form->get('validate')->isClicked()) {
+                dump($form->getData());
+                die('validating');
+            } elseif ($form->get('waitingForValidation')->isClicked()) {
+                die('waiting');
+            } elseif ($form->get('remove')->isClicked()) {
+                die('remove');
+            } else {
+                die('nothing');
+            }
+            dump($list_errors);
+        }
+        /*
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid())
         {   
             $validator = $this->get('validator');
             $listErrors = $validator->validate($capture);
@@ -108,6 +131,8 @@ class CaptureController extends Controller
                 if ($form->get('validate')->isClicked())
                 {
                     $naturalist = $this->getUser();
+                    dump($request->getContent());
+                    die;
 
                     $naoCaptureManager->validateCapture($capture, $naturalist);
                     $naoManager->addOrModifyEntity($capture);
@@ -123,7 +148,7 @@ class CaptureController extends Controller
 
                 return $this->redirectToRoute('espaceAdministration');
             }
-        }
+        }*/
 
         $user = $this->getUser();
         $userRole = $naoUserManager->getRoleFR($user);
@@ -140,7 +165,7 @@ class CaptureController extends Controller
     public function modifyCaptureAction(Request $request, NAOManager $naoManager, NAOUserManager $naoUserManager, $capture)
     {
         $em = $this->getDoctrine()->getManager();
-        $capture = $em->getRepository(Capture::class)->find($capture); 
+        $capture = $em->getRepository(Capture::class)->find($capture);
         $form = $this->createForm(NaturalistCaptureType::class, $capture);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 

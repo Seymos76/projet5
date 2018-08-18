@@ -15,6 +15,7 @@
     </p>
 
     <a href="{{ path('change_avatar') }}">Change avatar</a>
+    <a href="{{ path('upgrade_to_naturalist', {'username': app.user.username}) }}">Upgrade</a>
     {% include "account/biography_form.html.twig" %}
     {% include "password/change_password.html.twig" %}
 {% endblock %}
