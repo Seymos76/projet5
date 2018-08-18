@@ -4,7 +4,7 @@
 <div>
 	<ul>Observation
 		{% for waitingforvalidationcapture in waitingforvalidationcaptures %}
-			<a href="{{ path('validerObservation', {id:  waitingforvalidationcapture.id}) }}"><li>Observation {{ waitingforvalidationcapture.id }}</li></a>
+			<a href="{{ path('validate_capture', {id:  waitingforvalidationcapture.id}) }}"><li>Observation {{ waitingforvalidationcapture.id }}</li></a>
 		{% endfor %}
 	</ul>
 	<ul>Date

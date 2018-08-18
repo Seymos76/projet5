@@ -14,21 +14,21 @@
 			<ul>
 				{% if nbReportedCommentsPages > 1 %}
 					<p> 
-						<a href="{{ path('espaceAdministration') }}"> Retour </a> 
+						<a href="{{ path('admin_space') }}"> Retour </a> 
 					</p>
 					{% if previousPage > 1 %}
 					<p> 
-						<a href="{{ path('espaceAdminCommentairesSignales', {page: previousPage}) }}"> << </a> 
+						<a href="{{ path('admin_space_reported_comments', {page: previousPage}) }}"> << </a> 
 					</p>
 					{% endif %}
 					{% for i in 2..nbReportedCommentsPages %}
 						<li {% if page == i %} class="active" {% endif %}>
-   							<a href="{{ path('espaceAdminCommentairesSignales', {page: i}) }}"> {{i}} </a>
+   							<a href="{{ path('admin_space_reported_comments', {page: i}) }}"> {{i}} </a>
    						</li>
    					{% endfor %}
     				<p>
     					{% if nextPage <= nbReportedCommentsPages %}
-    						<a href="{{ path('espaceAdminCommentairesSignales', {page: nextPage}) }}"> >> </a>
+    						<a href="{{ path('admin_space_reported_comments', {page: nextPage}) }}"> >> </a>
     					{% endif %}
     				</p> 
     			{% endif %}

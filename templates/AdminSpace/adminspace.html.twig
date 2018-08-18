@@ -13,7 +13,7 @@
 		<div>
 			{% if numberOfPublishedCaptures > numberOfElementsPerPage %}
 				<p> 
-					<a href="{{ path('espaceAdminObservationsPubliees', {page: 2}) }}"> >> </a> 
+					<a href="{{ path('admin_space_published_captures', {page: 2}) }}"> >> </a> 
 				</p>
     		{% endif %}
 		</div>
@@ -24,7 +24,7 @@
 		<div>
 			{% if numberOfWaitingforvalidationCaptures > numberOfElementsPerPage %}
 				<p> 
-					<a href="{{ path('espaceAdminObservationsEnAttente', {page: 2}) }}"> >> </a> 
+					<a href="{{ path('admin_space_waiting_captures', {page: 2}) }}"> >> </a> 
 				</p>
     		{% endif %}
 		</div>
@@ -36,7 +36,7 @@
 		<div>
 			{% if numberOfPublishedComments > numberOfElementsPerPage %}
 				<p> 
-					<a href="{{ path('espaceAdminCommentairesPublies', {page: 2}) }}"> >> </a> 
+					<a href="{{ path('admin_space_published_comments', {page: 2}) }}"> >> </a> 
 				</p>
     		{% endif %}
 		</div>
@@ -47,7 +47,7 @@
 			<div>
 				{% if numberOfReportedComments > numberOfElementsPerPage %}
 					<p> 
-						<a href="{{ path('espaceAdminCommentairesSignales', {page: 2}) }}"> >> </a> 
+						<a href="{{ path('admin_space_reported_comments', {page: 2}) }}"> >> </a> 
 					</p>
 	    		{% endif %}
 			</div>

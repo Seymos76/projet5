@@ -14,21 +14,21 @@
 			<ul>
 				{% if nbPublishedCapturesPages > 1 %}
 					<p> 
-						<a href="{{ path('espaceAdministration') }}"> Retour </a> 
+						<a href="{{ path('admin_space') }}"> Retour </a> 
 					</p>
 					{% if previousPage > 1 %}
 					<p> 
-						<a href="{{ path('espaceAdminObservationsPubliees', {page: previousPage}) }}"> << </a> 
+						<a href="{{ path('admin_space_published_captures', {page: previousPage}) }}"> << </a> 
 					</p>
 					{% endif %}
 					{% for i in 2..nbPublishedCapturesPages %}
 						<li {% if page == i %} class="active" {% endif %}>
-   							<a href="{{ path('espaceAdminObservationsPubliees', {page: i}) }}"> {{i}} </a>
+   							<a href="{{ path('admin_space_published_captures', {page: i}) }}"> {{i}} </a>
    						</li>
    					{% endfor %}
     				<p>
     					{% if nextPage <= nbPublishedCapturesPages %}
-    						<a href="{{ path('espaceAdminObservationsPubliees', {page: nextPage}) }}"> >> </a>
+    						<a href="{{ path('admin_space_published_captures', {page: nextPage}) }}"> >> </a>
     					{% endif %}
     				</p> 
     			{% endif %}

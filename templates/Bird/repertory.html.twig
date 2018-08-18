@@ -8,9 +8,9 @@
 	<section>
 		{% set repositoryLetter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] %}
 		<p>
-			<a href="{{ path('repertoire') }}">All</a> {% for i in 0..25 %} | <a href="{{ path('repertoireParLettre', {letter: repositoryLetter[i]}) }}">{{repositoryLetter[i]}}</a> {% endfor %}
+			<a href="{{ path('repertory') }}">All</a> {% for i in 0..25 %} | <a href="{{ path('repertory_by_letter', {letter: repositoryLetter[i]}) }}">{{repositoryLetter[i]}}</a> {% endfor %}
 		</p>
-		<form action="{{ path('repertoire') }}" method="post">
+		<form action="{{ path('repertory') }}" method="post">
 		<select name="region" id="region">
 			<option disabled selected value="">Région</option>
             {% for region in regions %}
@@ -23,7 +23,7 @@
 	{% for bird in birds %}
 		<div>
 			<p>{{ bird.image }}</p>
-			<p><a href="{{ path('oiseau', {id: bird.id}) }}">{% if bird.vernacularname == false %}{{ bird.validname }} {% else %} {{ bird.vernacularname }} - {{ bird.validname }}</a>{% endif %}</p>
+			<p><a href="{{ path('bird', {id: bird.id}) }}">{% if bird.vernacularname == false %}{{ bird.validname }} {% else %} {{ bird.vernacularname }} - {{ bird.validname }}</a>{% endif %}</p>
 		</div>
 	{% endfor %}
 		<div>
