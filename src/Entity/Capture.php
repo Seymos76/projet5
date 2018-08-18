@@ -60,7 +60,7 @@ class Capture
     private $zipcode;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\NotNull()
      */
     private $city;
@@ -177,7 +177,11 @@ class Capture
         return $this->complement;
     }
 
-    public function setComplement(string $complement): self
+    /**
+     * @param string|null $complement
+     * @return Capture
+     */
+    public function setComplement(string $complement = null): self
     {
         $this->complement = $complement;
 
@@ -213,7 +217,11 @@ class Capture
         return $this->city;
     }
 
-    public function setCity(string $city): self
+    /**
+     * @param string|null $city
+     * @return Capture
+     */
+    public function setCity(string $city = null): self
     {
         $this->city = $city;
 

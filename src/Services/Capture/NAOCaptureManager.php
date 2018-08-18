@@ -38,11 +38,11 @@ class NAOCaptureManager
         $capture->setContent($data['content']);
         $capture->setLatitude($data['latitude']);
         $capture->setLongitude($data['longitude']);
-        $capture->setAddress($data['address']);
-        $capture->setComplement($data['address']);
-        $capture->setZipcode($data['zipcode']);
-        $capture->setCity($data['address']);
-        $capture->setRegion($data['region']);
+        $capture->setAddress($data['address'] = $data['address'] ?? null);
+        $capture->setComplement($data['complement'] = $data['complement'] ?? null);
+        $capture->setZipcode($data['zipcode'] = $data['zipcode'] ?? null);
+        $capture->setCity($data['city'] = $data['city'] ?? null);
+        $capture->setRegion($data['region'] = $data['region'] ?? null);
         return $capture;
     }
 
