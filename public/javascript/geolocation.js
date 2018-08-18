@@ -1,7 +1,6 @@
 $( function() {
 
    var roles = userRole.dataset.userrole;
-   console.log(roles);
 
 	$('#'+ roles +'_capture_latitude').parent().before('<div><input id="geolocation" type="button" value="Me géolocaliser"></div>');
 	$('#'+ roles +'_capture_latitude').parent().hide();
