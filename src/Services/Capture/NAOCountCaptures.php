@@ -21,7 +21,7 @@ class NAOCountCaptures extends NAOManager
 
 	public function countWaitingForValidationCaptures()
 	{
-		return $numberOfWaitingForValidationCaptures = $this->em->getRepository(Capture::class)->countByStatus('waiting for validation');
+		return $numberOfWaitingForValidationCaptures = $this->em->getRepository(Capture::class)->countByStatus('waiting_for_validation');
 	}
 
 	public function countAuthorPublishedCaptures($author)
@@ -36,7 +36,7 @@ class NAOCountCaptures extends NAOManager
 
 	public function countAuthorWaintingForValidationCaptures($author)
 	{
-		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatusAndAuthor('waiting for validation', $author);
+		return $numberOfPublishedCaptures = $this->em->getRepository(Capture::class)->countByStatusAndAuthor('waiting_for_validation', $author);
 	}
 
 	public function countAuthorValidatedCaptures($author)

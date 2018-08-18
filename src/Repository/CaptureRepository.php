@@ -96,7 +96,7 @@ class CaptureRepository extends ServiceEntityRepository
             ->andWhere('c.status != :status1')
             ->setParameter('status1', 'draft')
             ->andWhere('c.status != :status2')
-            ->setParameter('status2', 'waiting for validation')
+            ->setParameter('status2', 'waiting_for_validation')
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -132,7 +132,7 @@ class CaptureRepository extends ServiceEntityRepository
             ->andWhere('c.status != :status1')
             ->setParameter('status1', 'draft')
             ->andWhere('c.status != :status2')
-            ->setParameter('status2', 'waiting for validation')
+            ->setParameter('status2', 'waiting_for_validation')
             ->getQuery()
             ->getResult()
         ;
@@ -205,7 +205,7 @@ class CaptureRepository extends ServiceEntityRepository
         $qb->andWhere('c.status != :status1');
         $qb->setParameter('status1', 'draft');
         $qb->andWhere('c.status != :status2');
-        $qb->setParameter('status2', 'waiting for validation');
+        $qb->setParameter('status2', 'waiting_for_validation');
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -219,7 +219,7 @@ class CaptureRepository extends ServiceEntityRepository
         $qb->andWhere('c.status != :status1');
         $qb->setParameter('status1', 'draft');
         $qb->andWhere('c.status != :status2');
-        $qb->setParameter('status2', 'waiting for validation');
+        $qb->setParameter('status2', 'waiting_for_validation');
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -233,7 +233,7 @@ class CaptureRepository extends ServiceEntityRepository
         $qb->andWhere('c.status != :status1');
         $qb->setParameter('status1', 'draft');
         $qb->andWhere('c.status != :status2');
-        $qb->setParameter('status2', 'waiting for validation');
+        $qb->setParameter('status2', 'waiting_for_validation');
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -248,7 +248,7 @@ class CaptureRepository extends ServiceEntityRepository
             ->andWhere('c.status != :status1')
         	->setParameter('status1', 'draft')
         	->andWhere('c.status != :status2')
-        	->setParameter('status2', 'waiting for validation')
+        	->setParameter('status2', 'waiting_for_validation')
             ->getQuery()
             ->setMaxResults($numberOfElementsPerPage)
             ->setFirstResult($firstEntrance)
@@ -264,7 +264,7 @@ class CaptureRepository extends ServiceEntityRepository
             ->andWhere('c.status != :status1')
         	->setParameter('status1', 'draft')
         	->andWhere('c.status != :status2')
-        	->setParameter('status2', 'waiting for validation')
+        	->setParameter('status2', 'waiting_for_validation')
             ->getQuery()
             ->setMaxResults($numberOfElementsPerPage)
             ->setFirstResult($firstEntrance)
@@ -280,7 +280,7 @@ class CaptureRepository extends ServiceEntityRepository
             ->andWhere('c.status != :status1')
         	->setParameter('status1', 'draft')
         	->andWhere('c.status != :status2')
-        	->setParameter('status2', 'waiting for validation')
+        	->setParameter('status2', 'waiting_for_validation')
             ->getQuery()
             ->setMaxResults($numberOfElementsPerPage)
             ->setFirstResult($firstEntrance)
