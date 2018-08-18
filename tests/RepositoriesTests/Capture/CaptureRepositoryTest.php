@@ -44,7 +44,7 @@ class CaptureRepositoryTest extends KernelTestCase
             ->getPublishedCaptures()
         ;
 
-        $this->assertCount(6, $publishedCaptures);
+        $this->assertCount(3, $publishedCaptures);
     }
 
     public function testGetPublishedCapturesPerPage()
@@ -78,7 +78,7 @@ class CaptureRepositoryTest extends KernelTestCase
     public function testGetWaitingForValidationCaptures()
     {
         $waitingForValidationCaptures = $this->entityManager
-            ->getRepository(Capture::class)->getCapturesByStatus('waiting for validation');
+            ->getRepository(Capture::class)->getCapturesByStatus('waiting_for_validation');
 
         $this->assertCount(2, $waitingForValidationCaptures); 
     }
@@ -104,14 +104,14 @@ class CaptureRepositoryTest extends KernelTestCase
         $userCapturesPerPage =  $this->entityManager
             ->getRepository(Capture::class)->getUserCapturesPerPage( $this->elementsPerPage, $this->firstEntrance, '1');
 
-        $this->assertCount(2, $userCapturesPerPage);
+        $this->assertCount(1, $userCapturesPerPage);
     }
 
     public function testCountWaitingForValidationCaptures()
     {
         $numberOfWaitingForValidationCaptures = $this->entityManager
             ->getRepository(Capture::class)
-            ->countByStatus('waiting for validation')
+            ->countByStatus('waiting_for_validation')
         ;
 
         $this->assertEquals(2, $numberOfWaitingForValidationCaptures);
@@ -124,7 +124,7 @@ class CaptureRepositoryTest extends KernelTestCase
             ->countPublishedCaptures()
         ;
 
-        $this->assertEquals(6, $numberOfPublishedCaptures);
+        $this->assertEquals(3, $numberOfPublishedCaptures);
     }
 
     public function testCountPublishedAuthorCaptures()
@@ -145,7 +145,7 @@ class CaptureRepositoryTest extends KernelTestCase
     {
         $nbCapturesBird1IDF = $this->entityManager->getRepository(Capture::class)->countSearchCapturesByBirdAndRegion($this->bird, $this->region);
 
-        $this->assertEquals(1, $nbCapturesBird1IDF);
+        $this->assertEquals(2, $nbCapturesBird1IDF);
     }
 
     public function testCountSearchPublishedCapturesByBird()
@@ -166,7 +166,7 @@ class CaptureRepositoryTest extends KernelTestCase
     {
         $capturesBird1IDF = $this->entityManager->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($this->bird, $this->region, $this->elementsPerPage, $this->firstEntrance);
 
-        $this->assertCount(1, $capturesBird1IDF);
+        $this->assertCount(2, $capturesBird1IDF);
     }
 
     public function testSearchCapturesByBirdPerPage()

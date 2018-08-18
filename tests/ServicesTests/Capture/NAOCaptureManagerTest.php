@@ -43,12 +43,12 @@ class NAOCaptureManagerTest extends WebTestCase
     {
         $publishedCaptures = $this->naoCaptureManager->getPublishedCaptures();
 
-        $this->assertCount(6, $publishedCaptures);
+        $this->assertCount(3, $publishedCaptures);
     }
 
     public function testGetPublishedCapturesPerPage()
     {
-        $numberOfPublishedCaptures = '6';
+        $numberOfPublishedCaptures = '3';
 
         $publishedCapturesPerPage = $this->naoCaptureManager->getPublishedCapturesPerPage($this->page, $numberOfPublishedCaptures, $this->elementsPerPage);
 
@@ -92,7 +92,7 @@ class NAOCaptureManagerTest extends WebTestCase
     {
         $this->naoCaptureManager->setWaitingStatus($this->capture);
 
-        $this->assertSame('waiting for validation', $this->capture->getStatus());
+        $this->assertSame('waiting_for_validation', $this->capture->getStatus());
     }
 
     public function testGetBirdPublishedCaptures()
@@ -106,17 +106,17 @@ class NAOCaptureManagerTest extends WebTestCase
     {
         $numberOfUserCaptures = '4';
 
-        $userCapturesPerPage = $this->naoCaptureManager->getUserCapturesPerPage($this->page, $numberOfUserCaptures, $this->elementsPerPage, $this->capture);
+        $userCapturesPerPage = $this->naoCaptureManager->getUserCapturesPerPage($this->page, $numberOfUserCaptures, $this->elementsPerPage, $this->user);
 
         $this->assertCount(2, $userCapturesPerPage);
     }
 
     public function testSearchCapturesByBirdAndRegionPerPage()
     {
-        $numberOfSearchCaptures = '1';
+        $numberOfSearchCaptures = '2';
         $capturesBird1IDF = $this->naoCaptureManager->searchCapturesByBirdAndRegionPerPage($this->bird, $this->region, $this->page, $numberOfSearchCaptures, $this->elementsPerPage);
 
-        $this->assertCount(1, $capturesBird1IDF);
+        $this->assertCount(2, $capturesBird1IDF);
     }
 
     public function testSearchCapturesByBirdPerPage()

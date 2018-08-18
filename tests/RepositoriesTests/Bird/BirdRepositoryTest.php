@@ -1,12 +1,12 @@
 <?php
 
-// tests/RepositoriesTests/Capture/CaptureRepositoryTest.php
+// tests/RepositoriesTests/Bird/BirdRepositoryTest.php
 namespace App\Tests\RepositoriesTests\Capture;
 
 use App\Entity\Bird;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class CaptureRepositoryTest extends KernelTestCase
+class BirdRepositoryTest extends KernelTestCase
 {
     /**
      * @var \Doctrine\ORM\EntityManager

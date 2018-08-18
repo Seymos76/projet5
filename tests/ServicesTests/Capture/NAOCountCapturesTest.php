@@ -38,14 +38,14 @@ class NAOCountCapturesTest extends WebTestCase
     {
         $numberOfPublishedCaptures = $this->naoCountCaptures->countPublishedCaptures();
 
-        $this->assertEquals(6, $numberOfPublishedCaptures);
+        $this->assertEquals(3, $numberOfPublishedCaptures);
     }
 
     public function testCountDraftsCaptures()
     {
         $numberOfDraftsCaptures = $this->naoCountCaptures->countDraftsCaptures();
 
-        $this->assertEquals(3, $numberOfDraftsCaptures);
+        $this->assertEquals(2, $numberOfDraftsCaptures);
     }
 
     public function countWaitingForValidationCaptures()
@@ -66,7 +66,7 @@ class NAOCountCapturesTest extends WebTestCase
     {
         $numberOfAuthor3DraftsCaptures = $this->naoCountCaptures->countAuthorDraftsCaptures($this->user);
 
-        $this->assertEquals(1, $numberOfAuthor3DraftsCaptures);       
+        $this->assertEquals(2, $numberOfAuthor3DraftsCaptures);       
     }
 
     public function testCountAuthorWaintingForValidationCaptures()
@@ -94,7 +94,7 @@ class NAOCountCapturesTest extends WebTestCase
     {
         $nbCapturesBird1IDF = $this->naoCountCaptures->countSearchCapturesByBirdAndRegion($this->bird, $this->region);
 
-        $this->assertEquals(1, $nbCapturesBird1IDF);
+        $this->assertEquals(2, $nbCapturesBird1IDF);
     }
 
     public function testCountSearchCapturesByBird()
