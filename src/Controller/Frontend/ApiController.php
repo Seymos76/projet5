@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: seymos
- * Date: 17/08/18
- * Time: 23:21
- */
 
-namespace App\Controller\Backend;
-
+namespace App\Controller\Fontend;
 
 use App\Entity\Capture;
 use App\Services\Capture\NAOCaptureManager;
@@ -54,7 +47,7 @@ class ApiController extends Controller
      * @Route(path="/api/lastcaptures", name="app_lastcaptures_list")
      * @Method("GET")
      */
-    public function showLastCpaturesAction(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
+    public function getLastCapturesData(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
     {
         $numberCaptures = $naoPagination->getNbHomeCapturesPerPage();
         $em = $this->getDoctrine()->getManager();
