@@ -64,8 +64,8 @@ class CaptureController extends Controller
             if(count($listErrors) > 0)
             {
                 return new Response((string) $listErrors);
-            } 
-            else 
+            }
+            else
             {
                 $naoManager->addOrModifyEntity($capture);
                 $this->get('session')->getFlashBag()->add('success', "Votre observation a été ajoutée avec succès !");
@@ -87,11 +87,12 @@ class CaptureController extends Controller
 
     /**
      * @Route(path="ajout-image-observation/{id}", name="add_image_on_capture")
+     * @ParamConverter("capture", class="App\Entity\Capture")
      * @param Request $request
      * @param Capture $capture
      * @param NAOManager $manager
-     * @ParamConverter("capture", class="App\Entity\Capture")
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Exception
      */
     public function addImageOnCapture(Request $request, Capture $capture, NAOManager $manager)
     {
@@ -120,15 +121,16 @@ class CaptureController extends Controller
      * @param Request $request
      * @param Capture $capture
      * @param NAOManager $naoManager
-     * @return Response
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOUserManager $naoUserManager
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function validateCaptureAction(Request $request, Capture $capture, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, $id)
     {
         $form = $this->createForm(ValidateCaptureType::class, $capture);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($form->getData());
-            die;
             $validator = $this->get('validator');
             $list_errors = $validator->validate($capture);
             if (count($list_errors) > 0) {
@@ -136,53 +138,20 @@ class CaptureController extends Controller
             }
             if ($form->get('validate')->isClicked()) {
                 $naoCaptureManager->validateCapture($capture, $this->getUser());
-                dump($capture);
-                die('validating');
+                $naoManager->addOrModifyEntity($capture);
+                $this->get('session')->getFlashBag()->add('success', "Observation validée !");
             } elseif ($form->get('waitingForValidation')->isClicked()) {
                 $capture->setStatus('waiting_for_validation');
-                dump($capture);
-                die('waiting');
+                $naoManager->addOrModifyEntity($capture);
+                $this->get('session')->getFlashBag()->add('success', "Observation en attente de validation !");
             } elseif ($form->get('remove')->isClicked()) {
                 $naoManager->removeEntity($capture);
                 $this->get('session')->getFlashBag()->add('success', "Observation supprimée !");
-                return $this->redirectToRoute('compteUtilisateur');
             } else {
-                die('nothing');
+                return $this->redirectToRoute('compteUtilisateur');
             }
-            dump($list_errors);
+            return $this->redirectToRoute('espaceAdministration');
         }
-        /*
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid())
-        {   
-            $validator = $this->get('validator');
-            $listErrors = $validator->validate($capture);
-            if(count($listErrors) > 0) 
-            {
-                return new Response((string) $listErrors);
-            } 
-            else 
-            {
-                if ($form->get('validate')->isClicked())
-                {
-                    $naturalist = $this->getUser();
-                    dump($request->getContent());
-                    die;
-
-                    $naoCaptureManager->validateCapture($capture, $naturalist);
-                    $naoManager->addOrModifyEntity($capture);
-                }
-                elseif ($form->get('waitingForValidation')->isClicked())
-                {
-                    $naoManager->addOrModifyEntity($capture);
-                }
-                elseif ($form->get('remove')->isClicked())
-                {
-                    $naoManager->removeEntity($capture);
-                }
-
-                return $this->redirectToRoute('espaceAdministration');
-            }
-        }*/
         $user = $this->getUser();
         $userRole = $naoUserManager->getRoleFR($user);
         $role = $naoUserManager->getNaturalistOrParticularRole($user);
@@ -199,29 +168,30 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/modifier-observation", name="modifierObservation")
+     * @Route("/modifier-observation/{capture}", name="modifierObservation")
      * @param Request $request
+     * @param NAOManager $naoManager
+     * @param NAOUserManager $naoUserManager
+     * @param Capture $capture
      * @return Response
      */
-    public function modifyCaptureAction(Request $request, NAOManager $naoManager, NAOUserManager $naoUserManager, $capture)
+    public function modifyCaptureAction(Request $request, NAOManager $naoManager, NAOUserManager $naoUserManager, Capture $capture)
     {
-        $em = $this->getDoctrine()->getManager();
-        $capture = $em->getRepository(Capture::class)->find($capture);
         $form = $this->createForm(NaturalistCaptureType::class, $capture);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid())
         {
             $validator = $this->get('validator');
             $listErrors = $validator->validate($capture);
-            if(count($listErrors) > 0) 
+            if(count($listErrors) > 0)
             {
                 return new Response((string) $listErrors);
-            } 
-            else 
+            }
+            else
             {
                 $naoManager->addOrModifyEntity($capture);
-
-                return new Response('L\'observation a été modifiée');
+                $this->get('session')->getFlashBag()->add('success', "L'observation a été modifiée !");
+                return $this->redirectToRoute('compteUtilisateur');
             }
         }
 
@@ -229,6 +199,6 @@ class CaptureController extends Controller
         $userRole = $naoUserManager->getRoleFR($user);
         $title = 'Modifier une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title)); 
+        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title));
     }
 }

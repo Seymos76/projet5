@@ -13,12 +13,16 @@ use App\Services\Capture\NAOCaptureManager;
 use App\Services\Capture\NAOShowMap;
 use App\Services\NAOPagination;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ApiController extends Controller
 {
     /**
      * @Route("/api/publishedcaptures", name="app_publishedcaptures_list", methods={"GET"})
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOShowMap $naoShowMap
+     * @return JsonResponse
      */
     public function getPublishedCapturesData(NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
     {
@@ -29,6 +33,10 @@ class ApiController extends Controller
 
     /**
      * @Route(path="/api/birdpublishedcaptures/{id}", name="app_birdpublishedcaptures_list", requirements={"id" = "\d+"}, methods={"GET"})
+     * @param $id
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOShowMap $naoShowMap
+     * @return JsonResponse
      */
     public function getBirdPublishedCapturesData($id, NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
     {
@@ -39,6 +47,9 @@ class ApiController extends Controller
 
     /**
      * @Route(path="/api/latloncapture/{id}", name="app_publishedcapture", requirements={"id" = "\d+"}, methods={"GET"})
+     * @param $id
+     * @param NAOShowMap $naoShowMap
+     * @return JsonResponse
      */
     public function getLatitudeLongitudeCapture($id, NAOShowMap $naoShowMap)
     {
@@ -47,6 +58,9 @@ class ApiController extends Controller
 
     /**
      * @Route(path="/api/lastcaptures", name="app_lastcaptures_list", methods={"GET"})
+     * @param NAOShowMap $naoShowMap
+     * @param NAOPagination $naoPagination
+     * @return JsonResponse
      */
     public function showLastCpaturesAction(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
     {

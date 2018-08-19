@@ -29,6 +29,11 @@ class CaptureController extends Controller
 {
     /**
      * @Route("observation/{id}", requirements={"id" = "\d+"}, name="observation")
+     * @param $id
+     * @param Request $request
+     * @param NAOManager $naoManager
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCountComments $naoCountComments
      * @return Response
      */
     public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments)
@@ -65,7 +70,13 @@ class CaptureController extends Controller
 
     /**
      * @Route("/observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="observations")
-     * @return Response
+     * @param Request $request
+     * @param NAOCaptureManager $nAOCaptureManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOPagination $naoPagination
+     * @param NAOBirdManager $naoBirdManager
+     * @param $pageNumber
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, NAOBirdManager $naoBirdManager, $pageNumber)
     {
@@ -100,6 +111,11 @@ class CaptureController extends Controller
 
     /**
      * @Route("/resultat-recherche-observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="resultatRechercheObservations")
+     * @param Request $request
+     * @param NAOCaptureManager $nAOCaptureManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOPagination $naoPagination
+     * @param $pageNumber
      * @return Response
      */
     public function showCapturesSearchAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)

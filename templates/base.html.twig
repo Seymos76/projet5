@@ -19,7 +19,8 @@
         <ul>
             <li><a href="{{ path('accueil') }}">Accueil</a></li>
             <li><a href="{{ path('repertoire') }}">Répertoire</a></li>
-            <li><a href="#">Observations</a></li>
+            <li><a href="{{ path('observations') }}">Observations</a></li>
+            <li><a href="{{ path('ajouterObservation') }}">Ajout observation</a></li>
             <li><a href="{{ path('statistics') }}">Quelques données</a></li>
             <li><a href="{{ path('contact') }}">Contact</a></li>
             {% if is_granted('ROLE_ADMIN') %}

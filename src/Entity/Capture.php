@@ -109,7 +109,6 @@ class Capture
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Image", orphanRemoval=true, cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
-     * @Assert\Image()
      */
     private $image;
 

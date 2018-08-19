@@ -15,7 +15,7 @@
 	<div id="map0" class="capturemap" data-identifiant={{ id }}>
 	</div>
 	<h1><a href="{{ path('oiseau', {id: capture.bird.id}) }}">{% if capture.bird.vernacularname == false %}{{ capture.bird.validname }} {% else %} {{ capture.bird.vernacularname }} - {{ capture.bird.validname }}{% endif %}</a></h1>
-	<p>{{capture.image}}</p>
+	<img src="{{ asset('uploads/bird/' ~ capture.image.filename) }}" alt="">
 	<p>{% if capture.status == 'validated' %}Validé {% endif %}</p>
 	<p>{{ capture.createdDate|date('d/m/Y') }}</p>
 	<p>{{ capture.address }}, {{ capture.zipcode }}, {{ capture.city }}</p>
