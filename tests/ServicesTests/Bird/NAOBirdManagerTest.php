@@ -42,10 +42,10 @@ class NAOBirdManagerTest extends WebTestCase
 
     public function testSearchBirdsByRegionPerPage()
     {
-        $numberOfBirdsIDF = '3';
+        $numberOfBirdsIDF = '2';
         $numberBirdsIDFPerPage =  $this->naoBirdManager->searchBirdsByRegionPerPage($this->region, $this->page, $numberOfBirdsIDF, $this->numberOfBirdsPerPage);
 
-        $this->assertCount(3, $numberBirdsIDFPerPage);
+        $this->assertCount(2, $numberBirdsIDFPerPage);
     }
 
     public function testGetBirdByVernacularname()

@@ -1,11 +1,13 @@
 <?php
 
 // tests/RepositoriesTests/Capture/CaptureRepositoryTest.php
+
 namespace App\Tests\RepositoriesTests\Capture;
 
 use App\Entity\Capture;
 use App\Entity\User;
 use App\Entity\Bird;
+use App\Services\Capture\NAOCaptureManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class CaptureRepositoryTest extends KernelTestCase
@@ -18,6 +20,11 @@ class CaptureRepositoryTest extends KernelTestCase
     private $elementsPerPage; 
     private $firstEntrance;
     private $user;
+    private $naoCaptureManager;
+    private $publishedStatus;
+    private $validatedStatus;
+    private $draftStatus;
+    private $waitingStatus;
 
     /**
      * {@inheritDoc}
@@ -35,13 +42,18 @@ class CaptureRepositoryTest extends KernelTestCase
         $this->user = $this->entityManager->getRepository(User::class)->findOneById('3');
         $this->bird = $this->entityManager->getRepository(Bird::class)->findOneById('1');
         $this->region = 'Ile-de-France';
+        $this->naoCaptureManager = $kernel->getContainer()->get('app.nao_capture_manager');
+        $this->waitingStatus = $this->naoCaptureManager->getWaitingStatus();
+        $this->draftStatus = $this->naoCaptureManager->getDraftStatus();
+        $this->publishedStatus = $this->naoCaptureManager->getPublishedStatus();
+        $this->validatedStatus = $this->naoCaptureManager->getValidatedStatus();
     }
 
     public function testGetPublishedCaptures()
     {
         $publishedCaptures = $this->entityManager
             ->getRepository(Capture::class)
-            ->getPublishedCaptures()
+            ->getPublishedCaptures($this->publishedStatus, $this->validatedStatus)
         ;
 
         $this->assertCount(3, $publishedCaptures);
@@ -51,7 +63,7 @@ class CaptureRepositoryTest extends KernelTestCase
     {
         $publishedCaptures = $this->entityManager
             ->getRepository(Capture::class)
-            ->getPublishedCapturesPerPage($this->elementsPerPage, $this->firstEntrance)
+            ->getPublishedCapturesPerPage($this->elementsPerPage, $this->firstEntrance, $this->publishedStatus, $this->validatedStatus)
         ;
 
         $this->assertCount(2, $publishedCaptures);
@@ -61,7 +73,7 @@ class CaptureRepositoryTest extends KernelTestCase
     {
         $lastPublishedCaptures = $this->entityManager
             ->getRepository(Capture::class)
-            ->getLastPublishedCaptures($this->elementsPerPage)
+            ->getLastPublishedCaptures($this->elementsPerPage, $this->publishedStatus, $this->validatedStatus)
         ;
 
         $this->assertCount(2, $lastPublishedCaptures);
@@ -70,7 +82,7 @@ class CaptureRepositoryTest extends KernelTestCase
     public function testGetPublishedCapture()
     {
         $publishedCapture = $this->entityManager
-            ->getRepository(Capture::class)->getPublishedCapture('1');
+            ->getRepository(Capture::class)->getPublishedCapture('1', $this->draftStatus, $this->waitingStatus);
 
         $this->assertEquals(1, $publishedCapture->getId());
     }
@@ -78,7 +90,7 @@ class CaptureRepositoryTest extends KernelTestCase
     public function testGetWaitingForValidationCaptures()
     {
         $waitingForValidationCaptures = $this->entityManager
-            ->getRepository(Capture::class)->getCapturesByStatus('waiting_for_validation');
+            ->getRepository(Capture::class)->getCapturesByStatus($this->waitingStatus);
 
         $this->assertCount(2, $waitingForValidationCaptures); 
     }
@@ -86,7 +98,7 @@ class CaptureRepositoryTest extends KernelTestCase
     public function testGetWaitingForValidationCapturesPerPage()
     {
         $waitingForValidationCapturesPerPage = $this->entityManager
-            ->getRepository(Capture::class)->getCapturesByStatusPerPage('draft', $this->elementsPerPage, $this->firstEntrance);
+            ->getRepository(Capture::class)->getCapturesByStatusPerPage($this->draftStatus, $this->elementsPerPage, $this->firstEntrance);
 
         $this->assertCount(2, $waitingForValidationCapturesPerPage);
     }
@@ -94,7 +106,7 @@ class CaptureRepositoryTest extends KernelTestCase
     public function testGetBirdPublishedCaptures()
     {
         $birdPublishedCaptures = $this->entityManager
-            ->getRepository(Capture::class)->getBirdPublishedCaptures('1');
+            ->getRepository(Capture::class)->getBirdPublishedCaptures('1', $this->draftStatus, $this->waitingStatus);
 
         $this->assertCount(2,  $birdPublishedCaptures);
     }
@@ -111,7 +123,7 @@ class CaptureRepositoryTest extends KernelTestCase
     {
         $numberOfWaitingForValidationCaptures = $this->entityManager
             ->getRepository(Capture::class)
-            ->countByStatus('waiting_for_validation')
+            ->countByStatus($this->waitingStatus)
         ;
 
         $this->assertEquals(2, $numberOfWaitingForValidationCaptures);
@@ -119,17 +131,14 @@ class CaptureRepositoryTest extends KernelTestCase
 
     public function testCountPublishedCaptures()
     {
-        $numberOfPublishedCaptures = $this->entityManager
-            ->getRepository(Capture::class)
-            ->countPublishedCaptures()
-        ;
+        $numberOfPublishedCaptures = $this->entityManager->getRepository(Capture::class)->countPublishedCaptures($this->publishedStatus, $this->validatedStatus);
 
         $this->assertEquals(3, $numberOfPublishedCaptures);
     }
 
     public function testCountPublishedAuthorCaptures()
     {
-        $numberOfAuthor3PublishedCaptures = $this->entityManager->getRepository(Capture::class)->countByStatusAndAuthor('published', $this->user);
+        $numberOfAuthor3PublishedCaptures = $this->entityManager->getRepository(Capture::class)->countByStatusAndAuthor($this->publishedStatus, $this->user);
 
         $this->assertEquals(2, $numberOfAuthor3PublishedCaptures);
     }
@@ -143,42 +152,42 @@ class CaptureRepositoryTest extends KernelTestCase
 
     public function testCountSearchPulishedCapturesByBirdAndRegion()
     {
-        $nbCapturesBird1IDF = $this->entityManager->getRepository(Capture::class)->countSearchCapturesByBirdAndRegion($this->bird, $this->region);
+        $nbCapturesBird1IDF = $this->entityManager->getRepository(Capture::class)->countSearchCapturesByBirdAndRegion($this->bird, $this->region, $this->draftStatus, $this->waitingStatus);
 
         $this->assertEquals(2, $nbCapturesBird1IDF);
     }
 
     public function testCountSearchPublishedCapturesByBird()
     {
-        $nbCapturesBird1 = $this->entityManager->getRepository(Capture::class)->countSearchCapturesByBird($this->bird);
+        $nbCapturesBird1 = $this->entityManager->getRepository(Capture::class)->countSearchCapturesByBird($this->bird, $this->draftStatus, $this->waitingStatus);
 
         $this->assertEquals(2, $nbCapturesBird1);
     }
 
     public function testCountSearchCapturesByRegion()
     {
-        $nbCapturesIDF = $this->entityManager->getRepository(Capture::class)->countSearchCapturesByRegion($this->region);
+        $nbCapturesIDF = $this->entityManager->getRepository(Capture::class)->countSearchCapturesByRegion($this->region, $this->draftStatus, $this->waitingStatus);
 
         $this->assertEquals(3, $nbCapturesIDF);
     }
 
     public function testSearchCapturesByBirdAndRegionPerPage()
     {
-        $capturesBird1IDF = $this->entityManager->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($this->bird, $this->region, $this->elementsPerPage, $this->firstEntrance);
+        $capturesBird1IDF = $this->entityManager->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($this->bird, $this->region, $this->elementsPerPage, $this->firstEntrance, $this->draftStatus, $this->waitingStatus);
 
         $this->assertCount(2, $capturesBird1IDF);
     }
 
     public function testSearchCapturesByBirdPerPage()
     {
-        $capturesBird1 = $this->entityManager->getRepository(Capture::class)->searchCapturesByBirdPerPage($this->bird, $this->elementsPerPage, $this->firstEntrance);
+        $capturesBird1 = $this->entityManager->getRepository(Capture::class)->searchCapturesByBirdPerPage($this->bird, $this->elementsPerPage, $this->firstEntrance, $this->draftStatus, $this->waitingStatus);
 
         $this->assertCount(2, $capturesBird1);
     }
 
     public function testSearchCapturesByRegionPerPage()
     {
-        $capturesIDF = $this->entityManager->getRepository(Capture::class)->searchCapturesByRegionPerPage($this->region, $this->elementsPerPage, $this->firstEntrance);
+        $capturesIDF = $this->entityManager->getRepository(Capture::class)->searchCapturesByRegionPerPage($this->region, $this->elementsPerPage, $this->firstEntrance, $this->draftStatus, $this->waitingStatus);
 
         $this->assertCount(2, $capturesIDF);
     }

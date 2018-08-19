@@ -16,6 +16,9 @@ class BirdRepositoryTest extends KernelTestCase
     private $elementsPerPage; 
     private $firstEntrance;
     private $region;
+    private $naoCaptureManager; 
+    private $draftStatus;
+    private $waitingStatus;
 
     /**
      * {@inheritDoc}
@@ -31,6 +34,9 @@ class BirdRepositoryTest extends KernelTestCase
         $this->elementsPerPage = 15;
         $this->firstEntrance = 0;
         $this->region = 'Ile-de-France';
+        $this->naoCaptureManager = $kernel->getContainer()->get('app.nao_capture_manager');
+        $this->waitingStatus = $this->naoCaptureManager->getWaitingStatus();
+        $this->draftStatus = $this->naoCaptureManager->getDraftStatus();
     }
     
     public function testGetBirdsPerPage()
@@ -49,16 +55,16 @@ class BirdRepositoryTest extends KernelTestCase
 
     public function testCountSearchBirdsByRegion()
     {
-        $numberBirdsIDF = $this->entityManager->getRepository(Bird::class)->countSearchBirdsByRegion($this->region);
+        $numberBirdsIDF = $this->entityManager->getRepository(Bird::class)->countSearchBirdsByRegion($this->region, $this->draftStatus, $this->waitingStatus);
 
-        $this->assertEquals(3, $numberBirdsIDF);
+        $this->assertEquals(2, $numberBirdsIDF);
     }
 
      public function testSearchBirdsByRegionPerPage()
     {
-         $numberBirdsIDFPerPage = $this->entityManager->getRepository(Bird::class)->searchBirdsByRegionPerPage($this->region, $this->elementsPerPage, $this->firstEntrance);
+         $numberBirdsIDFPerPage = $this->entityManager->getRepository(Bird::class)->searchBirdsByRegionPerPage($this->region, $this->elementsPerPage, $this->firstEntrance, $this->draftStatus, $this->waitingStatus);
 
-        $this->assertCount(3, $numberBirdsIDFPerPage);
+        $this->assertCount(2, $numberBirdsIDFPerPage);
     }
 
     /**
