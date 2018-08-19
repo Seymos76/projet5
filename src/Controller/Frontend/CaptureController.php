@@ -60,8 +60,8 @@ class CaptureController extends Controller
             else 
             {
                 $naoManager->addOrModifyEntity($comment);
-
-                return new Response('Le commentaire a été ajoutée');
+                $this->get('session')->getFlashBag()->add('success',"Commentaire ajouté !");
+                return $this->redirectToRoute('observation', ['id' => $capture->getId()]);
             }
         }
 
