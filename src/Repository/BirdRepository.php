@@ -102,7 +102,7 @@ class BirdRepository extends ServiceEntityRepository
     public function countSearchBirdsByRegion($region, $draftStatus, $waitingStatus)
     {
         $qb = $this->createQueryBuilder('b');
-        $qb->select('count(b.id)');
+        $qb->select('count(DISTINCT b.id)');
         $qb->join('b.captures', 'c');
         $qb->where('c.region = :region');
         $qb->setParameter('region', $region);
