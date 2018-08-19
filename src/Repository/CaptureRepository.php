@@ -48,6 +48,9 @@ class CaptureRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @return mixed
+     */
     public function getPublishedCaptures()
     {
         return $this->createQueryBuilder('c')

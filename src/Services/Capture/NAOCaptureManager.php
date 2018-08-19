@@ -9,6 +9,7 @@ use App\Services\NAOManager;
 use App\Entity\Capture;
 use App\Services\NAOPagination;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class NAOCaptureManager
 {
@@ -24,26 +25,19 @@ class NAOCaptureManager
 	}
 
     /**
-     * @param array $data
-     * @param string $directory
+     * @param Capture $capture
+     * @param User $user
      * @return Capture
      */
-	public function buildCapture(array $data, string $directory, string $role): Capture
+	public function setStatusOnCapture(Capture $capture, User $user): Capture
     {
-        $bird_image = $this->container->get('app.avatar_service')->buildImage($data['image'], $directory);
-        $capture = new Capture();
-        $capture->setBird($data['bird']);
-        $capture->setImage($bird_image);
-        if ($role === 'particulier') $capture->setStatus('waiting_for_validation'); else $capture->setStatus($data['status']);
-        $capture->setContent($data['content']);
-        $capture->setLatitude($data['latitude']);
-        $capture->setLongitude($data['longitude']);
-        $capture->setAddress($data['address'] = $data['address'] ?? null);
-        $capture->setComplement($data['complement'] = $data['complement'] ?? null);
-        $capture->setZipcode($data['zipcode'] = $data['zipcode'] ?? null);
-        $capture->setCity($data['city'] = $data['city'] ?? null);
-        $capture->setRegion($data['region'] = $data['region'] ?? null);
+        if ($user->getAccountType() === 'particular') $capture->setStatus('waiting_for_validation');
         return $capture;
+    }
+
+    public function addOrModifyImage(UploadedFile $file, string $directory)
+    {
+        //$bird_image = $this->container->get('app.avatar_service')->buildImage($data['image'], $directory);
     }
 
 	public function getPublishedCaptures()
@@ -75,10 +69,15 @@ class NAOCaptureManager
 		return $waintingForValidationCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->getCapturesByStatusPerPage('waiting for validation', $numberOfElementsPerPage, $firstEntrance);
 	}
 
-	public function validateCapture(Capture $capture, $naturalist)
+    /**
+     * @param Capture $capture
+     * @param User $naturalist
+     */
+	public function validateCapture(Capture $capture, User $naturalist)
 	{
 		$capture->setStatus('validated');
 		$capture->setValidatedBy($naturalist);
+		$this->naoManager->addOrModifyEntity($capture);
 	}
 
 	public function setWaitingStatus(Capture $capture)

@@ -20,10 +20,9 @@ class NAOUserManager extends NAOManager
     }
 
     /**
-     * @param User $user
      * @return null|string
      */
-	public function getRoleFR(User $user): ?string
+	public function getRoleFR($user): ?string
 	{
 		$roles = $user->getRoles();
 		if (in_array('ROLE_ADMIN', $roles)) {

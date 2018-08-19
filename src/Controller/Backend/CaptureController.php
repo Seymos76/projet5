@@ -4,12 +4,14 @@ namespace App\Controller\Backend;
 
 use App\Entity\Capture;
 use App\Entity\User;
+use App\Form\Capture\CaptureImageType;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\User\NAOUserManager;
 use App\Form\Capture\ParticularCaptureType;
 use App\Form\Capture\NaturalistCaptureType;
 use App\Form\Capture\ValidateCaptureType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -43,27 +45,22 @@ class CaptureController extends Controller
 
         if ($userRole === 'particulier')
         {
-            $form = $this->createForm(ParticularCaptureType::class);
+            $form = $this->createForm(ParticularCaptureType::class, $capture);
         }
         elseif ($userRole === 'naturaliste' || $userRole === 'administrateur')
         {
-            $form = $this->createForm(NaturalistCaptureType::class);
+            $form = $this->createForm(NaturalistCaptureType::class, $capture);
         }
         $form->add('Enregistrer',      SubmitType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            dump($form->getData());
             /** @var Capture $capture */
-            $capture = $this->get('app.nao_capture_manager')->buildCapture($form->getData(), $this->getParameter('bird_directory'), $userRole);
-            $capture->setUser($this->getUser());
-            if ($userRole == 'Particulier')
-            {
-                $naoCaptureManager->setWaitingStatus($capture);
-            }
+            $capture = $this->get('app.nao_capture_manager')->setStatusOnCapture($form->getData(), $user);
+            $capture->setUser($user);
             $validator = $this->get('validator');
-            $listErrors = $validator->validate($capture->getImage());
+            $listErrors = $validator->validate($capture);
             if(count($listErrors) > 0)
             {
                 return new Response((string) $listErrors);
@@ -71,7 +68,8 @@ class CaptureController extends Controller
             else 
             {
                 $naoManager->addOrModifyEntity($capture);
-                return new Response('L\'observation a été ajoutée');
+                $this->get('session')->getFlashBag()->add('success', "Votre observation a été ajoutée avec succès !");
+                return $this->redirectToRoute('add_image_on_capture', ['id' => $capture->getId()]);
             }
         }
         $title = 'Ajouter une observation';
@@ -88,30 +86,66 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/valider-observation/{id}", name="validerObservation", requirements={"id" = "\d+"})
+     * @Route(path="ajout-image-observation/{id}", name="add_image_on_capture")
      * @param Request $request
+     * @param Capture $capture
+     * @param NAOManager $manager
+     * @ParamConverter("capture", class="App\Entity\Capture")
      * @return Response
      */
-    public function validateCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, $id)
+    public function addImageOnCapture(Request $request, Capture $capture, NAOManager $manager)
     {
-        $em = $this->getDoctrine()->getManager();
-        $capture = $em->getRepository(Capture::class)->findOneById($id);
-
-        $form = $this->createForm(ValidateCaptureType::class);
+        $form = $this->createForm(CaptureImageType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            dump($form->getData());
+            $uploadedFile = $form->getData()['image'];
+            $image = $this->get('app.avatar_service')->buildImage($uploadedFile, $this->getParameter('bird_directory'));
+            $capture->setImage($image);
+            $manager->addOrModifyEntity($capture);
+            $this->get('session')->getFlashBag()->add('success', "Image ajoutée à l'observation !");
+            return $this->redirectToRoute('compteUtilisateur');
+        }
+        return $this->render(
+            'Capture/addImageOnCapture.html.twig',
+            array(
+                'form' => $form->createView(),
+                'capture' => $capture
+            )
+        );
+    }
+
+    /**
+     * @Route("/valider-observation/{id}", name="validerObservation", requirements={"id" = "\d+"})
+     * @param Request $request
+     * @param Capture $capture
+     * @param NAOManager $naoManager
+     * @return Response
+     */
+    public function validateCaptureAction(Request $request, Capture $capture, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, $id)
+    {
+        $form = $this->createForm(ValidateCaptureType::class, $capture);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            dump($form->getData());
+            die;
             $validator = $this->get('validator');
             $list_errors = $validator->validate($capture);
             if (count($list_errors) > 0) {
                 return $this->redirectToRoute('validerObservation', array('list_errors' => $list_errors));
             }
             if ($form->get('validate')->isClicked()) {
-                dump($form->getData());
+                $naoCaptureManager->validateCapture($capture, $this->getUser());
+                dump($capture);
                 die('validating');
             } elseif ($form->get('waitingForValidation')->isClicked()) {
+                $capture->setStatus('waiting_for_validation');
+                dump($capture);
                 die('waiting');
             } elseif ($form->get('remove')->isClicked()) {
-                die('remove');
+                $naoManager->removeEntity($capture);
+                $this->get('session')->getFlashBag()->add('success', "Observation supprimée !");
+                return $this->redirectToRoute('compteUtilisateur');
             } else {
                 die('nothing');
             }
@@ -149,19 +183,17 @@ class CaptureController extends Controller
                 return $this->redirectToRoute('espaceAdministration');
             }
         }*/
-
         $user = $this->getUser();
         $userRole = $naoUserManager->getRoleFR($user);
         $role = $naoUserManager->getNaturalistOrParticularRole($user);
-        $title = 'Valider une observation';
 
         return $this->render(
             'Capture\addModifyOrValidateCapture.html.twig',
             array(
                 'form' => $form->createView(),
+                'capture' => $capture,
                 'userRole' => $userRole,
-                'role' => $role,
-                'titre' => $title
+                'role' => $role
             )
         );
     }

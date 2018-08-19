@@ -1,0 +1,10 @@
+{% extends "layout.html.twig" %}
+
+{% block body %}
+    <h1>Ajout image sur observation</h1>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_widget(form) }}
+    <button type="submit">Ajouter l'image</button>
+    {{ form_end(form) }}
+{% endblock %}

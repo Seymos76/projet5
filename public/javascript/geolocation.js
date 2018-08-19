@@ -15,9 +15,12 @@ $( function() {
 
 		//Ajout de l'adresse à partir de la latitude et de la longitude
 		$.getJSON('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude + '', function( data ) {
-			var address = data.address.house_number + ' ' + data.address.road;
+			console.log(data.address);
+			var number = data.address.house_number ? data.address.house_number : data.address.road;
+			var street = data.address.road ? data.address.road : data.address.suburb;
+			var address = number + ' ' + street;
 			var zipcode = data.address.postcode;
-			var town = data.address.town;
+			var town = data.address.city_district ? data.address.city_district : data.address.village;
 			var region = data.address.state;
 			$('#'+ roles +'_capture_address').val(address);
 			$('#'+ roles +'_capture_zipcode').val(zipcode);

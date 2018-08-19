@@ -2,10 +2,11 @@
 
 {% extends "layout.html.twig" %}
 
-{% block title %}{{ titre }} - Compte {{ userRole }} {% endblock %}
+{% block title %}Valider une observation - Compte {{ userRole }} {% endblock %}
 {% block body %}
-	<h1>{{ titre }}</h1>
+	<h1>Valider une observation</h1>
     <h2 id="userRole" data-userrole={{ role }}> Compte {{ userRole }}</h2>
+    <img src="{{ asset('uploads/bird/' ~ capture.image.filename) }}" alt="" height="150">
     {{ form(form) }}
 {% endblock %}
 {% block javascripts %}

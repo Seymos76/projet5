@@ -107,7 +107,7 @@ class Capture
     private $validated_by;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", orphanRemoval=true, cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      * @Assert\Image()
      */

@@ -35,10 +35,6 @@ class ParticularCaptureType extends AbstractType
                 'label' => ' ',
                 'placeholder' => 'Sélectionner un oiseau',
             ))
-            ->add('image',            FileType::class, array(
-                'label' => 'Ajouter une image :',
-                'required'   => false,
-            ))
             ->add('content',            TextareaType::class, array(
                 'label' => 'Observation :',
             ))
@@ -69,10 +65,13 @@ class ParticularCaptureType extends AbstractType
                     'placeholder' => 'Code postal',
                 )
             ))
-            ->add('city',        TextType::class, array(
-                'label' => ' ',
-                'required' => false,
-                'attr' => array(
+            ->add(
+                'city',
+                TextType::class,
+                array(
+                    'label' => ' ',
+                    'required' => false,
+                    'attr' => array(
                     'placeholder' => 'Ville',
                 )
             ))
@@ -90,7 +89,7 @@ class ParticularCaptureType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => null
+            'data_class' => Capture::class
         ));
     }
 }
