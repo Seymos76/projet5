@@ -25,7 +25,7 @@ class HomeController extends Controller
 	{
 		$captures = $naoCaptureManager->getLastPublishedCaptures();
 
-        return $this->render('homePage.html.twig', array('captures' => $captures,));
+        return $this->render('default/index.html.twig', array('captures' => $captures,));
 	}
 
     /**
