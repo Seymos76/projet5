@@ -48,25 +48,25 @@ class CaptureRepository extends ServiceEntityRepository
     }
     */
 
-    public function getPublishedCaptures()
+    public function getPublishedCaptures($publishedStatus, $validatedStatus)
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.status = :status1')
-            ->setParameter('status1', 'published')
+            ->setParameter('status1', $publishedStatus)
             ->orWhere('c.status = :status2')
-            ->setParameter('status2', 'validated')
+            ->setParameter('status2', $validatedStatus)
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function getPublishedCapturesPerPage($elementsPerPage, $firstEntrance)
+    public function getPublishedCapturesPerPage($elementsPerPage, $firstEntrance, $publishedStatus, $validatedStatus)
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.status = :status1')
-            ->setParameter('status1', 'published')
+            ->setParameter('status1', $publishedStatus)
             ->orWhere('c.status = :status2')
-            ->setParameter('status2', 'validated')
+            ->setParameter('status2', $validatedStatus)
             ->getQuery()
             ->setMaxResults($elementsPerPage)
             ->setFirstResult($firstEntrance)
@@ -74,13 +74,13 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getLastPublishedCaptures($numberElements)
+    public function getLastPublishedCaptures($numberElements, $publishedStatus, $validatedStatus)
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.status = :status1')
-            ->setParameter('status1', 'published')
+            ->setParameter('status1', $publishedStatus)
             ->orWhere('c.status = :status2')
-            ->setParameter('status2', 'validated')
+            ->setParameter('status2',  $validatedStatus)
             ->orderBy('c.created_date', 'desc')
             ->getQuery()
             ->setMaxResults($numberElements)
@@ -88,15 +88,15 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getPublishedCapture($id)
+    public function getPublishedCapture($id, $draftStatus, $waitingStatus)
     {
         return $this->createQueryBuilder('c')
             ->where('c.id = :id')
             ->setParameter('id', $id)
             ->andWhere('c.status != :status1')
-            ->setParameter('status1', 'draft')
+            ->setParameter('status1', $draftStatus)
             ->andWhere('c.status != :status2')
-            ->setParameter('status2', 'waiting_for_validation')
+            ->setParameter('status2', $waitingStatus)
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -124,15 +124,15 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getBirdPublishedCaptures($bird)
+    public function getBirdPublishedCaptures($bird, $draftStatus, $waitingStatus)
     {
         return $this->createQueryBuilder('c')
             ->where('c.bird = :bird')
             ->setParameter('bird', $bird)
             ->andWhere('c.status != :status1')
-            ->setParameter('status1', 'draft')
+            ->setParameter('status1', $draftStatus)
             ->andWhere('c.status != :status2')
-            ->setParameter('status2', 'waiting_for_validation')
+            ->setParameter('status2', $waitingStatus)
             ->getQuery()
             ->getResult()
         ;
@@ -160,14 +160,14 @@ class CaptureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function countPublishedCaptures()
+    public function countPublishedCaptures($publishedStatus, $validatedStatus)
     {
         $qb = $this->createQueryBuilder('t');
         $qb->select('count(t.id)');
         $qb->andWhere('t.status = :status1');
-        $qb->setParameter('status1', 'published');
+        $qb->setParameter('status1', $publishedStatus);
         $qb->orWhere('t.status = :status2');
-        $qb->setParameter('status2', 'validated');
+        $qb->setParameter('status2', $validatedStatus);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -194,7 +194,7 @@ class CaptureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function countSearchCapturesByBirdAndRegion($bird, $region)
+    public function countSearchCapturesByBirdAndRegion($bird, $region, $draftStatus, $waitingStatus)
     {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
@@ -203,42 +203,42 @@ class CaptureRepository extends ServiceEntityRepository
         $qb->andWhere('c.region = :region');
         $qb->setParameter('region', $region);
         $qb->andWhere('c.status != :status1');
-        $qb->setParameter('status1', 'draft');
+        $qb->setParameter('status1', $draftStatus);
         $qb->andWhere('c.status != :status2');
-        $qb->setParameter('status2', 'waiting_for_validation');
+        $qb->setParameter('status2', $waitingStatus);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function countSearchCapturesByBird($bird)
+    public function countSearchCapturesByBird($bird, $draftStatus, $waitingStatus)
     {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         $qb->where('c.bird = :bird');
         $qb->setParameter('bird', $bird);
         $qb->andWhere('c.status != :status1');
-        $qb->setParameter('status1', 'draft');
+        $qb->setParameter('status1', $draftStatus);
         $qb->andWhere('c.status != :status2');
-        $qb->setParameter('status2', 'waiting_for_validation');
+        $qb->setParameter('status2', $waitingStatus);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function countSearchCapturesByRegion($region)
+    public function countSearchCapturesByRegion($region, $draftStatus, $waitingStatus)
     {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         $qb->andWhere('c.region = :region');
         $qb->setParameter('region', $region);
         $qb->andWhere('c.status != :status1');
-        $qb->setParameter('status1', 'draft');
+        $qb->setParameter('status1', $draftStatus);
         $qb->andWhere('c.status != :status2');
-        $qb->setParameter('status2', 'waiting_for_validation');
+        $qb->setParameter('status2', $waitingStatus);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfElementsPerPage, $firstEntrance)
+    public function searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfElementsPerPage, $firstEntrance, $draftStatus, $waitingStatus)
     {
         return $this->createQueryBuilder('c')
             ->where('c.bird = :bird')
@@ -246,9 +246,9 @@ class CaptureRepository extends ServiceEntityRepository
             ->andWhere('c.region = :region')
             ->setParameter('region', $region)
             ->andWhere('c.status != :status1')
-        	->setParameter('status1', 'draft')
+        	->setParameter('status1', $draftStatus)
         	->andWhere('c.status != :status2')
-        	->setParameter('status2', 'waiting_for_validation')
+        	->setParameter('status2', $waitingStatus)
             ->getQuery()
             ->setMaxResults($numberOfElementsPerPage)
             ->setFirstResult($firstEntrance)
@@ -256,15 +256,15 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function searchCapturesByBirdPerPage($bird, $numberOfElementsPerPage, $firstEntrance)
+    public function searchCapturesByBirdPerPage($bird, $numberOfElementsPerPage, $firstEntrance, $draftStatus, $waitingStatus)
     {
         return $this->createQueryBuilder('c')
             ->where('c.bird = :bird')
             ->setParameter('bird', $bird)
             ->andWhere('c.status != :status1')
-        	->setParameter('status1', 'draft')
+        	->setParameter('status1', $draftStatus)
         	->andWhere('c.status != :status2')
-        	->setParameter('status2', 'waiting_for_validation')
+        	->setParameter('status2', $waitingStatus)
             ->getQuery()
             ->setMaxResults($numberOfElementsPerPage)
             ->setFirstResult($firstEntrance)
@@ -272,15 +272,15 @@ class CaptureRepository extends ServiceEntityRepository
         ;
     }
 
-    public function searchCapturesByRegionPerPage($region, $numberOfElementsPerPage, $firstEntrance)
+    public function searchCapturesByRegionPerPage($region, $numberOfElementsPerPage, $firstEntrance, $draftStatus, $waitingStatus)
     {
         return $this->createQueryBuilder('c')
             ->Where('c.region = :region')
             ->setParameter('region', $region)
             ->andWhere('c.status != :status1')
-        	->setParameter('status1', 'draft')
+        	->setParameter('status1', $draftStatus)
         	->andWhere('c.status != :status2')
-        	->setParameter('status2', 'waiting_for_validation')
+        	->setParameter('status2', $waitingStatus)
             ->getQuery()
             ->setMaxResults($numberOfElementsPerPage)
             ->setFirstResult($firstEntrance)

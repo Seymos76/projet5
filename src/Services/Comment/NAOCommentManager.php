@@ -8,48 +8,62 @@ use App\Services\NAOManager;
 use App\Services\NAOPagination;
 use App\Entity\Comment;
 
-class NAOCommentManager extends NAOManager
+class NAOCommentManager
 {
 	private $naoPagination;
 	private $naoManager;
+	private $publishedStatus;
+	private $reportedStatus;
 
 	public function __construct(NAOPagination $naoPagination, NAOManager $naoManager)
 	{
 		$this->naoManager = $naoManager;
 		$this->naoPagination = $naoPagination;
+		$this->publishedStatus = true;
+		$this->reportedStatus = false;
+	}
+
+	public function getPublishedStatus()
+	{
+		return $this->publishedStatus;
+	}
+
+	public function getReportedStatus()
+	{
+		return $this->reportedStatus;
 	}
 
 	public function getPublishedComments()
 	{
-		return $publishedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished(true);
+		return $publishedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished($this->publishedStatus);
 	}
 
 	public function getPublishedCommentsPerPage($page, $numberOfPublishedComments, $nbElementsPerPage)
 	{
 		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfPublishedComments, $nbElementsPerPage);
 
-		return $publishedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage(true, $nbElementsPerPage, $firstEntrance);
+		return $publishedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage($this->publishedStatus, $nbElementsPerPage, $firstEntrance);
 	}
 
 	public function getReportedComments()
 	{
-		return $reportedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished(false);
+		return $reportedComments = $this->naoManager->getEm()->getRepository(Comment::class)->findByPublished($this->reportedStatus);
 	}
 
 	public function getReportedCommentsPerPage($page, $numberOfReportedComments, $nbElementsPerPage)
 	{
 		$firstEntrance = $this->naoPagination->getFirstEntrance($page, $numberOfReportedComments, $nbElementsPerPage);
 
-		return $reportedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage(false, $nbElementsPerPage, $firstEntrance);
+		return $reportedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage($this->reportedStatus, $nbElementsPerPage, $firstEntrance);
 	}
 
 	public function reportComment(Comment $comment)
 	{
-		$comment->setPublished(false);
+		$comment->setPublished($this->reportedStatus);
 	}
 
 	public function ignoreReportedComment(Comment $comment)
 	{
-		$comment->setPublished(true);
+		$comment->setPublished($this->publishedStatus);
 	}
 }

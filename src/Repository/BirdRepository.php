@@ -99,33 +99,33 @@ class BirdRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function countSearchBirdsByRegion($region)
+    public function countSearchBirdsByRegion($region, $draftStatus, $waitingStatus)
     {
         $qb = $this->createQueryBuilder('b');
         $qb->select('count(b.id)');
         $qb->join('b.captures', 'c');
-        $qb->andWhere('c.region = :region');
+        $qb->where('c.region = :region');
         $qb->setParameter('region', $region);
         $qb->andWhere('c.status != :status1');
-        $qb->setParameter('status1', 'draft');
+        $qb->setParameter('status1', $draftStatus);
         $qb->andWhere('c.status != :status2');
-        $qb->setParameter('status2', 'waiting_for_validation');
+        $qb->setParameter('status2', $waitingStatus);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function searchBirdsByRegionPerPage($region, $numberOfElementsPerPage, $firstEntrance)
+    public function searchBirdsByRegionPerPage($region, $elementsPerPage, $firstEntrance, $draftStatus, $waitingStatus)
     {
         return $this->createQueryBuilder('b')
             ->join('b.captures', 'c')
-            ->where('c.region = :region')
+            ->andWhere('c.region = :region')
             ->setParameter('region', $region)
             ->andWhere('c.status != :status1')
-            ->setParameter('status1', 'draft')
+            ->setParameter('status1', $draftStatus)
             ->andWhere('c.status != :status2')
-            ->setParameter('status2', 'waiting_for_validation')
+            ->setParameter('status2', $waitingStatus)
             ->getQuery()
-            ->setMaxResults($numberOfElementsPerPage)
+            ->setMaxResults($elementsPerPage)
             ->setFirstResult($firstEntrance)
             ->getResult()
         ;

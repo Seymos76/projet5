@@ -6,21 +6,35 @@ namespace App\Services\Comment;
 
 use App\Services\NAOManager;
 use App\Entity\Comment;
+use App\Services\Comment\NAOCommentManager;
 
-class NAOCountComments extends NAOManager
+class NAOCountComments 
 {	
+	private $naoManager;
+	private $publishedStatus;
+	private $reportedStatus;
+	private $naoCommentManager;
+
+	public function __construct(NAOManager $naoManager, NAOCommentManager $naoCommentManager)
+	{
+		$this->naoManager = $naoManager;
+		$this->naoCommentManager = $naoCommentManager;
+		$this->publishedStatus = $this->naoCommentManager->getPublishedStatus();
+		$this->reportedStatus = $this->naoCommentManager->getReportedStatus();
+	}
+
 	public function countPublishedComments()
 	{
-		return $numberOfPublishedComments = $this->em->getRepository(Comment::class)->countPublishedOrReportedComments(true);
+		return $numberOfPublishedComments = $this->naoManager->getEm()->getRepository(Comment::class)->countPublishedOrReportedComments($this->publishedStatus);
 	}
 
 	public function countReportedComments()
 	{
-		return $numberOfReportedComments = $this->em->getRepository(Comment::class)->countPublishedOrReportedComments(false);
+		return $numberOfReportedComments = $this->naoManager->getEm()->getRepository(Comment::class)->countPublishedOrReportedComments($this->reportedStatuss);
 	} 
 
 	public function countCapturePublishedComments($capture)
 	{
-		return $captureComments = $this->em->getRepository(Comment::class)->countCaptureCommentsByStatus($capture, true);
+		return $captureComments = $this->naoManager->getEm()->getRepository(Comment::class)->countCaptureCommentsByStatus($capture, $this->publishedStatus );
 	}
 }

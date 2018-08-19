@@ -7,16 +7,23 @@ namespace App\Services\Bird;
 use App\Services\NAOPagination;
 use App\Services\NAOManager;
 use App\Entity\Bird;
+use App\Services\Capture\NAOCaptureManager;
 
 class NAOBirdManager
 {
 	private $naoPagination;
 	private $naoManager;
+	private $waitingStatus;
+	private $draftStatus;
+	private $naoCaptureManager
 
-	public function __construct(NAOPagination $naoPagination, NAOManager $naoManager)
+	public function __construct(NAOPagination $naoPagination, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager)
 	{
 		$this->naoPagination = $naoPagination;
 		$this->naoManager = $naoManager;
+		$this->naoCaptureManager = $naoCaptureManager;
+		$this->waitingStatus = $this->naoCaptureManager->getWaitingStatus();
+		$this->draftStatus = $this->naoCaptureManager->getDraftStatus();
 	}
 
 	public function getBirdsPerPage($page, $numberOfBirds, $numberOfBirdsPerPage)
@@ -37,7 +44,7 @@ class NAOBirdManager
 	{
 		$firstEntrance = $this->naoPagination->getFirstEntrance($pageNumber, $numberOfSearchBirds, $numberOfBirdsPerPage);
 
-		return $searchBirdsByRegionPerPage = $this->naoManager->getEm()->getRepository(Bird::class)->searchBirdsByRegionPerPage($region, $numberOfBirdsPerPage, $firstEntrance);
+		return $searchBirdsByRegionPerPage = $this->naoManager->getEm()->getRepository(Bird::class)->searchBirdsByRegionPerPage($region, $numberOfBirdsPerPage, $firstEntrance, $this->draftStatus, $this->waitingStatus);
 	}
 
 	public function getBirdByVernacularOrValidName($birdName)
