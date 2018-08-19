@@ -16,9 +16,7 @@ use App\Services\Capture\NAOShowMap;
 use App\Form\CommentType;
 use App\Form\Capture\SearchCaptureType;
 
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CaptureController extends Controller
 {
     /**
-     * @Route("observation/{id}", requirements={"id" = "\d+"}, name="observation")
+     * @Route("observation/{id}", requirements={"id" = "\d+"}, name="capture")
      * @return Response
      */
     public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments)
@@ -62,7 +60,7 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="observations")
+     * @Route("/observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="captures")
      * @return Response
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, NAOBirdManager $naoBirdManager, $pageNumber)
@@ -90,14 +88,14 @@ class CaptureController extends Controller
             $session->set('bird', $bird);
             $session->set('region', $region);
 
-            return $this->redirectToRoute('resultatRechercheObservations');
+            return $this->redirectToRoute('result_search_captures');
         }
 
         return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'birds' => $birds, 'regions' => $regions));
     }
 
     /**
-     * @Route("/resultat-recherche-observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="resultatRechercheObservations")
+     * @Route("/resultat-recherche-observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="result_search_captures")
      * @return Response
      */
     public function showCapturesSearchAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)

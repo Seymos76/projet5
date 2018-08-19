@@ -21,15 +21,13 @@ use Symfony\Component\HttpFoundation\Request;
 class AdminSpaceController extends Controller
 {
     /**
-     * @Route("/espace-administration/", name="espaceAdministration")
+     * @Route("/espace-administration/", name="admin_space")
      * @param Request $request
      * @return Response
      */
     public function showAdminSpaceAction(NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination, NAOUserManager $naoUserManager)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
     
         $userRole = $naoUserManager->getRoleFR($user);
 
@@ -52,15 +50,13 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/observations-publiees/{page}", defaults={"page"=1}, name="espaceAdminObservationsPubliees", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/observations-publiees/{page}", defaults={"page"=1}, name="admin_space_published_captures", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextPublishedCapturesAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
@@ -75,15 +71,13 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/observations-en-attente/{page}", defaults={"page"=1}, name="espaceAdminObservationsEnAttente", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/observations-en-attente/{page}", defaults={"page"=1}, name="admin_space_waiting_captures", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextWaitingCapturesAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
@@ -98,15 +92,13 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/commentaires-publies/{page}", defaults={"page"=1}, name="espaceAdminCommentairesPublies", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/commentaires-publies/{page}", defaults={"page"=1}, name="admin_space_published_comments", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextPublishedCommentsAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
@@ -121,16 +113,13 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/espace-administration/commentaires-signales/{page}", defaults={"page"=1},  name="espaceAdminCommentairesSignales", requirements={"page" = "\d+"})
+     * @Route("/espace-administration/commentaires-signales/{page}", defaults={"page"=1},  name="admin_space_reported_comments", requirements={"page" = "\d+"})
      * @param Request $request
      * @return Response
      */
     public function showNextReportedCommentsAction($page, NAOCaptureManager $naoCaptureManager, NAOCommentManager $naoCommentManager, NAOCountCaptures $naoCountCaptures, NAOCountComments $naoCountComments, NAOPagination $naoPagination)
     {
-        /*$user = $this->getUser();*/
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneById('4');
-
+        $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
 
@@ -145,7 +134,7 @@ class AdminSpaceController extends Controller
     }
 
     /**
-     * @Route("/ignorer-commentaire-signale/{id}", name="ignorerCommentaireSignale", requirements={"id" = "\d+"})
+     * @Route("/ignorer-commentaire-signale/{id}", name="ignore_reported_comment", requirements={"id" = "\d+"})
      * @param Request $request
      * @return Response
      */
@@ -157,11 +146,11 @@ class AdminSpaceController extends Controller
         $naoCommentManager->ignoreReportedComment($comment);
         $naoManager->addOrModifyEntity($comment);
 
-        return $this->redirectToRoute('espaceAdministration');
+        return $this->redirectToRoute('admin_space');
     }
 
     /**
-     * @Route("/supprimer-commentaire/{id}", name="supprimerCommentaire", requirements={"id" = "\d+"})
+     * @Route("/supprimer-commentaire/{id}", name="remove_comment", requirements={"id" = "\d+"})
      * @param Request $request
      * @return Response
      */
@@ -172,6 +161,6 @@ class AdminSpaceController extends Controller
 
         $naoManager->removeEntity($comment);
 
-        return $this->redirectToRoute('espaceAdministration');
+        return $this->redirectToRoute('admin_space');
     }
 }

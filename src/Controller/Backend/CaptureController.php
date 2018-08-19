@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CaptureController extends Controller
 {
     /**
-     * @Route("ajouter-observation", name="ajouterObservation")
+     * @Route("ajouter-observation", name="add_capture")
      * @param Request $request
      * @param NAOManager $naoManager
      * @param NAOCaptureManager $naoCaptureManager
@@ -78,7 +78,7 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/valider-observation/{id}", name="validerObservation", requirements={"id" = "\d+"})
+     * @Route("/valider-observation/{id}", name="validate_capture", requirements={"id" = "\d+"})
      * @param Request $request
      * @return Response
      */
@@ -115,7 +115,7 @@ class CaptureController extends Controller
                     $naoManager->removeEntity($capture);
                 }
 
-                return $this->redirectToRoute('espaceAdministration');
+                return $this->redirectToRoute('admin_space');
             }
         }
 
@@ -127,7 +127,7 @@ class CaptureController extends Controller
     }
 
     /**
-     * @Route("/modifier-observation", name="modifierObservation")
+     * @Route("/modifier-observation", name="modify_capture")
      * @param Request $request
      * @return Response
      */

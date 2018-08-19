@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 class UserAccountController extends Controller
 {
     /**
-     * @Route("/mon-compte/{page}", defaults={"page" = 1}, name="compteUtilisateur")
+     * @Route("/mon-compte/{page}", defaults={"page" = 1}, name="user_account")
      * @param NAOPagination $naoPagination
      * @param NAOCaptureManager $naoCaptureManager
      * @param NAOCountCaptures $naoCountCaptures
@@ -47,14 +47,14 @@ class UserAccountController extends Controller
 
         if ($biographyType->isSubmitted() && $biographyType->isValid()) {
             $this->get('app.nao_user_manager')->changeBiography($user, $biographyType->getData()['biography']);
-            return $this->redirectToRoute('compteUtilisateur');
+            return $this->redirectToRoute('user_account');
         }
 
         $changePasswordType = $this->createForm(ChangePasswordType::class);
         $changePasswordType->handleRequest($request);
         if ($changePasswordType->isSubmitted() && $changePasswordType->isValid()) {
             $this->get('app.nao_password_manager')->changePassword($user, $changePasswordType->getData()['new_password']);
-            return $this->redirectToRoute('compteUtilisateur');
+            return $this->redirectToRoute('user_account');
         }
 
     	return $this->render(

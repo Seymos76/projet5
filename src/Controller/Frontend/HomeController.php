@@ -8,12 +8,8 @@ use App\Form\MessageType;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\Capture\NAOShowMap;
-use App\Services\NAOPagination;
 
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,16 +18,14 @@ use Symfony\Component\HttpFoundation\Request;
 class HomeController extends Controller
 {
 	/**
-     * @Route("/", name="accueil")
+     * @Route("/", name="home")
      * @return Response
      */
-	public function showHomeAction(NAOPagination $naoPagination)
+	public function showHomeAction(NAOCaptureManager $naoCaptureManager)
 	{
-		$numberCaptures = $naoPagination->getNbHomeCapturesPerPage();
-		$em = $this->getDoctrine()->getManager();
-		$captures = $em->getRepository(Capture::class)->getLastPublishedCaptures($numberCaptures);
+		$captures = $naoCaptureManager->getLastPublishedCaptures();
 
-        return $this->render('default/index.html.twig', array('captures' => $captures,));
+        return $this->render('homePage.html.twig', array('captures' => $captures,));
 	}
 
     /**

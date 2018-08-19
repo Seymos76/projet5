@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 class BirdController extends Controller
 {
     /**
-     * @Route("repertoire/{letter}/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertoireParLettre")
+     * @Route("repertoire/{letter}/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertory_by_letter")
      * @return Response
      */
     public function showRepertoryByLetterAction($letter, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)
@@ -37,7 +37,7 @@ class BirdController extends Controller
     }
 
     /**
-     * @Route("repertoire/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertoire")
+     * @Route("repertoire/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertory")
      * @return Response
      */
     public function showRepertoryAction(Request $request, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)
@@ -57,14 +57,14 @@ class BirdController extends Controller
         {
             $region = $request->get('region');
 
-            return $this->redirectToRoute('resultatRechercheOiseaux', array('region' => $region,));
+            return $this->redirectToRoute('result_search_birds', array('region' => $region,));
         }
 
         return $this->render('Bird\repertory.html.twig', array('birds' => $birds, 'nbRepertoryPages' => $nbRepertoryPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'page' => $page, 'regions' => $regions,)); 
     }
 
     /**
-     * @Route("resultat-recherche-oiseaux/{region}/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="resultatRechercheOiseaux")
+     * @Route("resultat-recherche-oiseaux/{region}/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="result_search_birds")
      * @return Response
      */
     public function showBirdsByRegionAction(Request $request, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page, $region)
@@ -84,7 +84,7 @@ class BirdController extends Controller
     }
 
     /**
-     * @Route("oiseau/{id}", requirements={"id" = "\d+"}, name="oiseau")
+     * @Route("oiseau/{id}", requirements={"id" = "\d+"}, name="bird")
      * @return Response
      */
     public function showBird($id)
