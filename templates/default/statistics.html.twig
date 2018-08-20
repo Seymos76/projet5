@@ -1,0 +1,16 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Statistiques{% endblock %}
+{% block body %}
+	<h1>Quelques données</h1>
+	<section>
+		<h2>En général</h2>
+    	<p>Nombre d'oiseaux : {{numberOfBirds}}</p>
+    	<p>Nombre total d'observations publiées : {{numberOfPublishedCaptures}}</p>
+    </section>
+    <section id="statisticsByYear">
+    </section>
+{% endblock %}
+{% block javascripts %}
+	<script type="text/javascript" src="{{ asset('javascript/statistics.js') }}" ></script>
+{% endblock %}
