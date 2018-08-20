@@ -128,6 +128,7 @@ class CaptureController extends Controller
      */
     public function validateCaptureAction(Request $request, Capture $capture, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, $id)
     {
+        $form_image = $this->createForm(CaptureImageType::class);
         $form = $this->createForm(ValidateCaptureType::class, $capture);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -160,6 +161,7 @@ class CaptureController extends Controller
             'Capture\addModifyOrValidateCapture.html.twig',
             array(
                 'form' => $form->createView(),
+                'form_image' => $form_image->createView(),
                 'capture' => $capture,
                 'userRole' => $userRole,
                 'role' => $role

@@ -6,8 +6,14 @@
 {% block body %}
 	<h1>Valider une observation</h1>
     <h2 id="userRole" data-userrole={{ role }}> Compte {{ userRole }}</h2>
-    {% if capture is defined %}
+    {% if capture.image is defined %}
         <img src="{{ asset('uploads/bird/' ~ capture.image.filename) }}" alt="" height="150">
+    {% else %}
+        {{ form_start(form_image) }}
+        {{ form_errors(form_image) }}
+        {{ form_widget(form_image) }}
+        <button type="submit">Ajouter une image</button>
+        {{ form_end(form_image) }}
     {% endif %}
     {{ form(form) }}
 {% endblock %}
