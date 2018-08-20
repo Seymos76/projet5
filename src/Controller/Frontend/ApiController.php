@@ -55,4 +55,15 @@ class ApiController extends Controller
 
         return $naoShowMap->formatPublishedCaptures($lastCaptures);
     }
+
+    /**
+     * @Route(path="/api/capturepublishedcomments/{id}", name="app_capturepublishedcomments", requirements={"id" = "\d+"})
+     * @Method("GET")
+     */
+    public function getCapturePublichedComments($id, NAOShowComments $naoShowComments, NAOCommentManager $naoCommentManager)
+    {
+        $comments = $naoCommentManager->getCapturePublishedComments($id);
+
+        return $capturepublishedcomments = $naoShowComments->formatCapturePublishedComments($comments);
+    }
 }
