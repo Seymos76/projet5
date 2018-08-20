@@ -3,6 +3,7 @@
 namespace App\Controller\Backend;
 
 use App\Entity\Capture;
+use App\Entity\Image;
 use App\Entity\User;
 use App\Form\Capture\CaptureImageType;
 use App\Services\NAOManager;
@@ -22,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CaptureController extends Controller
 {
     /**
-     * @Route("ajouter-observation", name="ajouterObservation")
+     * @Route("/ajouter-observation", name="ajouterObservation")
      * @param Request $request
      * @param NAOManager $naoManager
      * @param NAOCaptureManager $naoCaptureManager
@@ -57,7 +58,7 @@ class CaptureController extends Controller
         if ($form->isSubmitted() && $form->isValid())
         {
             /** @var Capture $capture */
-            $capture = $this->get('app.nao_capture_manager')->setStatusOnCapture($form->getData(), $user);
+            $capture = $naoCaptureManager->setStatusOnCapture($form->getData(), $user);
             $capture->setUser($user);
             $validator = $this->get('validator');
             $listErrors = $validator->validate($capture);
@@ -80,7 +81,7 @@ class CaptureController extends Controller
                 'form' => $form->createView(),
                 'userRole' => $userRole,
                 'role' => $role,
-                'titre' => $title
+                'title' => $title
             )
         );
     }
@@ -101,7 +102,7 @@ class CaptureController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             dump($form->getData());
             $uploadedFile = $form->getData()['image'];
-            $image = $this->get('app.avatar_service')->buildImage($uploadedFile, $this->getParameter('bird_directory'));
+            $image = $this->get('app.image_manager')->buildImage($uploadedFile, $this->getParameter('bird_directory'));
             $capture->setImage($image);
             $manager->addOrModifyEntity($capture);
             $this->get('session')->getFlashBag()->add('success', "Image ajoutée à l'observation !");
@@ -156,17 +157,36 @@ class CaptureController extends Controller
         $user = $this->getUser();
         $userRole = $naoUserManager->getRoleFR($user);
         $role = $naoUserManager->getNaturalistOrParticularRole($user);
+        $title = "Valider une observation";
 
         return $this->render(
-            'Capture\addModifyOrValidateCapture.html.twig',
+            'Capture\validate_capture.html.twig',
             array(
                 'form' => $form->createView(),
                 'form_image' => $form_image->createView(),
                 'capture' => $capture,
+                'title' => $title,
                 'userRole' => $userRole,
                 'role' => $role
             )
         );
+    }
+
+    /**
+     * @Route(path="delete-capture-image", name="delete_capture_image")
+     * @param Request $request
+     * @param NAOManager $manager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteCaptureImage(Request $request, NAOManager $manager)
+    {
+        if ($request->isMethod("POST")) {
+            $capture = $this->getDoctrine()->getRepository(Capture::class)->find($request->get('capture'));
+            $image = $this->getDoctrine()->getRepository(Image::class)->find($capture->getImage());
+            $this->get('app.image_manager')->removeCaptureImage($capture, $image, $manager);
+            $this->get('session')->getFlashBag()->add('success', "L'image de l'observation a été supprimée !");
+            return $this->redirectToRoute('validerObservation', array('id' => $capture->getId()));
+        }
     }
 
     /**
@@ -199,8 +219,17 @@ class CaptureController extends Controller
 
         $user = $this->getUser();
         $userRole = $naoUserManager->getRoleFR($user);
+        $role = $naoUserManager->getNaturalistOrParticularRole($user);
         $title = 'Modifier une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title));
+        return $this->render(
+            'Capture\addModifyOrValidateCapture.html.twig',
+            array(
+                'form' => $form->createView(),
+                'userRole' => $userRole,
+                'role' => $role,
+                'title' => $title
+            )
+        );
     }
 }

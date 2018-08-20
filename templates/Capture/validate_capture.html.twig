@@ -1,21 +1,19 @@
-{# templates/Capture/addModifyOrValidate.html.twig #}
-
 {% extends "layout.html.twig" %}
 
 {% block title %}{{ title }} - Compte {{ userRole }} {% endblock %}
 {% block body %}
-	<h1>{{ title }}</h1>
+    <h1>{{ title }}</h1>
     <h2 id="userRole" data-userrole={{ role }}> Compte {{ userRole }}</h2>
-    {% if capture.image is defined %}
+    {% if capture.image is not null %}
         <img src="{{ asset('uploads/bird/' ~ capture.image.filename) }}" alt="" height="150">
+        <form action="{{ path('delete_capture_image') }}" method="post">
+            <input type="hidden" name="capture" value="{{ capture.id }}">
+            <button type="submit">Supprimer l'image</button>
+        </form>
     {% else %}
-        Pas d'image pour cette observation
+        Image non disponible.
     {% endif %}
-    {{ form_start(form) }}
-    {{ form_errors(form) }}
-    {{ form_widget(form) }}
-    <button type="submit">{{ title }}</button>
-    {{ form_end(form) }}
+    {{ form(form) }}
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript" src="{{ asset('javascript/geolocation.js') }}"></script>

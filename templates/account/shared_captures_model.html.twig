@@ -25,9 +25,9 @@
 			<p>Observation </p>
 			{% for capture in captures %}
 				{% if capture.status == 'published' or capture.status == 'validated' %}
-					<a href="{{ path('observation', {id: capture.id}) }}"><li>Observation {{ capture.id }}</li></a>
+					<a href="{{ path('observation', {'id': capture.id}) }}"><li>Observation {{ capture.id }}</li></a>
 				{% elseif capture.status == 'draft' %}
-					<a href="{{ path('ajouterObservation', {id: capture.id}) }}"><li>Observation {{ capture.id }}</li></a>
+					<a href="{{ path('ajouterObservation', {'id': capture.id}) }}"><li>Observation {{ capture.id }}</li></a>
 				{% else %}
 					<li>Observation {{ capture.id }}</li>
 				{% endif %}

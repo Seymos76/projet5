@@ -339,4 +339,9 @@ class Capture
     {
         return $this->image;
     }
+
+    public function removeImage()
+    {
+        $this->image = null;
+    }
 }

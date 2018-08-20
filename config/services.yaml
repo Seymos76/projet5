@@ -41,8 +41,8 @@ services:
         autowire: true
         public: true
 
-    app.avatar_service:
-        class: App\Services\Avatar
+    app.image_manager:
+        class: App\Services\ImageManager
         autowire: true
         public: true
         arguments:

@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Entity\Capture;
 use App\Entity\Image;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
-class Avatar
+class ImageManager
 {
     private $manager;
 
@@ -62,16 +63,35 @@ class Avatar
         } else {
             return false;
         }
+    }
 
+    /**
+     * @param Capture $capture
+     * @param Image $image
+     * @param NAOManager $manager
+     * @return bool
+     */
+    public function removeCaptureImage(Capture $capture, Image $image, NAOManager $manager): bool
+    {
+        $capture->removeImage();
+        $current_image = $this->getContainer()->getParameter('bird_directory').'/'.$image->getFileName();
+        self::deleteFile($current_image);
+        $manager->removeEntity($image);
+        $manager->addOrModifyEntity($capture);
+        return true;
     }
 
     /**
      * @param $file
+     * @return bool
      */
     public function deleteFile($file)
     {
         if (file_exists($file)) {
             unlink($file);
+            return true;
+        } else {
+            return false;
         }
     }
 

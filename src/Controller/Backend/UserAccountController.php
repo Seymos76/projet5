@@ -13,6 +13,7 @@ use App\Services\Capture\NAOCaptureManager;
 use App\Services\Capture\NAOCountCaptures;
 use App\Services\NAOPagination;
 
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,10 +21,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class UserAccountController
+ * @package App\Controller\Backend
+ * @Route(path="/mon-compte")
+ */
 class UserAccountController extends Controller
 {
     /**
-     * @Route("/mon-compte/{page}", defaults={"page" = 1}, name="compteUtilisateur")
+     * @Route("/{page}", defaults={"page" = 1}, name="compteUtilisateur")
      * @param NAOPagination $naoPagination
      * @param NAOCaptureManager $naoCaptureManager
      * @param NAOCountCaptures $naoCountCaptures
@@ -88,11 +94,11 @@ class UserAccountController extends Controller
         if ($avatar_form->isSubmitted() && $avatar_form->isValid()) {
             // check if image exists
             if ($user->getAvatar() !== null) {
-                $this->get('app.avatar_service')->removeCurrentAvatar($this->getUser()->getUsername());
+                $this->get('app.image_manager')->removeCurrentAvatar($this->getUser()->getUsername());
             }
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $avatar_form->getData()['avatar'];
-            $image = $this->get('app.avatar_service')->buildImage($uploadedFile, $this->getParameter('avatar_directory'));
+            $image = $this->get('app.image_manager')->buildImage($uploadedFile, $this->getParameter('avatar_directory'));
             $user->setAvatar($image);
             $this->get('app.nao_manager')->addOrModifyEntity($user);
             $this->get('session')->getFlashBag()->add('success', "Votre avatar a bien été changé !");
@@ -107,7 +113,7 @@ class UserAccountController extends Controller
     }
 
     /**
-     * @Route(path="/upgrade/{username}", name="upgrade_to_naturalist")
+     * @Route(path="/upgrade-naturalist/{username}", name="upgrade_to_naturalist")
      * @ParamConverter("user", class="App\Entity\User")
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -115,6 +121,18 @@ class UserAccountController extends Controller
     public function upgradeToNaturalist(User $user)
     {
         $user->addRole(array("ROLE_NATURALIST"));
+        $this->get('app.nao_manager')->addOrModifyEntity($user);
+        return $this->redirectToRoute('compteUtilisateur');
+    }
+
+    /**
+     * @Route(path="/upgrade-admin/{username}", name="upgrade_to_admin")
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function upgradeToAdmin(User $user)
+    {
+        $user->addRole(array("ROLE_ADMIN"));
         $this->get('app.nao_manager')->addOrModifyEntity($user);
         return $this->redirectToRoute('compteUtilisateur');
     }
