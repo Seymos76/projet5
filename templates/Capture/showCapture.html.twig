@@ -24,19 +24,19 @@
 	<p>Publié par : {% if capture.user.avatar == null %} {{ capture.user.username }} {% else %} {{ capture.user.avatar }} {% endif %}</p>
 	{% if 'particular' in capture.user.roles %} <p>Validé par : {% if capture.validatedBy.avatar == null %} {{ capture.validatedBy.username }} {% else %} {{ capture.validatedBy.avatar }} {% endif %}</p> {% endif %}
 
-	<p>{% if numberOfCaptureComments == 1 %} Commentaire : {% elseif numberOfCaptureComments > 1 %} Commentaires : {% else %} Soyez le premier à commenter ! {% endif %}</p>
-	{% for comment in capture.comments %}
-			<div>
-				<p>{{comment.author.avatar}}</p>
-				<p>{{comment.author.firstname}} {{comment.author.lastname}}</p>
-				<p>{{comment.content}}</p>
-			</div>
-		{% endfor %}
-
+	<p id="numbercomments" data-number={{ numberOfCaptureComments }}>{% if numberOfCaptureComments == 1 %} Commentaire : {% elseif numberOfCaptureComments > 1 %} Commentaires : {% else %} Soyez le premier à commenter ! {% endif %}</p>
+	<section id="comments">
+		<ul id="comment">
+		</ul>
+	</section>
 	{{ form(form) }}
 {% endblock %}
 {% block javascripts %}
 	{{ parent() }}
 	<script type="text/javascript" src="{{ asset('javascript/showcapturemap.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascript/pagination.js') }}">
+	</script>
+	<script type="text/javascript" src="{{ asset('javascript/commentspagination.js') }}">
+	</script>
 {% endblock %}
    

@@ -8,7 +8,7 @@ use App\Services\NAOManager;
 use App\Services\NAOPagination;
 use App\Entity\Comment;
 
-class NAOCommentManager
+class NAOCommentManager 
 {
 	private $naoPagination;
 	private $naoManager;
@@ -56,6 +56,11 @@ class NAOCommentManager
 
 		return $reportedCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCommentsByStatusPerPage($this->reportedStatus, $nbElementsPerPage, $firstEntrance);
 	}
+
+	public function getCapturePublishedComments($id)
+    {
+       return $captureCommentsPerPage = $this->naoManager->getEm()->getRepository(Comment::class)->getCapturePublishedComments($this->publishedStatus, $id);
+    }
 
 	public function reportComment(Comment $comment)
 	{

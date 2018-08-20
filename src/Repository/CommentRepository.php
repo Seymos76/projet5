@@ -60,6 +60,19 @@ class CommentRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getCapturePublishedComments($status, $id)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.published = :published')
+            ->setParameter('published', $status)
+            ->join('c.capture', 'd')
+            ->andWhere('d.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function countPublishedOrReportedComments($status)
     {
         $qb = $this->createQueryBuilder('c');
