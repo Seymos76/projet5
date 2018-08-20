@@ -1,26 +1,57 @@
-$.getJSON('http://localhost:8000/api/datastatistics', function( data ) {
-	var stats = "";
-	stats += '<h2>Années</h2>';
-	for (i=0; i < data.length; i++)
-	{
-		stats += '<div>'
-		stats += '<h3>' + data[i].year + '</h3>';
-		stats += '<p> Nombre total d\'observations publiées : ' + data[i].numberOfCaptures + '</p>';
-		stats += '<h2>Régions</h2>';
-		for (a=0; a < data[i].regions.length; a++)
+$( function() {
+
+	var currentYear = year.dataset.year;
+
+	$.getJSON('http://localhost:8000/api/datastatistics/'+ currentYear +'/', function( data ) {
+		var stats = "";
+		for (i=0; i < data[0].regions.length; i++)
 		{
-			stats += '<h3>' + data[i].regions[a].region +'</h3>';
-			stats += '<p>' + data[i].regions[a].numberOfBirds + ' espèces d\'oiseaux observées :</p>';
-			stats += '<ul>';
-			for (t=0; t < data[i].regions[a].birds.length; t++)
-			{
-				stats += '<li>';
-				stats += data[i].regions[a].birds[t];
-				stats += '</li>';
-			}
+			stats += '<h3>' + data[0].regions[i].region +'</h3>';
+			stats += '<p>' + data[0].regions[i].numberOfBirds + ' espèces d\'oiseaux observées :</p>';
+			$('#statisticsData').html(stats);
+
+			var numberOfBirds = data[0].regions[i].numberOfBirds;
+			var region = data[0].regions[i];
+
+			$('#statisticsByYear').pagination({
+        		dataSource: 'http://localhost:8000/api/datastatistics/'+ currentYear +'/',
+        		locator: 'items',
+        		pageSize: 1,
+        		totalNumber: numberOfBirds,
+        		autoHidePrevious: true,
+        		autoHideNext: true,   
+        		ajax: {
+            		beforeSend: function() {
+                		dataContainer.html('Loading data from flickr.com ...');
+        			}
+    			},
+        	
+        		callback: function(data, pagination) {
+            		var currentPage = $('#statisticsByYear').data('pagination').model.pageNumber;
+            		var pageSize = $('#statisticsByYear').data('pagination').model.pageSize
+            		var start = (currentPage * pageSize) - pageSize;
+            		var limit = start + pageSize;
+            		var totalPage = Math.ceil(numberOfBirds / pageSize);
+
+            		var birds = "";
+            		birds += '<ul>';
+            		for (t = start; t < limit; t++)
+            		{
+                		birds += '<li>';
+						birds += region.birds[t];
+						console.log(region.birds[t]);
+						birds += '</li>';
+            		}
+            		birds += '</ul>';
+
+            		$('#statisticsBirds').html(birds);
+
+            		if (totalPage <= 1)
+            		{
+                		$('.paginationjs').hide();
+            		}
+        		}
+    		})
 		}
-		stats += '</ul>'
-		stats += '</div>'
-	}
-	$('#statisticsByYear').html(stats);
-})
+	})
+});

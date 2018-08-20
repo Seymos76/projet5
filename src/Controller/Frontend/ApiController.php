@@ -59,13 +59,13 @@ class ApiController extends Controller
     }
 
      /**
-     * @Route(path="/api/datastatistics, name="app_data_statistics",)
+     * @Route(path="/api/datastatistics/{year}, name="app_data_statistics",)
      * @Method("GET")
      */
-    public function showDataStatics(NAODataStatistics $naoDataStatistics)
+    public function showDataStatics(NAODataStatistics $naoDataStatistics, $year)
     {
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
 
-        return $naoDataStatistics->formatBirdsByRegions($regions);
+        return $naoDataStatistics->formatBirdsByRegions($regions, $year);
     }
 }

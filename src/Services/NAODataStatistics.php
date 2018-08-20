@@ -22,52 +22,42 @@ class NAODataStatistics
         $this->naoBirdManager = $naoBirdManager;
     }
 
-	public function formatBirdsByRegions($regions)
+	public function formatBirdsByRegions($regions, $year)
 	{
-        $formatted = [];
+        $numberOfPublishedCaptures = $this->naoCountCaptures->countPublishedCapturesByYear($year);
 
-        $dates = [];
-        for ($i = 2018; $i < 2100; $i++)
+        $regionsData = [];
+        foreach ($regions as $region)
         {
-            $dates[] += $i;
-        }
-        foreach ($dates as $date) {
+            $regionName = $region['nom'];
+            $numberOfBirds = $this->naoCountBirds->countSearchBirdsByRegionAndDate($regionName, $year);
+            $birds = $this->naoBirdManager->searchBirdsByregionAndDate($regionName, $year);
 
-        $numberOfPublishedCaptures = $this->naoCountCaptures->countPublishedCapturesByYear($date);
-
-            $regionsData = [];
-            foreach ($regions as $region)
+            $birdsName = [];
+            foreach ($birds as $bird) {
+            if ($bird->getVernacularname() != null)
             {
-                $regionName = $region['nom'];
-                $numberOfBirds = $this->naoCountBirds->countSearchBirdsByRegionAndDate($regionName, $date);
-                $birds = $this->naoBirdManager->searchBirdsByregionAndDate($regionName, $date);
-
-                $birdsName = [];
-                foreach ($birds as $bird) {
-                    if ($bird->getVernacularname() != null)
-                    {
-                        $birdsName[] = $bird->getVernacularname().' - '.$bird->getValidname();
-                    }
-                    else 
-                    {
-                        $birdsName[] = $bird->getValidname();
-                    }
+                $birdsName[] = $bird->getVernacularname().' - '.$bird->getValidname();
                 }
-
-                if ($numberOfBirds >= 1)
+                else 
                 {
-                    $regionsData[] = [
-                        'region' => $regionName,
-                        'numberOfBirds' => $numberOfBirds,
-                        'birds' => $birdsName
-                    ];
-            
-                    $formatted[] = [
-                        'year' => $date,
-                        'numberOfCaptures' => $numberOfPublishedCaptures,
-                        'regions' => $regionsData,
-                    ];
+                    $birdsName[] = $bird->getValidname();
                 }
+            }
+
+            if ($numberOfBirds >= 1)
+            {
+                $regionsData[] = [
+                    'region' => $regionName,
+                    'numberOfBirds' => $numberOfBirds,
+                    'birds' => $birdsName
+                ];
+        
+                $formatted[] = [
+                    'year' => $year,
+                    'numberOfCaptures' => $numberOfPublishedCaptures,
+                    'regions' => $regionsData,
+                ];
             }
         }
 

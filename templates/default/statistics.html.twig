@@ -8,9 +8,25 @@
     	<p>Nombre d'oiseaux : {{numberOfBirds}}</p>
     	<p>Nombre total d'observations publiées : {{numberOfPublishedCaptures}}</p>
     </section>
+    <section>
+    	<h2>Années</h2>
+    	{% for year in years %}
+    		<ul>
+    			<li><a href="{{ path('statistics', {year: year}) }}">{{year}}</a></li>
+    		</ul>
+    	{% endfor %}
+    </section>
+    <section>
+    	<h3 id="year" data-year="{{year}}">{{year}}</h3>
+    	<p> Nombre total d'observations publiées : {{nbOfYearPublishedCaptures}}</p>
+    	<h2>Régions</h2>
+    </section>
     <section id="statisticsByYear">
+    	<div id="statisticsData"></div>
+    	<div id="statisticsBirds"></div>
     </section>
 {% endblock %}
 {% block javascripts %}
+	{{ parent() }}
 	<script type="text/javascript" src="{{ asset('javascript/statistics.js') }}" ></script>
 {% endblock %}
