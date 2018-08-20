@@ -6,6 +6,8 @@ use App\Entity\Capture;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\Capture\NAOShowMap;
 use App\Services\NAOPagination;
+use App\Services\Comment\NAOCommentManager;
+use App\Services\Comment\NAOShowComments;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
