@@ -6,7 +6,7 @@ $.getJSON('http://localhost:8000/api/datastatistics', function( data ) {
 		stats += '<div>'
 		stats += '<h3>' + data[i].year + '</h3>';
 		stats += '<p> Nombre total d\'observations publiées : ' + data[i].numberOfCaptures + '</p>';
-		stats += '<h2>Région</h2>';
+		stats += '<h2>Régions</h2>';
 		for (a=0; a < data[i].regions.length; a++)
 		{
 			stats += '<h3>' + data[i].regions[a].region +'</h3>';
