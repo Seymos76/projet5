@@ -32,7 +32,7 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     app.nao.file_uploader:
-        class: App\Services\FileUploader
+        class: App\Services\Image\FileUploader
         autowire: true
         public: true
 
@@ -42,7 +42,7 @@ services:
         public: true
 
     app.avatar_service:
-        class: App\Services\Avatar
+        class: App\Services\Image\Avatar
         autowire: true
         public: true
         arguments:
@@ -51,7 +51,7 @@ services:
             - '@service_container'
 
     app.nao.mailer:
-        class: App\Services\Mailer
+        class: App\Services\Mail\Mailer
         autowire: true
         public: true
         arguments:
@@ -96,17 +96,22 @@ services:
         public: true
 
     app.nao_show_map:
-        class: App\Services\Capture\NAOShowMap
+        class: App\Services\Map\NAOShowMap
         autowire: true
         public: true
 
     app.nao_pagination:
-        class: App\Services\NAOPagination
+        class: App\Services\Pagination\NAOPagination
         autowire: true
         public: true
 
     app.nao_user_manager:
         class: App\Services\User\NAOUserManager
+        autowire: true
+        public: true
+
+    app.nao_statistics:
+        class: App\Services\Statistics\NAOStatistics
         autowire: true
         public: true
 
