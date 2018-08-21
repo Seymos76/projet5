@@ -1,66 +1,94 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: seymos
- * Date: 02/08/18
- * Time: 18:29
- */
 
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterType;
-use App\Services\FileUploader;
-use App\Services\UserManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends Controller
 {
     /**
      * @Route("/login", name="login")
+     * @param AuthenticationUtils $authenticationUtils
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function login(AuthenticationUtils $authenticationUtils)
     {
-        $lastusername = $authenticationUtils->getLastUsername();
         $error = $authenticationUtils->getLastAuthenticationError();
-
+        $last_username = $authenticationUtils->getLastUsername();
         return $this->render(
-            "security/login.html.twig",
+            'security/login.html.twig',
             array(
-                'last_username' => $lastusername,
-                'error' => $error
+                'error' => $error,
+                'last_username' => $last_username
             )
         );
     }
 
     /**
-     * @Route("/register", name="register")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/logout", name="logout")
      */
-    public function register(Request $request, FileUploader $fileUploader)
+    public function logout() {}
+
+    /**
+     * @Route("/register", name="register")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function register(Request $request, UserPasswordEncoderInterface $encoder)
     {
         $user = new User();
         $register_form = $this->createForm(RegisterType::class, $user);
         $register_form->handleRequest($request);
         if ($register_form->isSubmitted() && $register_form->isValid()) {
-            // service vérification data facultatives
-            $file = $user->getAvatar();
-            dump($register_form->getData());
-            die('register form submitted');
+            $user->setUsername($register_form->getData()->getEmail());
+            if ($register_form->getData()->getAccountType() === "naturalist") {
+                $user->addRole("ROLE_NATURALIST");
+            }
+            $encoded = $encoder->encodePassword($user, $register_form->getData()->getPassword());
+            $user->setPassword($encoded);
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
+            $this->get('app.nao.mailer')->sendConfirmationEmail($user, $user->getActivationCode());
+            $this->get('session')->getFlashBag()->add('success', "Votre compte a été créé, veuillez confirmer votre adresse e-mail !");
+            return $this->redirectToRoute('activation_code');
         }
-
         return $this->render(
-            "security/register.html.twig",
+            'security/register.html.twig',
             array(
                 'form' => $register_form->createView()
             )
         );
     }
 
-    public function changePassword() {}
-    public function askForPasswordReinit() {}
-    public function passwordReinit() {}
+    /**
+     * @Route("/activation-code", name="activation_code")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function activationCode(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $user = $this->getDoctrine()->getRepository(User::class)->findByActivationCode($request->get('activation_code'));
+            if (!$user) {
+                $this->get('session')->getFlashBag()->add('error', "Ce code n'est pas valide.");
+                return $this->redirectToRoute('login');
+            }
+            $user->setActivationCode(null);
+            $user->setActive(true);
+            $this->get('app.nao_manager')->addOrModifyEntity($user);
+            $this->get('session')->getFlashBag()->add('success', "Votre compte a bien été activé !");
+            return $this->redirectToRoute('login');
+        }
+        return $this->render(
+            'security/activation_code.html.twig'
+        );
+    }
 }

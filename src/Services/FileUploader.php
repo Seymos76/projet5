@@ -13,27 +13,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader
 {
-    private $targetDirectory;
-
-    public function __construct($targetDirectory)
+    public function upload(UploadedFile $file, $targetDirectory): string
     {
-        $this->targetDirectory = $targetDirectory;
-    }
-
-    public function upload(UploadedFile $file, string $username)
-    {
-        if (!$file) {
-            return false;
-        }
-        $fileName = $username.'.'.$file->guessExtension();
-
-        // moves the file to the directory where brochures are stored
-        $file->move($this->getTargetDirectory(), $fileName);
-        return $fileName;
-    }
-
-    public function getTargetDirectory()
-    {
-        return $this->targetDirectory;
+        $file_name = md5(uniqid()).'.'.$file->guessExtension();
+        $file->move(
+            $targetDirectory,
+            $file_name
+        );
+        return $file_name;
     }
 }

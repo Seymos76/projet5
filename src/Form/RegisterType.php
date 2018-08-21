@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: seymos
- * Date: 02/08/18
- * Time: 18:50
+ * Date: 05/08/18
+ * Time: 15:17
  */
 
 namespace App\Form;
@@ -11,9 +11,10 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,42 +25,46 @@ class RegisterType extends AbstractType
     {
         $builder
             ->add(
-                'avatar',
-                FileType::class,
-                array(
-                    'required' => false
-                )
+                'firstname',
+                TextType::class
             )
             ->add(
                 'lastname',
                 TextType::class
             )
             ->add(
-                'firstname',
-                TextType::class
+                'account_type',
+                ChoiceType::class,
+                array(
+                    'choices' => array(
+                        "Compte particulier" => 'particular',
+                        "Compte naturaliste" => 'naturalist'
+                    )
+                )
             )
             ->add(
                 'email',
                 EmailType::class
             )
             ->add(
-                'username',
-                TextType::class,
-                array(
-                    'required' => false
-                )
-            )
-            ->add(
                 'password',
-                PasswordType::class
-            )
-        ;
+                RepeatedType::class,
+                array(
+                    'type' => PasswordType::class,
+                    'first_options' => array(
+                        'label' => "Mot de passe"
+                    ),
+                    'second_options' => array(
+                        'label' => "Confirmer le mot de passe"
+                    )
+                )
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => User::class
         ]);
     }
 }
