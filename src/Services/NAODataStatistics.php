@@ -22,6 +22,17 @@ class NAODataStatistics
         $this->naoBirdManager = $naoBirdManager;
     }
 
+    public function getYears()
+    {
+        $years = [];
+        for ($i = 2018; $i <= date('Y'); $i++)
+        {
+            $years[] += $i;
+        }
+        
+        return $years;
+    }
+
 	public function formatBirdsByRegions($regions, $year)
 	{
         $numberOfPublishedCaptures = $this->naoCountCaptures->countPublishedCapturesByYear($year);

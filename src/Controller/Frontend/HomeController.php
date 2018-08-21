@@ -33,16 +33,12 @@ class HomeController extends Controller
      * @Route("/statistiques/{year}", name="statistics", defaults={"year"=2018},)
      * @return Response
      */
-    public function statistics(NAOCountCaptures $naoCountCaptures, NAOCountBirds $naoCountBirds, $year)
+    public function statistics(NAODataStatistics $naoDataStatistics, NAOCountCaptures $naoCountCaptures, NAOCountBirds $naoCountBirds, $year)
     {
-    	$years = [];
-    	for ($i = 2018; $i <= date('Y'); $i++)
-    	{
-    		$years[] += $i;
-    	}
-    	$numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
-    	$numberOfBirds = $naoCountBirds->countBirds();
-    	$nbOfYearPublishedCaptures = $naoCountCaptures->countPublishedCapturesByYear($year);
+        $years = $naoDataStatistics->getYears();
+        $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
+        $numberOfBirds = $naoCountBirds->countBirds();
+        $nbOfYearPublishedCaptures = $naoCountCaptures->countPublishedCapturesByYear($year);
         return $this->render(
             'default/statistics.html.twig',
             array(
