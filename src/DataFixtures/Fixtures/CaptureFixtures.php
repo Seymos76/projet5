@@ -1,6 +1,5 @@
 <?php
 
-// src/DataFixtures/AppFixtures.php
 namespace App\DataFixtures\Fixtures;
 
 use App\Entity\User;

@@ -1,7 +1,6 @@
 <?php
 
-// src/DataFixtures/AppFixtures.php
-namespace App\DataFixtures;
+namespace App\DataFixtures\Fixtures;
 
 use App\Entity\User;
 use App\Entity\Capture;

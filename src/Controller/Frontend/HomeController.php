@@ -5,6 +5,8 @@ namespace App\Controller\Frontend;
 use App\Entity\Capture;
 use App\Entity\Message;
 use App\Form\Contact\MessageType;
+use App\Services\Bird\NAOCountBirds;
+use App\Services\Capture\NAOCountCaptures;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\Statistics\NAODataStatistics;
@@ -19,7 +21,7 @@ class HomeController extends Controller
 {
 	/**
      * @Route("/", name="home")
-     * @param NOACaptureManager $naoCaptureManager
+     * @param NAOCaptureManager $naoCaptureManager
      * @return Response
      */
 	public function showHomeAction(NAOCaptureManager $naoCaptureManager)

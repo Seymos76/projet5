@@ -15,7 +15,7 @@ class NAOBirdManager
 	private $naoManager;
 	private $waitingStatus;
 	private $draftStatus;
-	private $naoCaptureManager
+	private $naoCaptureManager;
 
 	public function __construct(NAOPagination $naoPagination, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager)
 	{

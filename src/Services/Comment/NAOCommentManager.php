@@ -5,6 +5,7 @@
 namespace App\Services\Comment;
 
 use App\Services\NAOManager;
+use App\Services\Pagination\NAOPagination;
 use App\Services\Pagination\sNAOPagination;
 use App\Entity\Comment;
 
