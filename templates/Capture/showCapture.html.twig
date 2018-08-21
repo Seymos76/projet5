@@ -3,7 +3,8 @@
 {% extends "layout.html.twig" %}
 
 {% block title %}Observation numéro {{ id }} {% endblock %}
-{% block stylesheets %}
+
+{% block mapStylesheets %}
 	{{ parent() }}
 	<style type="text/css">
 			.capturemap{ /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
@@ -11,6 +12,7 @@
 			}
 		</style>
 {% endblock %}
+
 {% block body %}
 	<div id="map0" class="capturemap" data-identifiant={{ id }}>
 	</div>
@@ -31,10 +33,14 @@
 	</section>
 	{{ form(form) }}
 {% endblock %}
-{% block javascripts %}
+
+{% block mapJavascripts %}
 	{{ parent() }}
-	<script type="text/javascript" src="{{ asset('javascript/showcapturemap.js') }}"></script>	
-	<script type="text/javascript" src="{{ asset('javascript/commentspagination.js') }}">
+	<script type="text/javascript" src="{{ asset('javascript/maps/showcapturemap.js') }}"></script>
+{% endblock %}
+{% block paginationJavascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('javascript/comments/commentspagination.js') }}">
 	</script>
 {% endblock %}
    

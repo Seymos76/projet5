@@ -10,14 +10,11 @@ use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\Comment\NAOCountComments;
 use App\Services\Capture\NAOCountCaptures;
-use App\Services\NAOPagination;
+use App\Services\Pagination\NAOPagination;
 use App\Services\Bird\NAOBirdManager;
-use App\Services\Capture\NAOShowMap;
-use App\Form\CommentType;
-use App\Form\Capture\SearchCaptureType;
+use App\Form\Comment\CommentType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -27,6 +24,11 @@ class CaptureController extends Controller
 {
     /**
      * @Route("observation/{id}", requirements={"id" = "\d+"}, name="capture")
+     * @param $id
+     * @param Request $request
+     * @param NAOManager $naoManager
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCountComments $naoCountComments
      * @return Response
      */
     public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments)
@@ -56,11 +58,24 @@ class CaptureController extends Controller
             }
         }
 
-        return $this->render('Capture\showCapture.html.twig', array('capture' => $capture, 'id' => $id, 'numberOfCaptureComments' => $numberOfCaptureComments, 'form' => $form->createView(),)); 
+        return $this->render('Capture\showCapture.html.twig', 
+            array
+            (
+                'capture' => $capture, 
+                'id' => $id, 
+                'numberOfCaptureComments' => $numberOfCaptureComments, '
+                form' => $form->createView(),
+            )); 
     }
 
     /**
      * @Route("/observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="captures")
+     * @param Request $request
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOPagination $naoPagination
+     * @param NAOBirdManager $naoBirdManager
+     * @param $pageNumber
      * @return Response
      */
     public function showCapturesAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, NAOBirdManager $naoBirdManager, $pageNumber)
@@ -91,11 +106,25 @@ class CaptureController extends Controller
             return $this->redirectToRoute('result_search_captures');
         }
 
-        return $this->render('Capture\showCaptures.html.twig', array('captures' => $captures, 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'birds' => $birds, 'regions' => $regions));
+        return $this->render('Capture\showCaptures.html.twig', 
+            array
+            (
+                'captures' => $captures, 
+                'pageNumber' => $pageNumber, 
+                'nbCapturesPages' => $nbCapturesPages, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, 
+                'birds' => $birds, 
+                'regions' => $regions
+            ));
     }
 
     /**
      * @Route("/resultat-recherche-observations/{pageNumber}", requirements={"pageNumber" = "\d+"}, defaults={"pageNumber"=1}, name="result_search_captures")
+     * @param Request $request
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param $pageNumber
      * @return Response
      */
     public function showCapturesSearchAction(Request $request, NAOCaptureManager $nAOCaptureManager, NAOCountCaptures $naoCountCaptures, NAOPagination $naoPagination, $pageNumber)
@@ -119,6 +148,17 @@ class CaptureController extends Controller
         $nextPage = $naoPagination->getNextPage($pageNumber);
         $previousPage = $naoPagination->getPreviousPage($pageNumber);
 
-        return $this->render('Capture\showCaptures.html.twig', array('captures' => $capturesSearch, 'pageNumber' => $pageNumber, 'nbCapturesPages' => $nbCapturesPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'birds' => $birds, 'regions' => $regions, 'resultats' => $resultats));
+        return $this->render('Capture\showCaptures.html.twig', 
+            array
+            (
+                'captures' => $capturesSearch, 
+                'pageNumber' => $pageNumber, 
+                'nbCapturesPages' => $nbCapturesPages, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, 
+                'birds' => $birds, 
+                'regions' => $regions, 
+                'resultats' => $resultats
+            ));
     }
 }

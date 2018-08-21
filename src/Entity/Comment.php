@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
@@ -24,6 +25,7 @@ class Comment
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotNull()
      */
     private $content;
 
@@ -38,7 +40,7 @@ class Comment
     private $published;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Capture", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Capture")
      * @ORM\JoinColumn(nullable=false)
      */
     private $capture;
@@ -83,9 +85,9 @@ class Comment
         return $this->created_date;
     }
 
-    public function setCreatedDate(\DateTimeInterface $created_at): self
+    public function setCreatedDate(\DateTimeInterface $created_date): self
     {
-        $this->created_at = $created_at;
+        $this->created_at = $created_Date;
 
         return $this;
     }

@@ -10,7 +10,7 @@ use App\Services\Capture\NAOCaptureManager;
 use App\Services\Comment\NAOCommentManager;
 use App\Services\Capture\NAOCountCaptures;
 use App\Services\Comment\NAOCountComments;
-use App\Services\NAOPagination;
+use App\Services\Pagination\NAOPagination;
 use App\Services\User\NAOUserManager;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +18,20 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class AdminSpaceController
+ * @package App\Controller\Backend
+ * @Route("/espace-administration")
+ */
 class AdminSpaceController extends Controller
 {
     /**
-     * @Route("/espace-administration/", name="admin_space")
+     * @Route("/", name="admin_space")
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCommentManager $naoCommentManager
+     * @param NAOCountComments $naoCountComments
+     * @param NAOPagination $naoPagination
+     * @param NAOUserManager $naoUserManager
      * @param Request $request
      * @return Response
      */
@@ -46,11 +56,32 @@ class AdminSpaceController extends Controller
         $numberOfReportedComments  = $naoCountComments->countReportedComments();
         $reportedComments = $naoCommentManager->getReportedCommentsPerPage($page, $numberOfReportedComments, $numberOfElementsPerPage);
 
-        return $this->render('AdminSpace\adminspace.html.twig', array('userRole' => $userRole, 'user' => $user, 'publishedcaptures' => $publishedCaptures, 'waitingforvalidationcaptures' => $waitingForValidationCaptures, 'publishedcomments' => $publishedComments, 'reportedcomments' => $reportedComments, 'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 'numberOfPublishedComments' => $numberOfPublishedComments, 'numberOfReportedComments' => $numberOfReportedComments, 'page' => $page, 'numberOfElementsPerPage' => $numberOfElementsPerPage)); 
+        return $this->render('AdminSpace\adminspace.html.twig', 
+            array
+            (
+                'userRole' => $userRole, 
+                'user' => $user, 
+                'publishedcaptures' => $publishedCaptures, 
+                'waitingforvalidationcaptures' => $waitingForValidationCaptures, 
+                'publishedcomments' => $publishedComments, 
+                'reportedcomments' => $reportedComments, 
+                'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 
+                'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 
+                'numberOfPublishedComments' => $numberOfPublishedComments, 
+                'numberOfReportedComments' => $numberOfReportedComments, 
+                'page' => $page, 
+                'numberOfElementsPerPage' => $numberOfElementsPerPage
+            )); 
     }
 
     /**
-     * @Route("/espace-administration/observations-publiees/{page}", defaults={"page"=1}, name="admin_space_published_captures", requirements={"page" = "\d+"})
+     * @Route("/observations-publiees/{page}", defaults={"page"=1}, name="admin_space_published_captures", requirements={"page" = "\d+"})
+     * @param $page
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCommentManager $naoCommentManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOCountComments $naoCountComments
+     * @param NAOPagination $naoPagination
      * @param Request $request
      * @return Response
      */
@@ -67,11 +98,26 @@ class AdminSpaceController extends Controller
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
-        return $this->render('AdminSpace\publishedCaptures.html.twig', array('publishedcaptures' => $publishedCaptures, 'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 'page' => $page, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'nbPublishedCapturesPages' => $nbPublishedCapturesPages,)); 
+        return $this->render('AdminSpace\publishedCaptures.html.twig', 
+            array
+            (
+                'publishedcaptures' => $publishedCaptures, 
+                'numberOfPublishedCaptures' => $numberOfPublishedCaptures, 
+                'page' => $page, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, 
+                'nbPublishedCapturesPages' => $nbPublishedCapturesPages,
+            )); 
     }
 
     /**
-     * @Route("/espace-administration/observations-en-attente/{page}", defaults={"page"=1}, name="admin_space_waiting_captures", requirements={"page" = "\d+"})
+     * @Route("/observations-en-attente/{page}", defaults={"page"=1}, name="admin_space_waiting_captures", requirements={"page" = "\d+"})
+     * @param $page
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCommentManager $naoCommentManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOCountComments $naoCountComments
+     * @param NAOPagination $naoPagination
      * @param Request $request
      * @return Response
      */
@@ -88,11 +134,26 @@ class AdminSpaceController extends Controller
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
-        return $this->render('AdminSpace\waitingCaptures.html.twig', array('waitingforvalidationcaptures' => $waitingForValidationCaptures, 'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 'page' => $page, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'nbWaitingForValidationCapturesPages' => $nbWaitingForValidationCapturesPages,)); 
+        return $this->render('AdminSpace\waitingCaptures.html.twig', 
+            array
+            (
+                'waitingforvalidationcaptures' => $waitingForValidationCaptures, 
+                'numberOfWaitingforvalidationCaptures' => $numberOfWaitingForValidationCaptures, 
+                'page' => $page, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, 
+                'nbWaitingForValidationCapturesPages' => $nbWaitingForValidationCapturesPages,
+            )); 
     }
 
     /**
-     * @Route("/espace-administration/commentaires-publies/{page}", defaults={"page"=1}, name="admin_space_published_comments", requirements={"page" = "\d+"})
+     * @Route("/commentaires-publies/{page}", defaults={"page"=1}, name="admin_space_published_comments", requirements={"page" = "\d+"})
+     * @param $page
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCommentManager $naoCommentManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOCountComments $naoCountComments
+     * @param NAOPagination $naoPagination
      * @param Request $request
      * @return Response
      */
@@ -109,11 +170,26 @@ class AdminSpaceController extends Controller
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
-        return $this->render('AdminSpace\publishedComments.html.twig', array('publishedcomments' => $publishedComments, 'numberOfPublishedComments' => $numberOfPublishedComments, 'page' => $page, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'nbPublishedCommentsPages' => $nbPublishedCommentsPages,)); 
+        return $this->render('AdminSpace\publishedComments.html.twig', 
+            array
+            (
+                'publishedcomments' => $publishedComments, 
+                'numberOfPublishedComments' => $numberOfPublishedComments, 
+                'page' => $page, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, 
+                'nbPublishedCommentsPages' => $nbPublishedCommentsPages,
+            )); 
     }
 
     /**
-     * @Route("/espace-administration/commentaires-signales/{page}", defaults={"page"=1},  name="admin_space_reported_comments", requirements={"page" = "\d+"})
+     * @Route("/commentaires-signales/{page}", defaults={"page"=1},  name="admin_space_reported_comments", requirements={"page" = "\d+"})
+     * @param $page
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOCommentManager $naoCommentManager
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOCountComments $naoCountComments
+     * @param NAOPagination $naoPagination
      * @param Request $request
      * @return Response
      */
@@ -130,12 +206,23 @@ class AdminSpaceController extends Controller
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
-        return $this->render('AdminSpace\reportedComments.html.twig', array('reportedcomments' => $reportedComments, 'numberOfReportedComments' => $numberOfReportedComments, 'page' => $page, 'nextPage' => $nextPage, 'previousPage' => $previousPage,'nbReportedCommentsPages' => $nbReportedCommentsPages)); 
+        return $this->render('AdminSpace\reportedComments.html.twig', 
+            array
+            (
+                'reportedcomments' => $reportedComments, 
+                'numberOfReportedComments' => $numberOfReportedComments, 
+                'page' => $page, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage,
+                'nbReportedCommentsPages' => $nbReportedCommentsPages
+            )); 
     }
 
     /**
      * @Route("/ignorer-commentaire-signale/{id}", name="ignore_reported_comment", requirements={"id" = "\d+"})
-     * @param Request $request
+     * @param $id
+     * @param NAOCommentManager $naoCommentManager
+     * @param NAOManager $naoManager
      * @return Response
      */
     public function ignoreReportedCommentAction($id, NAOCommentManager $naoCommentManager, NAOManager $naoManager)
@@ -151,7 +238,8 @@ class AdminSpaceController extends Controller
 
     /**
      * @Route("/supprimer-commentaire/{id}", name="remove_comment", requirements={"id" = "\d+"})
-     * @param Request $request
+     * @param $id
+     * @param NAOManager $naoManager
      * @return Response
      */
     public function removeCommentAction($id, NAOManager $naoManager)

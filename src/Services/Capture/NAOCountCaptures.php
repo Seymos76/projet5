@@ -32,6 +32,11 @@ class NAOCountCaptures
 		return $numberOfPublishedCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->countPublishedCaptures($this->publishedStatus, $this->validatedStatus);
 	}
 
+	public function countPublishedCapturesByYear($date)
+	{
+		return $numberOfPublishedCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->countPublishedCapturesByYear($this->publishedStatus, $this->validatedStatus, $date);
+	}
+
 	public function countDraftsCaptures()
 	{
 		return $numberOfPublishedCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->countByStatus($this->draftStatus);

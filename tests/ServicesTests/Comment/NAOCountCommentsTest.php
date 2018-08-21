@@ -1,6 +1,6 @@
 <?php
 
-// tests/ServicesTests/Capture/NAOCountCommentsTest.php
+// tests/ServicesTests/Comment/NAOCountCommentsTest.php
 
 namespace App\Tests\ServicesTests\Comment;
 

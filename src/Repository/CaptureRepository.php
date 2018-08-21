@@ -172,6 +172,19 @@ class CaptureRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function countPublishedCapturesByYear($publishedStatus, $validatedStatus, $date)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $qb->andWhere('c.status = :status1');
+        $qb->setParameter('status1', $publishedStatus);
+        $qb->orWhere('c.status = :status2');
+        $qb->setParameter('status2', $validatedStatus);
+        $qb->andWhere('c.created_date LIKE \''.$date.'%\'');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
     public function countByStatusAndAuthor($status, $author)
     {
         $qb = $this->createQueryBuilder('t');

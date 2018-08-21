@@ -7,7 +7,7 @@ namespace App\Services\Capture;
 use App\Entity\User;
 use App\Services\NAOManager;
 use App\Entity\Capture;
-use App\Services\NAOPagination;
+use App\Services\Pagination\NAOPagination;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class NAOCaptureManager

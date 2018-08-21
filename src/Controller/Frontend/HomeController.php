@@ -4,10 +4,10 @@ namespace App\Controller\Frontend;
 
 use App\Entity\Capture;
 use App\Entity\Message;
-use App\Form\MessageType;
+use App\Form\Contact\MessageType;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
-use App\Services\Capture\NAOShowMap;
+use App\Services\Statistics\NAODataStatistics;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,28 +19,45 @@ class HomeController extends Controller
 {
 	/**
      * @Route("/", name="home")
+     * @param NOACaptureManager $naoCaptureManager
      * @return Response
      */
 	public function showHomeAction(NAOCaptureManager $naoCaptureManager)
 	{
 		$captures = $naoCaptureManager->getLastPublishedCaptures();
 
-        return $this->render('default/index.html.twig', array('captures' => $captures,));
+        return $this->render('home/index.html.twig', array('captures' => $captures,));
 	}
 
     /**
-     * @Route("/statistiques", name="statistics")
+     * @Route("/statistiques/{year}", name="statistics", defaults={"year"=2018},)
+     * @param NAODataStatistics $naoDataStatistics
+     * @param NAOCountCaptures $naoCountCaptures
+     * @param NAOCountBirds $naoCountBirds
+     * @param $year
      * @return Response
      */
-    public function statistics()
+    public function statistics(NAODataStatistics $naoDataStatistics, NAOCountCaptures $naoCountCaptures, NAOCountBirds $naoCountBirds, $year)
     {
+        $years = $naoDataStatistics->getYears();
+        $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
+        $numberOfBirds = $naoCountBirds->countBirds();
+        $nbOfYearPublishedCaptures = $naoCountCaptures->countPublishedCapturesByYear($year);
         return $this->render(
-            'default/statistics.html.twig'
+            'statistics/statistics.html.twig',
+            array(
+                    'numberOfBirds' => $numberOfBirds,
+                    'numberOfPublishedCaptures' => $numberOfPublishedCaptures,
+                    'years' => $years,
+                    'year' => $year,
+                    'nbOfYearPublishedCaptures' => $nbOfYearPublishedCaptures,
+                )
         );
     }
 
     /**
      * @Route("/contact", name="contact")
+     * @param Request $request
      * @return Response
      */
     public function contact(Request $request)
@@ -57,7 +74,7 @@ class HomeController extends Controller
             return $this->redirectToRoute('contact');
         }
         return $this->render(
-            'default/contact.html.twig',
+            'contact/contact.html.twig',
             array(
                 'form' => $message_form->createView()
             )

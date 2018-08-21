@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CaptureController extends Controller
 {
     /**
-     * @Route("ajouter-observation", name="add_capture")
+     * @Route("/ajouter-observation", name="add_capture")
      * @param Request $request
      * @param NAOManager $naoManager
      * @param NAOCaptureManager $naoCaptureManager
@@ -74,12 +74,22 @@ class CaptureController extends Controller
 
         $title = 'Ajouter une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'role' => $role, 'titre' => $title)); 
+        return $this->render('Capture\addModifyOrValidateCapture.html.twig', 
+            array(
+                'form' => $form->createView(), 
+                'userRole' => $userRole, 
+                'role' => $role, 
+                'titre' => $title
+            )); 
     }
 
     /**
      * @Route("/valider-observation/{id}", name="validate_capture", requirements={"id" = "\d+"})
      * @param Request $request
+     * @param NAOManager $naoManager
+     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOUserManager $naoUserManager
+     * @param $id
      * @return Response
      */
     public function validateCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, $id)
@@ -123,12 +133,21 @@ class CaptureController extends Controller
         $userRole = $naoUserManager->getRoleFR($user);
         $title = 'Valider une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title)); 
+        return $this->render('Capture\addModifyOrValidateCapture.html.twig', 
+            array
+            (
+                'form' => $form->createView(), 
+                'userRole' => $userRole, 
+                'titre' => $title
+            )); 
     }
 
     /**
      * @Route("/modifier-observation", name="modify_capture")
      * @param Request $request
+     * @param NAOManager $naoManager
+     * @param NAOUserManager $naoUserManager
+     * @param $capture
      * @return Response
      */
     public function modifyCaptureAction(Request $request, NAOManager $naoManager, NAOUserManager $naoUserManager, $capture)
@@ -157,6 +176,12 @@ class CaptureController extends Controller
         $userRole = $naoUserManager->getRoleFR($user);
         $title = 'Modifier une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', array('form' => $form->createView(), 'userRole' => $userRole, 'titre' => $title)); 
+        return $this->render('Capture\addModifyOrValidateCapture.html.twig', 
+            array
+            (
+                'form' => $form->createView(), 
+                'userRole' => $userRole, 
+                'titre' => $title
+            )); 
     }
 }

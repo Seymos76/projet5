@@ -1,6 +1,6 @@
 <?php
 
-// tests/ServicesTests/Capture/NAOBirdManagerTest.php
+// tests/ServicesTests/Bird/NAOBirdManagerTest.php
 
 namespace App\Tests\ServicesTests\Bird;
 

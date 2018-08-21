@@ -33,20 +33,6 @@ class NAOUserManager extends NAOManager
         } else {
 		    return "Particulier";
         }
-        /*if (in_array('naturalist', $roles))
-        {
-            $userRole = 'Naturaliste';
-        }
-        elseif (in_array('administrator', $roles))
-        {
-            $userRole = 'Administrateur';
-        }
-        elseif (in_array('particular', $roles))
-        {
-           $userRole = 'Particulier';
-        }*/
-
-        //return $userRole;
 	}
 
     /**

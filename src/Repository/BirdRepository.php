@@ -114,6 +114,22 @@ class BirdRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function countSearchBirdsByRegionAndDate($region, $draftStatus, $waitingStatus, $date)
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('count(DISTINCT b.id)');
+        $qb->join('b.captures', 'c');
+        $qb->where('c.region = :region');
+        $qb->setParameter('region', $region);
+        $qb->andWhere('c.status != :status1');
+        $qb->setParameter('status1', $draftStatus);
+        $qb->andWhere('c.status != :status2');
+        $qb->setParameter('status2', $waitingStatus);
+        $qb->andWhere('c.created_date LIKE \''.$date.'%\'');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
     public function searchBirdsByRegionPerPage($region, $elementsPerPage, $firstEntrance, $draftStatus, $waitingStatus)
     {
         return $this->createQueryBuilder('b')
@@ -127,6 +143,22 @@ class BirdRepository extends ServiceEntityRepository
             ->getQuery()
             ->setMaxResults($elementsPerPage)
             ->setFirstResult($firstEntrance)
+            ->getResult()
+        ;
+    }
+
+    public function searchBirdsByRegionAndDate($region, $draftStatus, $waitingStatus, $date)
+    {
+        return $this->createQueryBuilder('b')
+            ->join('b.captures', 'c')
+            ->andWhere('c.region = :region')
+            ->setParameter('region', $region)
+            ->andWhere('c.status != :status1')
+            ->setParameter('status1', $draftStatus)
+            ->andWhere('c.status != :status2')
+            ->setParameter('status2', $waitingStatus)
+            ->andWhere('c.created_date LIKE \''.$date.'%\'')
+            ->getQuery()
             ->getResult()
         ;
     }

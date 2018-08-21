@@ -6,7 +6,7 @@ use App\Entity\Bird;
 use App\Services\NAOManager;
 use App\Services\Bird\NAOBirdManager;
 use App\Services\Bird\NAOCountBirds;
-use App\Services\NAOPagination;
+use App\Services\Pagination\NAOPagination;
 use App\Services\Capture\NAOCaptureManager;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +18,11 @@ class BirdController extends Controller
 {
     /**
      * @Route("repertoire/{letter}/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertory_by_letter")
+     * @param $letter
+     * @param NAOBirdManager $naoBirdManager
+     * @param NAOPagination $naoPagination
+     * @param NAOCountBirds $naoCountBirds
+     * @param $page
      * @return Response
      */
     public function showRepertoryByLetterAction($letter, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)
@@ -33,11 +38,25 @@ class BirdController extends Controller
 
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
 
-        return $this->render('Bird\repertory.html.twig', array('birds' => $birds, 'nbRepertoryPages' => $nbRepertoryPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'page' => $page, 'letter' => $letter, 'regions' => $regions,)); 
+        return $this->render('Bird\repertory.html.twig', 
+            array(
+                'birds' => $birds, 
+                'nbRepertoryPages' => $nbRepertoryPages, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, '
+                page' => $page, 
+                'letter' => $letter, 
+                'regions' => $regions,
+            )); 
     }
 
     /**
      * @Route("repertoire/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="repertory")
+     * @param Request $request
+     * @param NAOBirdManager $naoBirdManager
+     * @param NAOPagination $naoPagination
+     * @param NAOCountBirds $naoCountBirds
+     * @param $page
      * @return Response
      */
     public function showRepertoryAction(Request $request, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page)
@@ -60,11 +79,25 @@ class BirdController extends Controller
             return $this->redirectToRoute('result_search_birds', array('region' => $region,));
         }
 
-        return $this->render('Bird\repertory.html.twig', array('birds' => $birds, 'nbRepertoryPages' => $nbRepertoryPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'page' => $page, 'regions' => $regions,)); 
+        return $this->render('Bird\repertory.html.twig', 
+            array(
+                'birds' => $birds, 
+                'nbRepertoryPages' => $nbRepertoryPages, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, 
+                'page' => $page, 
+                'regions' => $regions,
+            )); 
     }
 
     /**
      * @Route("resultat-recherche-oiseaux/{region}/{page}", defaults={"page"=1}, requirements={"page" = "\d+"}, name="result_search_birds")
+     * @param Request $request
+     * @param NAOBirdManager $naoBirdManager
+     * @param NAOPagination $naoPagination
+     * @param NAOCountBirds $naoCountBirds
+     * @param $page
+     * @param $region
      * @return Response
      */
     public function showBirdsByRegionAction(Request $request, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page, $region)
@@ -80,11 +113,22 @@ class BirdController extends Controller
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
-        return $this->render('Bird\repertory.html.twig', array('birds' => $birds, 'nbRepertoryPages' => $nbRepertoryPages, 'nextPage' => $nextPage, 'previousPage' => $previousPage, 'page' => $page, 'regions' => $regions, 'region' => $region)); 
+        return $this->render('Bird\repertory.html.twig', 
+            array
+            (
+                'birds' => $birds, 
+                'nbRepertoryPages' => $nbRepertoryPages, 
+                'nextPage' => $nextPage, 
+                'previousPage' => $previousPage, 
+                'page' => $page, 
+                'regions' => $regions, 
+                'region' => $region
+            )); 
     }
 
     /**
      * @Route("oiseau/{id}", requirements={"id" = "\d+"}, name="bird")
+     * @param $id
      * @return Response
      */
     public function showBird($id)

@@ -3,7 +3,7 @@
 {% extends "layout.html.twig" %}
 
 {% block title %}{% if bird.vernacularname == false %}{{ bird.validname }} {% else %} {{ bird.vernacularname }} {% endif %}{% endblock %}
-{% block stylesheets %} 
+{% block mapStylesheets %} 
 	{{ parent() }}
 	<style type="text/css">
 			#map{ /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
@@ -11,6 +11,7 @@
 			}
 		</style>
 {% endblock %}
+
 {% block body %}
 	<div id="map" data-identifiant={{ bird.id }}>
 	</div>
@@ -23,7 +24,8 @@
 		<p>Famille : {{ bird.family }}</p>
 	</section>
 {% endblock %}
-{% block javascripts %}
+
+{% block mapJavascripts %}
 	{{ parent() }}
-	<script type="text/javascript" src="{{ asset('javascript/showmap.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascript/maps/showmap.js') }}"></script>
 {% endblock %}

@@ -1,10 +1,10 @@
 <?php
 
-// src/Services/NAOBirdManager.php
+// src/Services/Bird/NAOBirdManager.php
 
 namespace App\Services\Bird;
 
-use App\Services\NAOPagination;
+use App\Services\Pagination\NAOPagination;
 use App\Services\NAOManager;
 use App\Entity\Bird;
 use App\Services\Capture\NAOCaptureManager;
@@ -45,6 +45,11 @@ class NAOBirdManager
 		$firstEntrance = $this->naoPagination->getFirstEntrance($pageNumber, $numberOfSearchBirds, $numberOfBirdsPerPage);
 
 		return $searchBirdsByRegionPerPage = $this->naoManager->getEm()->getRepository(Bird::class)->searchBirdsByRegionPerPage($region, $numberOfBirdsPerPage, $firstEntrance, $this->draftStatus, $this->waitingStatus);
+	}
+
+	public function searchBirdsByRegionAndDate($region, $date)
+	{
+		return $searchBirdsByRegion = $this->naoManager->getEm()->getRepository(Bird::class)->searchBirdsByRegionAndDate($region, $this->draftStatus, $this->waitingStatus, $date);
 	}
 
 	public function getBirdByVernacularOrValidName($birdName)
