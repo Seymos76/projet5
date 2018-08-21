@@ -77,7 +77,9 @@ class NAOCaptureManager
 	{
 		$capture->setStatus('validated');
 		$capture->setValidatedBy($naturalist);
+		$naturalist->addValidatedCapture($capture);
 		$this->naoManager->addOrModifyEntity($capture);
+		$this->naoManager->addOrModifyEntity($naturalist);
 	}
 
 	public function setWaitingStatus(Capture $capture)

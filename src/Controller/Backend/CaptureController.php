@@ -139,7 +139,14 @@ class CaptureController extends Controller
                 return $this->redirectToRoute('validerObservation', array('list_errors' => $list_errors));
             }
             if ($form->get('validate')->isClicked()) {
-                $naoCaptureManager->validateCapture($capture, $this->getUser());
+                $current_user = $this->getUser();
+                /** @var User $user */
+                $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
+                    array(
+                        'email' => $current_user->getEmail()
+                    )
+                );
+                $naoCaptureManager->validateCapture($capture, $user);
                 $naoManager->addOrModifyEntity($capture);
                 $this->get('session')->getFlashBag()->add('success', "Observation validée !");
             } elseif ($form->get('waitingForValidation')->isClicked()) {

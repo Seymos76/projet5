@@ -39,6 +39,9 @@ class CaptureController extends Controller
     public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments)
     {
         $capture = $naoCaptureManager->getPublishedCapture($id);
+        if ($capture === null) {
+            return $this->redirectToRoute('observations');
+        }
         
         $numberOfCaptureComments = $naoCountComments->countCapturePublishedComments($capture);
 
@@ -64,7 +67,6 @@ class CaptureController extends Controller
                 return $this->redirectToRoute('observation', ['id' => $capture->getId()]);
             }
         }
-
         return $this->render('Capture\showCapture.html.twig', array('capture' => $capture, 'id' => $id, 'numberOfCaptureComments' => $numberOfCaptureComments, 'form' => $form->createView(),)); 
     }
 
