@@ -9,19 +9,21 @@ use App\Services\NAOManager;
 use App\Entity\Capture;
 use App\Services\NAOPagination;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class NAOCaptureManager
 {
 	private $naoPagination;
 	private $naoManager;
 	private $container;
+	private $session;
 
-	public function __construct(NAOPagination $naoPagination, NAOManager $naoManager, ContainerInterface $container)
+	public function __construct(NAOPagination $naoPagination, NAOManager $naoManager, ContainerInterface $container, SessionInterface $session)
 	{
 		$this->naoManager = $naoManager;
 		$this->naoPagination = $naoPagination;
 		$this->container = $container;
+		$this->session = $session;
 	}
 
     /**
@@ -32,6 +34,7 @@ class NAOCaptureManager
 	public function setStatusOnCapture(Capture $capture, User $user): Capture
     {
         if ($user->getAccountType() === 'particular') $capture->setStatus('waiting_for_validation');
+        $capture->setUser($user);
         return $capture;
     }
 
@@ -67,19 +70,28 @@ class NAOCaptureManager
     /**
      * @param Capture $capture
      * @param User $naturalist
+     * @param NAOManager $manager
      */
-	public function validateCapture(Capture $capture, User $naturalist)
+	public function validateCapture(Capture $capture, User $naturalist, NAOManager $manager)
 	{
+        /** @var User $user */
+        $user = $manager->getEm()->getRepository(User::class)->findOneBy(
+            array(
+                'email' => $naturalist->getEmail()
+            )
+        );
+        $this->session->getFlashBag()->add('success', "Observation validée !");
 		$capture->setStatus('validated');
-		$capture->setValidatedBy($naturalist);
+		$capture->setValidatedBy($user);
 		$naturalist->addValidatedCapture($capture);
-		$this->naoManager->addOrModifyEntity($capture);
-		$this->naoManager->addOrModifyEntity($naturalist);
+        $this->naoManager->addOrModifyEntity($capture);
+        $this->naoManager->addOrModifyEntity($naturalist);
 	}
 
-	public function setWaitingStatus(Capture $capture)
+	public function setWaitingStatus(Capture $capture, NAOManager $manager)
 	{
 		$capture->setStatus('waiting for validation');
+		$manager->addOrModifyEntity($capture);
 	}
 
 	public function getBirdPublishedCaptures($id)

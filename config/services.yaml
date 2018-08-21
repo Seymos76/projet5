@@ -79,6 +79,8 @@ services:
         class: App\Services\Capture\NAOCaptureManager
         autowire: true
         public: true
+        arguments:
+            - "@session"
 
     app.nao_count_captures:
         class: App\Services\Capture\NAOCountCaptures

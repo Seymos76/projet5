@@ -39,6 +39,7 @@ class ParticularCaptureType extends AbstractType
                 'image',
                 FileType::class,
                 array(
+                    'required' => false,
                     'data_class' => null
                 )
             )

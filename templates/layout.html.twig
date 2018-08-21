@@ -24,7 +24,7 @@
         <li><a href="{{ path('statistics') }}">Quelques données</a></li>
         <li><a href="{{ path('contact') }}">Contact</a></li>
         {% if is_granted('ROLE_ADMIN') %}
-            <li><a href="{{ path('administration') }}">Administration</a></li>
+            <li><a href="{{ path('espaceAdministration') }}">Administration</a></li>
             <li><a href="{{ path('compteUtilisateur') }}">Mon compte</a></li>
             <li><a href="{{ path('logout') }}">Déconnexion</a></li>
         {% elseif is_granted('ROLE_USER') %}

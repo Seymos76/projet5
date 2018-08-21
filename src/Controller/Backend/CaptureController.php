@@ -6,15 +6,14 @@ use App\Entity\Capture;
 use App\Entity\Image;
 use App\Entity\User;
 use App\Form\Capture\CaptureImageType;
+use App\Services\FormManager;
 use App\Services\ImageManager;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\User\NAOUserManager;
-use App\Form\Capture\ParticularCaptureType;
 use App\Form\Capture\NaturalistCaptureType;
 use App\Form\Capture\ValidateCaptureType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -31,36 +30,19 @@ class CaptureController extends Controller
      * @param NAOUserManager $naoUserManager
      * @return Response
      */
-    public function addCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, ValidatorInterface $validator)
+    public function addCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, ValidatorInterface $validator, FormManager $formManager)
     {
         $capture = new Capture();
         $current_user = $this->getUser();
-        /** @var User $user */
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
-            array(
-                'email' => $current_user->getEmail()
-            )
-        );
+        $user = $naoUserManager->getCurrentUser($current_user->getUsername());
         $userRole = $naoUserManager->getRoleFR($user);
         $role = $naoUserManager->getNaturalistOrParticularRole($user);
-        /** Optimiser cette partie */
-        if ($userRole === 'particulier')
-        {
-            $form = $this->createForm(ParticularCaptureType::class, $capture);
-        }
-        elseif ($userRole === 'naturaliste' || $userRole === 'administrateur')
-        {
-            $form = $this->createForm(NaturalistCaptureType::class, $capture);
-        }
-        $form->add('Enregistrer',      SubmitType::class);
-        /**  */
+        $form = $formManager->getCaptureForm($userRole, $capture);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid())
         {
             /** @var Capture $capture */
             $capture = $naoCaptureManager->setStatusOnCapture($form->getData(), $user);
-            $capture->setUser($user);
             $listErrors = $validator->validate($capture);
             if (count($listErrors) > 0) {
                 return $this->redirectToRoute('ajouterObservation', array('list_errors' => (string)$listErrors));
@@ -97,11 +79,7 @@ class CaptureController extends Controller
         $form = $this->createForm(CaptureImageType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($form->getData());
-            $uploadedFile = $form->getData()['image'];
-            $image = $imageManager->buildImage($uploadedFile, $this->getParameter('bird_directory'));
-            $capture->setImage($image);
-            $manager->addOrModifyEntity($capture);
+            $imageManager->addImageOnCapture($form->getData()['image'], $capture);
             $this->addFlash('success', "Image ajoutée à l'observation !");
             return $this->redirectToRoute('compteUtilisateur');
         }
@@ -122,10 +100,10 @@ class CaptureController extends Controller
      * @param NAOManager $naoManager
      * @param NAOCaptureManager $naoCaptureManager
      * @param NAOUserManager $naoUserManager
-     * @param $id
+     * @ParamConverter("capture", class="App\Entity\Capture")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function validateCaptureAction(Request $request, Capture $capture, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, $id, ValidatorInterface $validator)
+    public function validateCaptureAction(Request $request, Capture $capture, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, ValidatorInterface $validator)
     {
         $form_image = $this->createForm(CaptureImageType::class);
         $form = $this->createForm(ValidateCaptureType::class, $capture);
@@ -135,20 +113,13 @@ class CaptureController extends Controller
             if (count($list_errors) > 0) {
                 return $this->redirectToRoute('validerObservation', array('list_errors' => $list_errors));
             }
+            dump($form->getData());
+            die;
             if ($form->get('validate')->isClicked()) {
                 $current_user = $this->getUser();
-                /** @var User $user */
-                $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
-                    array(
-                        'email' => $current_user->getEmail()
-                    )
-                );
-                $naoCaptureManager->validateCapture($capture, $user);
-                $naoManager->addOrModifyEntity($capture);
-                $this->addFlash('success', "Observation validée !");
+                $naoCaptureManager->validateCapture($capture, $current_user, $naoManager);
             } elseif ($form->get('waitingForValidation')->isClicked()) {
                 $capture->setStatus('waiting_for_validation');
-                $naoManager->addOrModifyEntity($capture);
                 $this->addFlash('success', "Observation en attente de validation !");
             } elseif ($form->get('remove')->isClicked()) {
                 $naoManager->removeEntity($capture);

@@ -26,11 +26,14 @@ class ImageManager
 
     private $container;
 
-    public function __construct(NAOManager $manager, EntityUserProvider $user, ContainerInterface $container)
+    private $fileUploader;
+
+    public function __construct(NAOManager $manager, EntityUserProvider $user, ContainerInterface $container, FileUploader $fileUploader)
     {
         $this->manager = $manager;
         $this->user = $user;
         $this->container = $container;
+        $this->fileUploader = $fileUploader;
     }
 
     /**
@@ -42,16 +45,12 @@ class ImageManager
     {
         // get current avatar form database
         $user = $this->getUser()->loadUserByUsername($username);
-        $current_image = $this->container->get('doctrine')->getRepository(Image::class)->findOneBy(['id' => $user->getAvatar()]);
+        $current_image = $this->manager->getEm()->getRepository(Image::class)->findOneBy(['id' => $user->getAvatar()]);
         if ($current_image instanceof Image) {
-            // get current file name
             $current_image_filename = $current_image->getFilename();
-            // get current avatar from directory
             $current_avatar = $this->getContainer()->getParameter('avatar_directory').'/'.$current_image_filename;
             self::deleteFile($current_avatar);
-            // set user avatar to null
             $user->setAvatar(null);
-            $this->getManager()->addOrModifyEntity($current_image);
             $this->getManager()->addOrModifyEntity($user);
             return true;
         } else {
@@ -67,11 +66,35 @@ class ImageManager
     public function removeCaptureImage(Capture $capture, Image $image): bool
     {
         $capture->removeImage();
-        $current_image = $this->getContainer()->getParameter('bird_directory').'/'.$image->getFileName();
+        $current_image = $this->container->getParameter('bird_directory').'/'.$image->getFileName();
         self::deleteFile($current_image);
         $this->manager->removeEntity($image);
         $this->manager->addOrModifyEntity($capture);
         return true;
+    }
+
+    /**
+     * @param UploadedFile $uploadedFile
+     * @param string $directory
+     * @return Image
+     */
+    public function buildImage(UploadedFile $uploadedFile, string $directory): Image
+    {
+        $image = new Image();
+        $image->setPath($directory);
+        $image->setMimeType($uploadedFile->getMimeType());
+        $image->setExtension($uploadedFile->guessExtension());
+        $image->setSize($uploadedFile->getSize());
+        return $image;
+    }
+
+    public function addImageOnCapture(UploadedFile $uploadedFile, Capture $capture)
+    {
+        $image = $this->buildImage($uploadedFile, $this->container->getParameter('bird_directory'));
+        $file_name = $this->fileUploader->upload($uploadedFile, $this->container->getParameter('bird_directory'));
+        $image->setFileName($file_name);
+        $capture->setImage($image);
+        $this->getManager()->addOrModifyEntity($capture);
     }
 
     /**
@@ -86,25 +109,6 @@ class ImageManager
         } else {
             return false;
         }
-    }
-
-    /**
-     * @param UploadedFile $uploadedFile
-     * @param string $directory
-     * @return Image
-     * @throws \Exception
-     */
-    public function buildImage(UploadedFile $uploadedFile, string $directory, FileUploader $uploader): Image
-    {
-        $image = new Image();
-        $image->setPath($directory);
-        $image->setMimeType($uploadedFile->getMimeType());
-        $image->setExtension($uploadedFile->guessExtension());
-        $image->setSize($uploadedFile->getSize());
-        $file_name = $uploader->upload($uploadedFile, $directory);
-        $image->setFileName($file_name);
-        $this->getManager()->addOrModifyEntity($image);
-        return $image;
     }
 
     /**
