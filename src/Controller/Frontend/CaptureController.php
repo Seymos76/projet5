@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CaptureController extends Controller
 {
@@ -36,34 +37,30 @@ class CaptureController extends Controller
      * @param NAOCountComments $naoCountComments
      * @return Response
      */
-    public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments)
+    public function showCaptureAction($id, Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOCountComments $naoCountComments, ValidatorInterface $validator)
     {
         $capture = $naoCaptureManager->getPublishedCapture($id);
         if ($capture === null) {
             return $this->redirectToRoute('observations');
         }
-        
         $numberOfCaptureComments = $naoCountComments->countCapturePublishedComments($capture);
-
         $comment = new Comment();
-        $form = $this->get('form.factory')->create(CommentType::class, $comment);
-
+        $form = $this->createForm(CommentType::class, $comment);
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
         {
             $user = $this->getUser();
             $comment->setAuthor($user);
             $comment->setCapture($capture);
 
-            $validator = $this->get('validator');
             $listErrors = $validator->validate($comment);
-            if(count($listErrors) > 0) 
+            if(count($listErrors) > 0)
             {
                 return new Response((string) $listErrors);
             } 
             else 
             {
                 $naoManager->addOrModifyEntity($comment);
-                $this->get('session')->getFlashBag()->add('success',"Commentaire ajouté !");
+                $this->addFlash('success',"Commentaire ajouté !");
                 return $this->redirectToRoute('observation', ['id' => $capture->getId()]);
             }
         }

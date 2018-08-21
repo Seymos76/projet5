@@ -10,7 +10,11 @@ namespace App\Services\User;
 
 
 use App\Entity\User;
+use App\Services\Mailer;
+use App\Services\NAOManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordManager
@@ -30,15 +34,15 @@ class PasswordManager
      * @param string $password
      * @return mixed
      */
-    public function changePassword(User $user, string $password)
+    public function changePassword(User $user, string $password, EntityManager $entityManager, NAOManager $manager, Mailer $mailer, Session $session)
     {
         /** @var User $user */
-        $user = $this->container->get('doctrine.orm.default_entity_manager')->getRepository(User::class)->findUserByEmail($user->getEmail());
+        $user = $entityManager->getRepository(User::class)->findUserByEmail($user->getEmail());
         $encoded = $this->encoder->encodePassword($user, $password);
         $user->setPassword($encoded);
-        $this->container->get('app.nao_manager')->addOrModifyEntity($user);
-        $this->container->get('app.nao.mailer')->sendConfirmationPasswordChanged($user);
-        $this->container->get('session')->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
+        $manager->addOrModifyEntity($user);
+        $mailer->sendConfirmationPasswordChanged($user);
+        $session->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
         return true;
     }
 }

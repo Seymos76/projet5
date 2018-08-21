@@ -166,19 +166,28 @@ class User implements UserInterface, \Serializable
         $this->roles[] = $roles;
     }
 
-    public function addRole($role) :void
+    /**
+     * @param string $role
+     * @return array
+     */
+    public function addRole(string $role) :array
     {
         if (!in_array($role, $this->roles)) {
             $this->roles[] = $role;
         }
+        return $this->roles;
     }
 
-    public function removeRole($role) :array
+    /**
+     * @param string $role
+     * @return array
+     */
+    public function removeRole(string $role) :array
     {
         if (in_array($role, $this->roles)) {
             unset($role);
-            return $this->roles;
         }
+        return $this->roles;
     }
 
     /**

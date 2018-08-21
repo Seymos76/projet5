@@ -8,6 +8,7 @@ use App\Services\NAOManager;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class NAOUserManager extends NAOManager
 {
@@ -38,11 +39,11 @@ class NAOUserManager extends NAOManager
      * @param User $user
      * @param $biography
      */
-	public function changeBiography(User $user, $biography)
+	public function changeBiography(User $user, $biography, NAOManager $manager, Session $session)
     {
         $user->setBiography($biography);
-        $this->getContainer()->get('app.nao_manager')->addOrModifyEntity($user);
-        $this->getContainer()->get('session')->getFlashBag()->add('success', "Votre biographie a été changée avec succès !");
+        $manager->addOrModifyEntity($user);
+        $session->getFlashBag()->add('success', "Votre biographie a été changée avec succès !");
     }
 
     /**
@@ -52,12 +53,9 @@ class NAOUserManager extends NAOManager
 	public function getNaturalistOrParticularRole(User $user): ?string
 	{
 		$roles = $user->getRoles();
-        if ((in_array('ROLE_ADMIN', $roles)) or (in_array('ROLE_NATURALIST', $roles)))
-        {
+        if ((in_array('ROLE_ADMIN', $roles)) or (in_array('ROLE_NATURALIST', $roles))) {
             return 'naturalist';
-        }
-        elseif (in_array('ROLE_USER', $roles))
-        {
+        } elseif (in_array('ROLE_USER', $roles)) {
            return 'particular';
         }
 	}

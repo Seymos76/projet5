@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Entity\User;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Form\Extension\Templating\TemplatingRendererEngine;
 
 class Mailer
 {

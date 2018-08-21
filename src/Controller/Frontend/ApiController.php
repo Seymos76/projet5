@@ -27,7 +27,6 @@ class ApiController extends Controller
     public function getPublishedCapturesData(NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
     {
         $captures = $naoCaptureManager->getPublishedCaptures();
-
         return $publishedCaptures = $naoShowMap->formatPublishedCaptures($captures);
     }
 
@@ -41,7 +40,6 @@ class ApiController extends Controller
     public function getBirdPublishedCapturesData($id, NAOCaptureManager $naoCaptureManager, NAOShowMap $naoShowMap)
     {
         $captures = $naoCaptureManager->getBirdPublishedCaptures($id);
-
         return $publishedCaptures = $naoShowMap->formatPublishedCaptures($captures);
     }
 
@@ -62,12 +60,10 @@ class ApiController extends Controller
      * @param NAOPagination $naoPagination
      * @return JsonResponse
      */
-    public function showLastCpaturesAction(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
+    public function showLastCapturesAction(NAOShowMap $naoShowMap, NAOPagination $naoPagination)
     {
         $numberCaptures = $naoPagination->getNbHomeCapturesPerPage();
-        $em = $this->getDoctrine()->getManager();
-        $lastCaptures = $em->getRepository(Capture::class)->getLastPublishedCaptures($numberCaptures);
-
+        $lastCaptures = $this->getDoctrine()->getRepository(Capture::class)->getLastPublishedCaptures($numberCaptures);
         return $naoShowMap->formatPublishedCaptures($lastCaptures);
     }
 }

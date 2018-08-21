@@ -5,6 +5,8 @@ namespace App\Controller\Frontend;
 use App\Entity\User;
 use App\Form\RegisterType;
 use App\Repository\UserRepository;
+use App\Services\Mailer;
+use App\Services\NAOManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,7 +45,7 @@ class SecurityController extends Controller
      * @param UserPasswordEncoderInterface $encoder
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function register(Request $request, UserPasswordEncoderInterface $encoder)
+    public function register(Request $request, UserPasswordEncoderInterface $encoder, NAOManager $manager, Mailer $mailer)
     {
         $user = new User();
         $register_form = $this->createForm(RegisterType::class, $user);
@@ -55,9 +57,9 @@ class SecurityController extends Controller
             }
             $encoded = $encoder->encodePassword($user, $register_form->getData()->getPassword());
             $user->setPassword($encoded);
-            $this->get('app.nao_manager')->addOrModifyEntity($user);
-            $this->get('app.nao.mailer')->sendConfirmationEmail($user, $user->getActivationCode());
-            $this->get('session')->getFlashBag()->add('success', "Votre compte a été créé, veuillez confirmer votre adresse e-mail !");
+            $manager->addOrModifyEntity($user);
+            $mailer->sendConfirmationEmail($user, $user->getActivationCode());
+            $this->addFlash('success', "Votre compte a été créé, veuillez confirmer votre adresse e-mail !");
             return $this->redirectToRoute('activation_code');
         }
         return $this->render(
@@ -73,18 +75,18 @@ class SecurityController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function activationCode(Request $request)
+    public function activationCode(Request $request, NAOManager $manager)
     {
         if ($request->isMethod("POST")) {
             $user = $this->getDoctrine()->getRepository(User::class)->findByActivationCode($request->get('activation_code'));
             if (!$user) {
-                $this->get('session')->getFlashBag()->add('error', "Ce code n'est pas valide.");
+                $this->addFlash('error', "Ce code n'est pas valide.");
                 return $this->redirectToRoute('login');
             }
             $user->setActivationCode(null);
             $user->setActive(true);
-            $this->get('app.nao_manager')->addOrModifyEntity($user);
-            $this->get('session')->getFlashBag()->add('success', "Votre compte a bien été activé !");
+            $manager->addOrModifyEntity($user);
+            $this->addFlash('success', "Votre compte a bien été activé !");
             return $this->redirectToRoute('login');
         }
         return $this->render(

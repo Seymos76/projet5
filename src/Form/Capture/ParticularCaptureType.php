@@ -35,6 +35,13 @@ class ParticularCaptureType extends AbstractType
                 'label' => ' ',
                 'placeholder' => 'Sélectionner un oiseau',
             ))
+            ->add(
+                'image',
+                FileType::class,
+                array(
+                    'data_class' => null
+                )
+            )
             ->add('content',            TextareaType::class, array(
                 'label' => 'Observation :',
             ))

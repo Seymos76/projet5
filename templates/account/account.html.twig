@@ -15,8 +15,11 @@
     </p>
 
     <a href="{{ path('change_avatar') }}">Change avatar</a>
-    <a href="{{ path('upgrade_to_naturalist', {'username': app.user.username}) }}">Upgrade nat</a>
-    <a href="{{ path('upgrade_to_admin', {'username': app.user.username}) }}">Upgrade admin</a>
+    {% if is_granted('ROLE_NATURALIST') %}
+        <a href="{{ path('upgrade', {'username': app.user.username, 'role': "ROLE_ADMIN"}) }}">Upgrade admin</a>
+    {% else %}
+        <a href="{{ path('upgrade', {'username': app.user.username, 'role': "ROLE_NATURALIST"}) }}">Upgrade naturaliste</a>
+    {% endif %}
     {% include "account/biography_form.html.twig" %}
     {% include "password/change_password.html.twig" %}
 {% endblock %}

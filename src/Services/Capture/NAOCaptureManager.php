@@ -35,11 +35,6 @@ class NAOCaptureManager
         return $capture;
     }
 
-    public function addOrModifyImage(UploadedFile $file, string $directory)
-    {
-        //$bird_image = $this->container->get('app.avatar_service')->buildImage($data['image'], $directory);
-    }
-
 	public function getPublishedCaptures()
 	{
 		return $publishedCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->getPublishedCaptures();
@@ -103,17 +98,13 @@ class NAOCaptureManager
 	{
 		$firstEntrance = $this->naoPagination->getFirstEntrance($pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
 
-		if (empty($bird))
-		{
+		if (empty($bird)) {
 			return $numberSearchCapturesByBirdAndRegion = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByRegionPerPage($region, $numberOfPublishedCapturesPerPage, $firstEntrance);
 		}
 
-		if (empty($region))
-		{
+		if (empty($region)) {
 			return $numberSearchCapturesByBirdAndRegion = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdPerPage($bird, $numberOfPublishedCapturesPerPage, $firstEntrance);
-		}
-		else
-		{
+		} else {
 			return $searchCaptureByBirdAndRegionPerPage = $this->naoManager->getEm()->getRepository(Capture::class)->searchCapturesByBirdAndRegionPerPage($bird, $region, $numberOfPublishedCapturesPerPage, $firstEntrance);
 		}
 	}

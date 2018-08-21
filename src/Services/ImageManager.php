@@ -42,14 +42,8 @@ class ImageManager
     {
         // get current avatar form database
         $user = $this->getUser()->loadUserByUsername($username);
-        $current_image = $this->container->get('doctrine')->getRepository(Image::class)->findOneBy(
-            array(
-                'id' => $user->getAvatar()
-            )
-        );
+        $current_image = $this->container->get('doctrine')->getRepository(Image::class)->findOneBy(['id' => $user->getAvatar()]);
         if ($current_image instanceof Image) {
-            // get avatar directory
-            $dir = $this->getContainer()->getParameter('avatar_directory');
             // get current file name
             $current_image_filename = $current_image->getFilename();
             // get current avatar from directory
@@ -68,16 +62,15 @@ class ImageManager
     /**
      * @param Capture $capture
      * @param Image $image
-     * @param NAOManager $manager
      * @return bool
      */
-    public function removeCaptureImage(Capture $capture, Image $image, NAOManager $manager): bool
+    public function removeCaptureImage(Capture $capture, Image $image): bool
     {
         $capture->removeImage();
         $current_image = $this->getContainer()->getParameter('bird_directory').'/'.$image->getFileName();
         self::deleteFile($current_image);
-        $manager->removeEntity($image);
-        $manager->addOrModifyEntity($capture);
+        $this->manager->removeEntity($image);
+        $this->manager->addOrModifyEntity($capture);
         return true;
     }
 
@@ -101,15 +94,14 @@ class ImageManager
      * @return Image
      * @throws \Exception
      */
-    public function buildImage(UploadedFile $uploadedFile, string $directory): Image
+    public function buildImage(UploadedFile $uploadedFile, string $directory, FileUploader $uploader): Image
     {
         $image = new Image();
         $image->setPath($directory);
         $image->setMimeType($uploadedFile->getMimeType());
         $image->setExtension($uploadedFile->guessExtension());
         $image->setSize($uploadedFile->getSize());
-        // upload file to directory
-        $file_name = $this->getContainer()->get('app.nao.file_uploader')->upload($uploadedFile, $directory);
+        $file_name = $uploader->upload($uploadedFile, $directory);
         $image->setFileName($file_name);
         $this->getManager()->addOrModifyEntity($image);
         return $image;

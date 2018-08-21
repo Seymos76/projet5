@@ -30,8 +30,10 @@ class HomeController extends Controller
 		$numberCaptures = $naoPagination->getNbHomeCapturesPerPage();
 		$em = $this->getDoctrine()->getManager();
 		$captures = $em->getRepository(Capture::class)->getLastPublishedCaptures($numberCaptures);
-
-        return $this->render('home/index.html.twig', array('captures' => $captures,));
+        return $this->render(
+            'home/index.html.twig',
+            array('captures' => $captures)
+        );
 	}
 
     /**
@@ -40,9 +42,7 @@ class HomeController extends Controller
      */
 	public function statistics()
     {
-        return $this->render(
-            'home/statistics.html.twig'
-        );
+        return $this->render('home/statistics.html.twig');
     }
 
     /**
@@ -60,14 +60,12 @@ class HomeController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($message);
             $em->flush();
-            $this->get('session')->getFlashBag()->add('success', "Message envoyé");
+            $this->addFlash('success', "Message envoyé");
             return $this->redirectToRoute('contact');
         }
         return $this->render(
             'home/contact.html.twig',
-            array(
-                'form' => $message_form->createView()
-            )
+            array('form' => $message_form->createView())
         );
     }
 }
