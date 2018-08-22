@@ -29,13 +29,10 @@ class BirdController extends Controller
     {
         $numberOfBirds = $naoCountBirds->countBirdsByLetter($letter);
         $numberOfBirdsPerPage = $naoPagination->getNbBirdsPerPage();
-
         $birds = $naoBirdManager->getBirdsByLetter($letter, $page, $numberOfBirds, $numberOfBirdsPerPage);
-
         $nbRepertoryPages = $naoPagination->CountNbPages($numberOfBirds, $numberOfBirdsPerPage);
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
-
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
 
         return $this->render('Bird\repertory.html.twig', 
@@ -65,17 +62,12 @@ class BirdController extends Controller
 
         $numberOfBirds = $naoCountBirds->countBirds();
         $numberOfBirdsPerPage = $naoPagination->getNbBirdsPerPage();
-
         $birds = $naoBirdManager->getBirdsPerPage($page, $numberOfBirds, $numberOfBirdsPerPage);
-
         $nbRepertoryPages = $naoPagination->CountNbPages($numberOfBirds, $numberOfBirdsPerPage);
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
-
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
             $region = $request->get('region');
-
             return $this->redirectToRoute('result_search_birds', array('region' => $region,));
         }
 
@@ -103,12 +95,9 @@ class BirdController extends Controller
     public function showBirdsByRegionAction(Request $request, NAOBirdManager $naoBirdManager, NAOPagination $naoPagination, NAOCountBirds $naoCountBirds, $page, $region)
     {
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
-
         $numberOfSearchBirds = $naoCountBirds->countSearchBirdsByRegion($region);
         $numberOfBirdsPerPage = $naoPagination->getNbBirdsPerPage();
-
         $birds = $naoBirdManager->searchBirdsByRegionPerPage($region, $page, $numberOfSearchBirds, $numberOfBirdsPerPage);
-
         $nbRepertoryPages = $naoPagination->CountNbPages($numberOfSearchBirds, $numberOfBirdsPerPage);
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);

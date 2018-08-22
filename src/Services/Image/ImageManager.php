@@ -9,7 +9,9 @@
 namespace App\Services\Image;
 
 
+use App\Entity\Capture;
 use App\Entity\Image;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,7 +19,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
-class Avatar
+class ImageManager
 {
     private $manager;
 
@@ -25,11 +27,14 @@ class Avatar
 
     private $container;
 
-    public function __construct(NAOManager $manager, EntityUserProvider $user, ContainerInterface $container)
+    private $fileUploader;
+
+    public function __construct(NAOManager $manager, EntityUserProvider $user, ContainerInterface $container, FileUploader $fileUploader)
     {
         $this->manager = $manager;
         $this->user = $user;
         $this->container = $container;
+        $this->fileUploader = $fileUploader;
     }
 
     /**
@@ -41,45 +46,38 @@ class Avatar
     {
         // get current avatar form database
         $user = $this->getUser()->loadUserByUsername($username);
-        $current_image = $this->container->get('doctrine')->getRepository(Image::class)->findOneBy(
-            array(
-                'id' => $user->getAvatar()
-            )
-        );
+        $current_image = $this->manager->getEm()->getRepository(Image::class)->findOneBy(['id' => $user->getAvatar()]);
         if ($current_image instanceof Image) {
-            // get avatar directory
-            $dir = $this->getContainer()->getParameter('avatar_directory');
-            // get current file name
             $current_image_filename = $current_image->getFilename();
-            // get current avatar from directory
             $current_avatar = $this->getContainer()->getParameter('avatar_directory').'/'.$current_image_filename;
             self::deleteFile($current_avatar);
-            // set user avatar to null
             $user->setAvatar(null);
-            $this->getManager()->addOrModifyEntity($current_image);
             $this->getManager()->addOrModifyEntity($user);
             return true;
         } else {
             return false;
         }
-
     }
 
     /**
-     * @param $file
+     * @param Capture $capture
+     * @param Image $image
+     * @return bool
      */
-    public function deleteFile($file)
+    public function removeCaptureImage(Capture $capture, Image $image): bool
     {
-        if (file_exists($file)) {
-            unlink($file);
-        }
+        $capture->removeImage();
+        $current_image = $this->container->getParameter('bird_directory').'/'.$image->getFileName();
+        self::deleteFile($current_image);
+        $this->manager->removeEntity($image);
+        $this->manager->addOrModifyEntity($capture);
+        return true;
     }
 
     /**
      * @param UploadedFile $uploadedFile
      * @param string $directory
      * @return Image
-     * @throws \Exception
      */
     public function buildImage(UploadedFile $uploadedFile, string $directory): Image
     {
@@ -88,11 +86,40 @@ class Avatar
         $image->setMimeType($uploadedFile->getMimeType());
         $image->setExtension($uploadedFile->guessExtension());
         $image->setSize($uploadedFile->getSize());
-        // upload file to directory
-        $file_name = $this->getContainer()->get('app.nao.file_uploader')->upload($uploadedFile, $directory);
-        $image->setFileName($file_name);
-        $this->getManager()->addOrModifyEntity($image);
         return $image;
+    }
+
+    public function addImageOnCapture(UploadedFile $uploadedFile, Capture $capture)
+    {
+        $image = $this->buildImage($uploadedFile, $this->container->getParameter('bird_directory'));
+        $file_name = $this->fileUploader->upload($uploadedFile, $this->container->getParameter('bird_directory'));
+        $image->setFileName($file_name);
+        $capture->setImage($image);
+        $this->getManager()->addOrModifyEntity($capture);
+    }
+
+
+    public function addAvatarOnUser(UploadedFile $uploadedFile, User $user)
+    {
+        $image = $this->buildImage($uploadedFile, $this->container->getParameter('avatar_directory'));
+        $file_name = $this->fileUploader->upload($uploadedFile, $this->container->getParameter('avatar_directory'));
+        $image->setFileName($file_name);
+        $user->setAvatar($image);
+        $this->getManager()->addOrModifyEntity($user);
+    }
+
+    /**
+     * @param $file
+     * @return bool
+     */
+    public function deleteFile($file)
+    {
+        if (file_exists($file)) {
+            unlink($file);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

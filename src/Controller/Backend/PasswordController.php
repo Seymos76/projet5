@@ -7,6 +7,8 @@ use App\Form\Password\ChangePassword;
 use App\Form\Password\ChangePasswordType;
 use App\Form\Password\LostPasswordType;
 use App\Form\Password\ReinitialisationPasswordType;
+use App\Services\Mail\Mailer;
+use App\Services\NAOManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,25 +21,24 @@ class PasswordController extends Controller
     /**
      * @Route("/mot-de-passe-oublie", name="lost_password")
      * @param Request $request
-     * @return Response
+     * @param Mailer $mailer
+     * @param NAOManager $NAOManager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function lostPassword(Request $request)
+    public function lostPassword(Request $request, Mailer $mailer, NAOManager $NAOManager)
     {
         $lost_password_form = $this->createForm(LostPasswordType::class);
         $lost_password_form->handleRequest($request);
         if ($lost_password_form->isSubmitted() && $lost_password_form->isValid()) {
             $em = $this->getDoctrine();
-            // récupérer l'utilisateur correspondant
             $user = $em->getRepository(User::class)->findUserByEmail($lost_password_form->getData()['email']);
-            // si !user -> rediriger vers register avec message erreur
             if (!$user) {
-                $this->get('session')->getFlashBag()->add('error', "Vous n'êtes pas enregistré sur le site");
+                $this->addFlash('error', "Vous n'êtes pas enregistré sur le site");
                 return $this->redirectToRoute('register');
             }
             $user->setToken(md5(uniqid("token_", true)));
-            $this->get('app.nao.mailer')->sendLostPasswordEmail($user);
-            $this->get('app.nao_manager')->addOrModifyEntity($user);
-            // redirect to confirmation page
+            $mailer->sendLostPasswordEmail($user);
+            $NAOManager->addOrModifyEntity($user);
             return $this->redirectToRoute('password_reinitialisation_pending');
         }
         return $this->render(
@@ -65,30 +66,30 @@ class PasswordController extends Controller
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
-    public function reinitialisationPassword(Request $request, UserPasswordEncoderInterface $encoder)
+    public function reinitialisationPassword(Request $request, UserPasswordEncoderInterface $encoder, NAOManager $NAOManager, Mailer $mailer)
     {
         $em = $this->getDoctrine();
         $token = $request->get('token');
         $user = $em->getRepository(User::class)->findUserByToken($token);
         if (!$user) {
-            $this->get('session')->getFlashBag()->add('error', "Vous n'êtes pas autorisé à accéder à cette page !");
+            $this->addFlash('error', "Vous n'êtes pas autorisé à accéder à cette page !");
             return $this->redirectToRoute('index');
         }
         $form = $this->createForm(ReinitialisationPasswordType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // encoder le mot de passe
+            /** Optimiser cette partie */
             if ($user instanceof UserInterface) {
                 $encoded = $encoder->encodePassword($user, $form->getData()->getPassword());
                 $user = $this->getDoctrine()->getRepository(User::class)->findUserByToken($token);
                 $user->setPassword($encoded);
                 $user->setToken(null);
-                $this->get('app.nao_manager')->addOrModifyEntity($user);
-                $this->get('app.nao.mailer')->sendPasswordReinitialisationSuccessEmail($user);
-                $this->get('session')->getFlashBag()->add('success', "Votre mot de passe a bien été mis à jour !");
+                $NAOManager->addOrModifyEntity($user);
+                $mailer->sendPasswordReinitialisationSuccessEmail($user);
+                $this->addFlash('success', "Votre mot de passe a bien été mis à jour !");
                 return $this->redirectToRoute('login');
             } else {
-                $this->get('session')->getFlashBag()->add('error', "Un problème est survenu durant la réinitialisation du mot de passe.");
+                $this->addFlash('error', "Un problème est survenu durant la réinitialisation du mot de passe.");
                 return $this->redirectToRoute('lost_password');
             }
         }

@@ -9,15 +9,13 @@ use App\Services\Pagination\NAOPagination;
 use App\Services\Comment\NAOCommentManager;
 use App\Services\Comment\NAOShowComments;
 use App\Services\Statistics\NAODataStatistics;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ApiController extends Controller
 {
     /**
-     * @Route("/api/publishedcaptures", name="app_publishedcaptures_list")
-     * @Method("GET")
+     * @Route("/api/publishedcaptures", name="app_publishedcaptures_list", methods={"GET"})
      * @param NAOCaptureManager $naoCaptureManager
      * @param NAOShowMap $naoShowMap
      */
@@ -29,8 +27,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route(path="/api/birdpublishedcaptures/{id}", name="app_birdpublishedcaptures_list", requirements={"id" = "\d+"})
-     * @Method("GET")
+     * @Route(path="/api/birdpublishedcaptures/{id}", name="app_birdpublishedcaptures_list", requirements={"id" = "\d+"}, methods={"GET"})
      * @param $id
      * @param NAOCaptureManager $naoCaptureManager
      * @param NAOShowMap $naoShowMap
@@ -43,8 +40,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route(path="/api/latloncapture/{id}", name="app_publishedcapture", requirements={"id" = "\d+"})
-     * @Method("GET")
+     * @Route(path="/api/latloncapture/{id}", name="app_publishedcapture", requirements={"id" = "\d+"}, methods={"GET"})
      * @param $id
      * @param NAOShowMap $naoShowMap
      */
@@ -54,8 +50,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route(path="/api/lastcaptures", name="app_lastcaptures_list")
-     * @Method("GET")
+     * @Route(path="/api/lastcaptures", name="app_lastcaptures_list", methods={"GET"})
      * @param NAOShowMap $naoShowMap
      * @param NAOPagination $naoPagination
      */
@@ -69,8 +64,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route(path="/api/capturepublishedcomments/{id}", name="app_capturepublishedcomments", requirements={"id" = "\d+"})
-     * @Method("GET")
+     * @Route(path="/api/capturepublishedcomments/{id}", name="app_capturepublishedcomments", requirements={"id" = "\d+"}, methods={"GET"})
      * @param $id
      * @param NAOShowComments $naoShowComments
      * @param NAOCommentManager $naoCommentManager
@@ -83,8 +77,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route(path="/api/datastatistics/{year}", name="app_data_statistics")
-     * @Method("GET")
+     * @Route(path="/api/datastatistics/{year}", name="app_data_statistics", methods={"GET"})
      * @param NAODataStatistics $naoDataStatistics
      * @param $year
      */

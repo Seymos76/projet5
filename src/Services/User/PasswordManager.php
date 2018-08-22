@@ -10,35 +10,43 @@ namespace App\Services\User;
 
 
 use App\Entity\User;
+use App\Services\Mail\Mailer;
+use App\Services\NAOManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordManager
 {
     private $encoder;
 
-    private $container;
+    private $mailer;
 
-    public function __construct(UserPasswordEncoderInterface $encoder, ContainerInterface $container)
+    private $session;
+
+    public function __construct(UserPasswordEncoderInterface $encoder, Mailer $mailer, SessionInterface $session)
     {
         $this->encoder = $encoder;
-        $this->container = $container;
+        $this->mailer = $mailer;
+        $this->session = $session;
     }
 
     /**
      * @param User $user
      * @param string $password
-     * @return mixed
+     * @param NAOManager $manager
+     * @return bool
      */
-    public function changePassword(User $user, string $password)
+    public function changePassword(User $user, string $password, NAOManager $manager)
     {
         /** @var User $user */
-        $user = $this->container->get('doctrine.orm.default_entity_manager')->getRepository(User::class)->findUserByEmail($user->getEmail());
+        $user = $manager->getEm()->getRepository(User::class)->findUserByEmail($user->getEmail());
         $encoded = $this->encoder->encodePassword($user, $password);
         $user->setPassword($encoded);
-        $this->container->get('app.nao_manager')->addOrModifyEntity($user);
-        $this->container->get('app.nao.mailer')->sendConfirmationPasswordChanged($user);
-        $this->container->get('session')->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
+        $manager->addOrModifyEntity($user);
+        $this->mailer->sendConfirmationPasswordChanged($user);
+        $this->session->getFlashBag()->add('success', "Votre mot de passe a été changé avec succès !");
         return true;
     }
 }

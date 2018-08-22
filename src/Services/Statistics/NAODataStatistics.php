@@ -17,7 +17,7 @@ class NAODataStatistics
 
     public function __construct(NAOCountCaptures $naoCountCaptures, NAOCountBirds $naoCountBirds, NAOBirdManager $naoBirdManager)
     {
-        $this->naoCountCaptures = $naoCountCaptures;
+        $this->naoCounCaptures = $naoCountCaptures;
         $this->naoCountBirds = $naoCountBirds;
         $this->naoBirdManager = $naoBirdManager;
     }
@@ -35,7 +35,7 @@ class NAODataStatistics
 
 	public function formatBirdsByRegions($regions, $year)
 	{
-        $numberOfPublishedCaptures = $this->naoCountCaptures->countPublishedCapturesByYear($year);
+        $numberOfPublishedCaptures = $this->naoCounCaptures->countPublishedCapturesByYear($year);
 
         $regionsData = [];
         foreach ($regions as $region)

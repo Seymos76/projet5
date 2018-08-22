@@ -9,6 +9,7 @@ use App\Services\Bird\NAOCountBirds;
 use App\Services\Capture\NAOCountCaptures;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
+use App\Services\Pagination\NAOPagination;
 use App\Services\Statistics\NAODataStatistics;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -19,17 +20,21 @@ use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends Controller
 {
-	/**
+    /**
      * @Route("/", name="home")
-     * @param NAOCaptureManager $naoCaptureManager
+     * @param NAOPagination $naoPagination
      * @return Response
      */
-	public function showHomeAction(NAOCaptureManager $naoCaptureManager)
-	{
-		$captures = $naoCaptureManager->getLastPublishedCaptures();
-
-        return $this->render('home/index.html.twig', array('captures' => $captures,));
-	}
+    public function showHomeAction(NAOPagination $naoPagination)
+    {
+        $numberCaptures = $naoPagination->getNbHomeCapturesPerPage();
+        $em = $this->getDoctrine()->getManager();
+        $captures = $em->getRepository(Capture::class)->getLastPublishedCaptures($numberCaptures);
+        return $this->render(
+            'home/index.html.twig',
+            array('captures' => $captures)
+        );
+    }
 
     /**
      * @Route("/statistiques/{year}", name="statistics", defaults={"year"=2018},)

@@ -4,18 +4,22 @@ namespace App\Controller\Backend;
 
 use App\Entity\Capture;
 use App\Entity\User;
+use App\Services\Form\FormManager;
+use App\Services\Image\ImageManager;
 use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\User\NAOUserManager;
 use App\Form\Capture\ParticularCaptureType;
 use App\Form\Capture\NaturalistCaptureType;
 use App\Form\Capture\ValidateCaptureType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CaptureController extends Controller
 {
@@ -25,62 +29,69 @@ class CaptureController extends Controller
      * @param NAOManager $naoManager
      * @param NAOCaptureManager $naoCaptureManager
      * @param NAOUserManager $naoUserManager
-     * @return Response
+     * @param ValidatorInterface $validator
+     * @param FormManager $formManager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function addCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager)
+    public function addCaptureAction(Request $request, NAOManager $naoManager, NAOCaptureManager $naoCaptureManager, NAOUserManager $naoUserManager, ValidatorInterface $validator, FormManager $formManager)
     {
         $capture = new Capture();
-        $user = $this->getUser();
-        
+        $current_user = $this->getUser();
+        $user = $naoUserManager->getCurrentUser($current_user->getUsername());
         $userRole = $naoUserManager->getRoleFR($user);
         $role = $naoUserManager->getNaturalistOrParticularRole($user);
-
-        if ($role == 'particular')
-        {
-            $form = $this->createForm(ParticularCaptureType::class);
-        }
-        elseif ($role == 'naturalist')
-        {
-            $form = $this->createForm(NaturalistCaptureType::class);
-        }
-        $form->add('Enregistrer',      SubmitType::class);
+        $form = $formManager->getCaptureForm($userRole, $capture);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid())
         {
-            dump($form->getData());
             /** @var Capture $capture */
-            $capture = $this->get('app.nao_capture_manager')->buildCapture($form->getData(), $this->getParameter('bird_directory'));
-            $capture->setUser($this->getUser());
-
-            if ($userRole == 'Particulier')
-            {
-                $naoCaptureManager->setWaitingStatus($capture);
-            }
-
-            $validator = $this->get('validator');
-            $listErrors = $validator->validate($capture->getImage());
-            if(count($listErrors) > 0)
-            {
-                return new Response((string) $listErrors);
-            } 
-            else 
-            {
+            $capture = $naoCaptureManager->setStatusOnCapture($form->getData(), $user);
+            $listErrors = $validator->validate($capture);
+            if (count($listErrors) > 0) {
+                return $this->redirectToRoute('ajouterObservation', array('list_errors' => (string)$listErrors));
+            } else {
                 $naoManager->addOrModifyEntity($capture);
-
-                return new Response('L\'observation a été ajoutée');
+                $this->addFlash('success', "Votre observation a été ajoutée avec succès !");
+                return $this->redirectToRoute('add_image_on_capture', ['id' => $capture->getId()]);
             }
         }
-
         $title = 'Ajouter une observation';
 
-        return $this->render('Capture\addModifyOrValidateCapture.html.twig', 
+        return $this->render(
+            'Capture\addModifyOrValidateCapture.html.twig',
             array(
-                'form' => $form->createView(), 
-                'userRole' => $userRole, 
-                'role' => $role, 
-                'titre' => $title
-            )); 
+                'form' => $form->createView(),
+                'userRole' => $userRole,
+                'role' => $role,
+                'title' => $title
+            )
+        );
+    }
+
+    /**
+     * @Route(path="ajout-image-observation/{id}", name="add_image_on_capture")
+     * @param Request $request
+     * @param Capture $capture
+     * @param ImageManager $imageManager
+     * @ParamConverter("capture", class="App\Entity\Capture")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function addImageOnCapture(Request $request, Capture $capture, ImageManager $imageManager)
+    {
+        $form = $this->createForm(CaptureImageType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageManager->addImageOnCapture($form->getData()['image'], $capture);
+            $this->addFlash('success', "Image ajoutée à l'observation !");
+            return $this->redirectToRoute('compteUtilisateur');
+        }
+        return $this->render(
+            'Capture/addImageOnCapture.html.twig',
+            array(
+                'form' => $form->createView(),
+                'capture' => $capture
+            )
+        );
     }
 
     /**

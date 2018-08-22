@@ -82,22 +82,15 @@ class CaptureController extends Controller
     {
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
         $birds = $this->getDoctrine()->getRepository(Bird::class)->getBirdsByOrderAsc();
-
         $numberOfPublishedCaptures = $naoCountCaptures->countPublishedCaptures();
         $numberOfPublishedCapturesPerPage = $naoPagination->getNbElementsPerPage();
-
         $captures = $nAOCaptureManager->getPublishedCapturesPerPage($pageNumber, $numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
-
         $nbCapturesPages = $naoPagination->CountNbPages($numberOfPublishedCaptures, $numberOfPublishedCapturesPerPage);
-
         $nextPage = $naoPagination->getNextPage($pageNumber);
         $previousPage = $naoPagination->getPreviousPage($pageNumber);
-
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
             $birdName = $request->get('bird');
             $bird = $naoBirdManager->getBirdByVernacularOrValidName($birdName);
-
             $region = $request->get('region');
             $session = $request->getSession();
             $session->set('bird', $bird);
@@ -132,19 +125,13 @@ class CaptureController extends Controller
         $regions = json_decode(file_get_contents("https://geo.api.gouv.fr/regions"), true);
         $birds = $this->getDoctrine()->getRepository(Bird::class)->getBirdsByOrderAsc();
         $resultats = 'résultats';
-
         $session = $request->getSession();
         $bird = $session->get('bird');
         $region = $session->get('region');
-
         $numberOfPublishedCapturesPerPage = $naoPagination->getNbElementsPerPage();
-
         $numberOfSearchCaptures = $naoCountCaptures->countSearchCapturesByBirdAndRegion($bird, $region);
-
         $capturesSearch =  $nAOCaptureManager->searchCapturesByBirdAndRegionPerPage($bird, $region, $pageNumber, $numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
-
         $nbCapturesPages = $naoPagination->CountNbPages($numberOfSearchCaptures, $numberOfPublishedCapturesPerPage);
-
         $nextPage = $naoPagination->getNextPage($pageNumber);
         $previousPage = $naoPagination->getPreviousPage($pageNumber);
 

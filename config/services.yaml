@@ -41,14 +41,15 @@ services:
         autowire: true
         public: true
 
-    app.avatar_service:
-        class: App\Services\Image\Avatar
+    app.image_manager:
+        class: App\Services\Image\ImageManager
         autowire: true
         public: true
         arguments:
             - '@app.nao_manager'
             - '@security.user.provider.concrete.nao_app'
             - '@service_container'
+            - '@app.nao.file_uploader'
 
     app.nao.mailer:
         class: App\Services\Mail\Mailer
@@ -63,7 +64,8 @@ services:
         public: true
         arguments:
             - '@security.user_password_encoder.generic'
-            - '@service_container'
+            - '@app.nao.mailer'
+            - '@session'
 
     app.nao_comment_manager:
         class: App\Services\Comment\NAOCommentManager
