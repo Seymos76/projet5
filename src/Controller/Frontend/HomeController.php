@@ -26,9 +26,9 @@ class HomeController extends Controller
      */
 	public function showHomeAction(NAOCaptureManager $naoCaptureManager)
 	{
-		$captures = $naoCaptureManager->getLastCaptures();
+		$captures = $naoCaptureManager->getLastPublishedCaptures();
 
-        return $this->render('home/index.html.twig', array('captures' => $captures,));
+        return $this->render('home/index.html.twig', array('captures' => $captures));
 	}
 
     /**
