@@ -127,7 +127,7 @@ class NAOCaptureManager
 
 	public function getLastCaptures()
 	{
-		$numberElement = $this->naoPagination->getNbHomeCapturesPerPage();
+		$numberElements = $this->naoPagination->getNbHomeCapturesPerPage();
 
 		return $lastCaptures = $this->naoManager->getEm()->getRepository(Capture::class)->getLastPublishedCaptures($numberElements, $this->publishedStatus, $this->validatedStatus);
 	}

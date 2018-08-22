@@ -20,6 +20,7 @@ use App\Services\NAOManager;
 use App\Services\Capture\NAOCaptureManager;
 use App\Services\Capture\NAOCountCaptures;
 use App\Services\Pagination\NAOPagination;
+use App\Services\User\NAOUserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -45,23 +46,22 @@ class AccountController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function showUserAccount($page, NAOPagination $naoPagination, NAOCaptureManager $naoCaptureManager, NAOCountCaptures $naoCountCaptures, Request $request)
+    public function showUserAccount($page, NAOPagination $naoPagination, NAOCaptureManager $naoCaptureManager, NAOCountCaptures $naoCountCaptures, Request $request, NAOUserManager $userManager)
     {
         $user = $this->getUser();
 
         $numberOfElementsPerPage = $naoPagination->getNbElementsPerPage();
         $numberOfUserCaptures = $naoCountCaptures->countUserCaptures($user);
         $numberOfUserCapturesPages = $naoPagination->CountNbPages($numberOfUserCaptures, $numberOfElementsPerPage);
-
         $captures = $naoCaptureManager->getUserCapturesPerPage($page, $numberOfUserCaptures, $numberOfElementsPerPage, $user);
 
         $nextPage = $naoPagination->getNextPage($page);
         $previousPage = $naoPagination->getPreviousPage($page);
 
         $biographyType = $this->createForm(BiographyType::class);
-        $user = $this->getDoctrine()->getRepository(User::class)->findUserByEmail($this->getUser()->getEmail());
+        $user = $userManager->getCurrentUser($user->$this->getUser()->getEmail());
         $biographyType->handleRequest($request);
-        $account_type = $this->get('app.nao_user_manager')->getRoleFR($user);
+        $account_type = $userManager->getRoleFR($user);
 
         if ($biographyType->isSubmitted() && $biographyType->isValid()) {
             $this->get('app.nao_user_manager')->changeBiography($user, $biographyType->getData()['biography']);

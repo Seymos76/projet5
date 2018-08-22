@@ -102,7 +102,9 @@ class Capture
     private $user;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User")
+     * Many Captures are validated by One User.
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="validated_captures")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $validated_by;
 

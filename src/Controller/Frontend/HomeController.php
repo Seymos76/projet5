@@ -26,13 +26,13 @@ class HomeController extends Controller
      */
 	public function showHomeAction(NAOCaptureManager $naoCaptureManager)
 	{
-		$captures = $naoCaptureManager->getLastPublishedCaptures();
+		$captures = $naoCaptureManager->getLastCaptures();
 
         return $this->render('home/index.html.twig', array('captures' => $captures,));
 	}
 
     /**
-     * @Route("/statistiques/{year}", name="statistics", defaults={"year"=2018},)
+     * @Route("/statistiques/{year}", name="statistics", defaults={"year"=2018})
      * @param NAODataStatistics $naoDataStatistics
      * @param NAOCountCaptures $naoCountCaptures
      * @param NAOCountBirds $naoCountBirds

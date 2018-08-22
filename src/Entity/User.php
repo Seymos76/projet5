@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -80,10 +81,16 @@ class User implements UserInterface, \Serializable
     private $avatar;
 
     /**
-     * One Product has Many Features.
+     * One User has Many Captures.
      * @ORM\OneToMany(targetEntity="App\Entity\Capture", mappedBy="user")
      */
     private $captures;
+
+    /**
+     * One Naturalist has validated many Captures.
+     * @ORM\OneToMany(targetEntity="App\Entity\Capture", mappedBy="user")
+     */
+    private $validated_captures;
 
     /**
      * @ORM\Column(name="biography", type="text", nullable=true)
@@ -96,6 +103,8 @@ class User implements UserInterface, \Serializable
         $this->roles = array("ROLE_USER");
         $this->date_register = new \DateTime('now');
         $this->activation_code = md5(uniqid('code_', false));
+        $this->captures = new ArrayCollection();
+        $this->validated_captures = new ArrayCollection();
     }
 
     public function getUsername() :string
@@ -272,9 +281,11 @@ class User implements UserInterface, \Serializable
     public function setAvatar($avatar): void
     {
         $this->avatar = $avatar;
-    }/**
- * @return mixed
- */
+    }
+
+    /**
+     * @return mixed
+     */
     public function getBiography()
     {
         return $this->biography;
@@ -286,6 +297,70 @@ class User implements UserInterface, \Serializable
     public function setBiography($biography): void
     {
         $this->biography = $biography;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCaptures()
+    {
+        return $this->captures;
+    }
+
+    /**
+     * @param mixed $captures
+     */
+    public function setCaptures($captures): void
+    {
+        $this->captures = $captures;
+    }
+
+    public function addCapture(Capture $capture)
+    {
+        if (!in_array($capture, $this->captures[])) {
+            $this->captures[] = $capture;
+            return $this->captures;
+        }
+    }
+
+    public function removeCapture(Capture $capture)
+    {
+        if (in_array($capture, $this->captures[])) {
+            unset($capture);
+            return $this->captures;
+        }
+    }
+
+    /**
+     * @return ArrayCollection|null
+     */
+    public function getValidatedCaptures()
+    {
+        return $this->validated_captures;
+    }
+
+    /**
+     * @param mixed $validated_captures
+     */
+    public function setValidatedCaptures($validated_captures): void
+    {
+        $this->validated_captures = $validated_captures;
+    }
+
+    public function addValidatedCapture(Capture $capture_to_validate)
+    {
+        if (!$this->validated_captures->contains($capture_to_validate)) {
+            $this->validated_captures[] = $capture_to_validate;
+            return $this->validated_captures;
+        }
+    }
+
+    public function removeValidatedCapture(Capture $capture)
+    {
+        if ($this->validated_captures->contains($capture)) {
+            unset($capture);
+        }
     }
 
     public function eraseCredentials()
